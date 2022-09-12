@@ -3,11 +3,32 @@
     <title>nx1.info</title>
     <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>
+
+<style>
+#container {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  background: green;
+}
+#animate {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  background-color: red;
+}
+</style>
+<body>
+
 <body>
 <h2>nx1.info</h2>
 
 <div id="clock" onload="currentTime()"></div>
+<div id="container">
+    <div id='animate' onload="myMove()"></div>
+</div>
 
+<script type="text/javascript" src="animation.js"></script>
 <script type="text/javascript" src="clock.js"></script>
 </body>
 </html>
