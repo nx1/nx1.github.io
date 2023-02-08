@@ -2,7 +2,7 @@ function currentTime() {
     let date = new Date()
 
     let day   = date.getDate()
-    let month = date.getMonth()
+    let month = date.getMonth() +1
     let year  = date.getFullYear()
 
 
@@ -31,7 +31,7 @@ function currentTime() {
     document.getElementById("clock").innerText = 'Date: ' + time_date 
     + '\nTime: ' + time
     + '\nUNIX:' + time_unix; 
-    let t = setTimeout(function(){ currentTime() }, 1);
+    let t = setTimeout(function(){ currentTime() }, 100);
 }
 
 function MJD() {
