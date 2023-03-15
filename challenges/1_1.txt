@@ -1,0 +1,12 @@
+Get Product of all other elements
+---------------------------------
+Input:
+[1,2,3,4,5]
+
+Output:
+[20,60,40,30,24]
+
+
+-----------
+Norman Khan
+15/03/2023
