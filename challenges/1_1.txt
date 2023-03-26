@@ -6,6 +6,19 @@ Input:
 Output:
 [20,60,40,30,24]
 
+The reccomended solution proposes to precompute results from subarrays and
+build up a solution from these results.
+
+That is to say, for the given value a[i] we obtain all the values from
+a[0]   to a[i-1] : prefix products
+a[i+1] to a[-1]  : suffix products
+
+Then we go over these prefix and suffix products to calculate the desired
+results.
+
+The benefit of this over my initial solution is that you do not need to iterate
+over the initial array len(array) times calculating the products so it is
+faster.
 
 -----------
 Norman Khan

@@ -30,8 +30,8 @@ function currentTime() {
   
     document.getElementById("clock").innerText = 'Date: ' + time_date 
     + '\nTime: ' + time
-    + '\nUNIX:' + time_unix; 
-    let t = setTimeout(function(){ currentTime() }, 100);
+    + '\nUNIX: ' + time_unix; 
+    let t = setTimeout(function(){ currentTime() }, 10);
 }
 
 function MJD() {
