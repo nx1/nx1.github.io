@@ -14,6 +14,18 @@ If an array with all negative numbers is provided the result should be 0 as the
 maximum sum would be taking no elements, although another valid option would be
 just to return the smallest value in that array.
 
+The maximum subarray problem arise in many fields such as genomic sequence
+analysis and computer vision.  In computer vision for example, the
+maximum-subarray algorithm are used on bitmap images to detect the brightest
+area in an image.
+
+
+The optical solution to this problem is known as Kadabe's Algorithm.
+
+The algorithm works by iterating over the array and at each value and
+calculating the maximum possible subarray sum that can be obtained to the left
+of that value.
+
 -----------
 Norman Khan
 30/03/2023
