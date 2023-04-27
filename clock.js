@@ -26,18 +26,20 @@ function currentTime() {
      let time = hh + ":" + mm + ":" + ss + " " + session;
      let time_unix = Date.now()
      let time_date = day + '/' + month + '/' + year 
+     let mjd = MJD(date);
 
   
     document.getElementById("clock").innerText = 'Date: ' + time_date 
     + '\nTime: ' + time
-    + '\nUNIX: ' + time_unix; 
+    + '\nUNIX: ' + time_unix
+    + '\nMJD:  ' + mjd; 
     let t = setTimeout(function(){ currentTime() }, 10);
 }
 
-function MJD() {
-//   let mjd = 
-//    document.getElementById('MJDclock').innerText = 'MJD: '+ mjd
-//}
+function MJD(date) {
+    let jd = date.valueOf() / 86400000 + 2440587.5;
+    let mjd = jd - 2400000.5;
+    return mjd.toFixed(5);
 }
 
 currentTime();
