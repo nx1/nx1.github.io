@@ -69,21 +69,23 @@ function myMove() {
             box.style.left = box.x + 'px';
             box.style.top = box.y + 'px';
 
+
+            // The mass is a proxy for the size of the box
             if (box.x < 0) {
                 box.vx = -box.vx;
                 box.x = 0;
             }
-            if (box.x > window.innerWidth) {
+            if (box.x + box.mass > window.innerWidth) {
                 box.vx = -box.vx;
-                box.x = window.innerWidth;
+                box.x = window.innerWidth - box.mass;
             }
             if (box.y < 0) {
                 box.vy = -box.vy;
                 box.y = 0;
             }
-            if (box.y > window.innerHeight) {
+            if (box.y + box.mass > window.innerHeight) {
                 box.vy = -box.vy;
-                box.y = window.innerHeight;
+                box.y = window.innerHeight - box.mass;
             }
         }
     }
