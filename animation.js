@@ -11,7 +11,7 @@ function myMove() {
     const maxBoxes = 50;
     const numBoxes = Math.floor(Math.random() * maxBoxes) + 1;
     const boxes = [];
-    const G = 10;
+    const G = 5;
     const minDist = 1;
 
     for (let i = 0; i < numBoxes; i++) {
