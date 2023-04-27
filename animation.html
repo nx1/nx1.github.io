@@ -1,33 +1,39 @@
 <html>
 <head>
-    <title>nx1.info</title>
+    <title>nx1.info | Javascript animation</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
     <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>
 
 <style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 #container {
-  width: 400px;
-  height: 400px;
+  width: 100vw;
+  height: 100vh;
   position: relative;
-  background: green;
 }
-#animate {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  background-color: red;
+
+#cornermsg {
+position: absolute;
+top: 10px;
+left: 10px;
+font-size:18px;
+color:white;
 }
+
 </style>
 <body>
 
 <body>
-<h2>nx1.info</h2>
-<a href="index.html">Back</a>
-
-<div id="container">
-    <div id='animate' onload="myMove()"></div>
-</div>
+<div id="container"></div>
 <script type="text/javascript" src="animation.js"></script>
+<div id='cornermsg'><a href="http://nx1.info">Press F5 for new configuration | Click here to go back</a></div>
 </body>
 </html>
 
