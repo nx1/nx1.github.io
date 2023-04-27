@@ -1,8 +1,8 @@
 function myMove() {
     const container = document.getElementById('container');
-	const rect = container.getBoundingClientRect();
-	const centerX = rect.left + rect.width / 2;
-	const centerY = rect.top + rect.height / 2;
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
     let id = null;
     clearInterval(id);
@@ -30,8 +30,8 @@ function myMove() {
         box.style.width           = box.mass + 'px';
         box.style.height          = box.mass + 'px';
 
-		// https://stackoverflow.com/questions/1484506/random-color-generator/37281143
-		const color = Math.floor(Math.random() * 16777215).toString(16);
+        // https://stackoverflow.com/questions/1484506/random-color-generator/37281143
+        const color = Math.floor(Math.random() * 16777215).toString(16);
         box.style.backgroundColor = '#' + color;
 
         container.appendChild(box);
