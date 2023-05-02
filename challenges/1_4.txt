@@ -1,0 +1,28 @@
+Find number of smaller elements to the right
+--------------------------------------------
+Input:
+[3, 4, 9, 6, 1]
+
+Output:
+[1, 1, 2, 1, 0]
+
+Given an array of integers, return a new array where each element in the new
+array is the number of smaller elements to the right of that element in the
+original input array.
+
+The suggestion speed improvement is backwards through the list
+and at each iteration maintain a sorted list of the elements seen
+so far and see where the current elemrnt would fit in.
+
+The place the element would fit into this sorted subset corresponds to the
+number of items that are lower than it.
+
+It involves the use of two functions, bisect.bisect_left() and
+bisect.insort() the first of these gives the index an element
+would be inserted into an array, while the second returns the
+sorted array with the element added.
+
+
+-----------
+Norman Khan
+23/04/2023
