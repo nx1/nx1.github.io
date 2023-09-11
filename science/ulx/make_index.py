@@ -45,7 +45,12 @@ with open('index.html', 'w+') as f:
             authorname = p.author[0].split(',')[0] 
         except TypeError:
             continue
-        line = f'{p.year} - {p.citation_count:<3}- {authorname:<11} - {p.title[0]}'
+        print(p)
+        
+        citation_count = p.citation_count
+        if citation_count == None:
+            citation_count = 0
+        line = f'{p.year} - {citation_count:<3}- {authorname:<11} - {p.title[0]}'
         line = f'<a href="https://ui.adsabs.harvard.edu/abs/{p.bibcode}/abstract">{line}</a>\n'
         f.write(line)
 
