@@ -2,7 +2,7 @@ from time import time
 from datetime import datetime
 import ads
 
-searchterm = 'ULX*'
+searchterm = 'ULX* AND "Ultraluminous X-ray Source"'
 paps = ads.SearchQuery(q=searchterm,
                        sort='year',
                        max_pages=60,
