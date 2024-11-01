@@ -3,6 +3,19 @@
     <title>nx1.info | Creating a realtime Music Visualizer</title>
     <link rel="icon" type="image/x-icon" href="favicon.png">
 	<link rel="stylesheet" type="text/css" href="style.css">
+
+    <style>
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 0px;
+      }
+      .container > div {
+        flex: 0 0 calc(0%);
+        margin-bottom: 0px;
+      }
+    </style>
 </head>
 
 <body>
@@ -17,7 +30,7 @@ in binary. We can see these numbers by using the <a href="https://python-soundfi
 
 read_flac.py
 ------------
-import numpy as np
+<span style="color: cyan;">import numpy as np
 import soundfile as sf
 
 file_path = 'Troya - Schizophrenic.flac'
@@ -25,11 +38,11 @@ data, sample_rate = sf.read(file_path)
 
 print(f'Sample Rate = {sample_rate}')
 for d in data:
-    print(d)
+    print(d)</span>
 ------------
 
 The first few lines of the script produce:
-Sample Rate = 44100
+<span style="color: lime;">Sample Rate = 44100
 [ 0.00665283 -0.00546265]
 [ 0.00637817 -0.00521851]
 [ 0.00628662 -0.00494385]
@@ -41,7 +54,7 @@ Sample Rate = 44100
 [ 0.0062561  -0.00558472]
 [ 0.00613403 -0.00552368]
 [ 0.00601196 -0.00561523]
-[ 0.00582886 -0.00546265]
+[ 0.00582886 -0.00546265]</span>
 
 The left and right columns correspond to signal S(t) the normalized amplitudes (0 < S(t) < 1) of
 the left and right speaker channels.
@@ -62,8 +75,11 @@ data = (data * (2**15)).astype(np.int16)
 and to print the values and their binary representation we can change our print function to:
 print(f'{d} {d[0]:016b} {d[1]:016b}')
 
+
+<div class="container">
+<div>
 This now outputs:
-[ 218 -179] 0000000011011010 -000000010110011
+<span style="color: lime;">[ 218 -179] 0000000011011010 -000000010110011
 [ 209 -171] 0000000011010001 -000000010101011
 [ 206 -162] 0000000011001110 -000000010100010
 [ 216 -164] 0000000011011000 -000000010100100
@@ -77,7 +93,17 @@ This now outputs:
 [ 191 -179] 0000000010111111 -000000010110011
 [ 185 -184] 0000000010111001 -000000010111000
 [ 182 -185] 0000000010110110 -000000010111001
-[ 184 -178] 0000000010111000 -000000010110010
+[ 184 -178] 0000000010111000 -000000010110010</span>
+</div>
+
+<div>
+<img src="samples_2_sec.png" alt="Samples Image">
+</div>
+
+<div>
+<img src="samples_0.3_sec.png" alt="Samples Image">
+</div>
+</div>
 
 A signed 16 bit number allows to hold any integer value plus or minus 2^15=32768 for a total of 2^16=65536 unique values.
 
@@ -99,7 +125,96 @@ Now we know what digital music is, we need to think about how we can use a conti
 of numbers to drive some sort of visualization.
 
 The simplest visualization I can think of, is simply to print the value of the signal for every frame
-as the music plays.
+as the music plays. This involves to things 1. Playing the music, 2. printing the value.
+
+
+<h3>Streaming the Sample Data</h3>
+
+Using pygame, we can have a loop that takes a chunk of samples and performs some operation on it.
+
+In this example I have calculated the fft and mean of a 2**15=32768 sized chunk of audio.
+
+Game runs at 60fps with a average frame time of 17ms.
+
+However since 2**15 samples turns out to be less than a second, so we probably would like to increase this.
+Running at 2**20=1,048,576 (~23secs) we begin to see the frame-rate drop below 60fps to 50 with our 400x400
+output.
+
+10^19 samples gives a average frametime of ~34ms, we'll use this for now.
+
+
+audio_streaming.py
+------------------
+<span style="color: cyan;">import numpy as np
+import pygame, sys
+from pygame.locals import *
+import soundfile as sf
+
+file_path = 'Troya - Schizophrenic.flac'
+data, sample_rate = sf.read(file_path)
+data_T = data.T
+data_int16  = (data * (2**15)).astype(np.int16)
+fft_chunksize = 2**15
+
+pygame.init()
+screen = pygame.display.set_mode((500, 400))
+clock = pygame.time.Clock()
+font      = pygame.font.SysFont(name='consolas', size=15)
+antialias = False
+color     = (255, 255, 255)
+
+while True:
+    t = pygame.time.get_ticks()
+    mspf = clock.tick(60) # Miliseconds per frame
+    fps  = clock.get_fps()
+
+    d = data_int16[t]
+    d_l, d_r = data_T[0], data_T[1]
+
+    chunk_start = t + 10
+    chunk_end   = t + 10 + fft_chunksize
+    chunk       = d_r[chunk_start:chunk_end]
+
+    fft      = np.fft.fft(chunk)
+    fft_mean = np.mean(fft.real)
+
+    screen.fill((0, 0, 0))
+    screen.blit(font.render(f'{mspf}', antialias, color), (50,10))
+    screen.blit(font.render(f'{fps}', antialias, color), (50,30))
+    screen.blit(font.render(f'{t}', antialias, color), (50,50))
+    screen.blit(font.render(f'{d_l[t]:.2f} {d_r[t]:.2f}', antialias, color), (50,70))
+    screen.blit(font.render(f'{d[1]:016b}', antialias, color), (50,90))
+    screen.blit(font.render(f'{d[0]:016b}', antialias, color), (50,110))
+    screen.blit(font.render(f'{chunk_start} - {chunk_end} ({fft_chunksize})', antialias, color), (50,150))
+    screen.blit(font.render(f'{fft_mean:.2f}', antialias, color), (50,170+5*fft_mean))
+
+    v1 = abs(225 * fft_mean)
+    v2 = np.sin(v1)
+
+    pygame.draw.rect(screen, (255,v1,v1), [250, v1, v1, 50], 4)
+    pygame.display.update()</span>
+------------------
+
+
+<h3>Playing the music</h3>
+
+A pygame hello_world.py
+-----------------------
+import pygame, sys
+from pygame.locals import *
+
+pygame.init()
+DISPLAYSURF = pygame.display.set_mode((400, 300))
+pygame.display.set_caption('Hello World!')
+while True: # main game loop
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+    pygame.display.update()
+-----------------------
+
+A Text in the 
 
 
 <h2>The structure of dance music.</h2>
@@ -116,6 +231,45 @@ beat delay           =  1 We know we are 1 beat away from changing the visualiza
 
 if the BPM=134 for example, a 1 beat=134/60=0.44 seconds This means that as long as we can
 do the frame drawing in 0.44 seconds, we can just sync everything up 1 beat behind.
+
+
+BELIEVE IT OR NOT THIS IS A MUSICAL INSTRUMENT...
+LOOK MUM NO COMPUTER
+https://www.youtube.com/watch?v=UcbkyYdV2kE
+
+
+// python
+// User selects sin wave.
+   // 
+   // User selects Acos(kx) 
+
+// Display a circular sine wave
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
