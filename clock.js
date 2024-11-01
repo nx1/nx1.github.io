@@ -48,8 +48,7 @@ function Age(date){
     let birth_date = new Date('1996-03-17T06:00:00.000Z');
     let diff = date - birth_date;
     let years = diff / (365.25*24*60*60*1000)
-    let percentage = (years / 78.6) * 100
-    return '' + years.toFixed(7) + ' (' + percentage.toFixed(7) + '%)'
+    return '' + years.toFixed(6)
 }
 
 currentTime();
