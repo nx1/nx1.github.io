@@ -36,6 +36,6 @@ jobs:
       run: |
         git config --local user.name "github-actions[bot]"
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git add index.html
-        git commit -m "Update index.html via GitHub Actions" || echo "No changes to commit"
+        git add news/index.html
+        git commit -m "Update news/index.html via GitHub Actions" || echo "No changes to commit"
         git push
