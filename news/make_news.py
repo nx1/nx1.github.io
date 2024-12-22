@@ -1,3 +1,4 @@
+import os
 import requests
 from datetime import datetime
 import requests
@@ -9,73 +10,57 @@ rss_feeds = {
     'Google News': 'https://news.google.com/rss',
     'BBC News': 'http://feeds.bbci.co.uk/news/rss.xml',
     'Financial Times (World)': 'https://www.ft.com/world?format=rss',
-    'Financial Times (UK)': 'ft.com/world/uk?format=rss',
+    'Financial Times (UK)': 'https://ft.com/world/uk?format=rss',
     'The New York Times': 'http://feeds.nytimes.com/nyt/rss/Technology',
     'The Guardian': 'https://www.theguardian.com/world/rss',
     'Hacker News': 'https://hnrss.org/frontpage',
     'Arxiv astro-ph.HE': 'https://rss.arxiv.org/rss/astro-ph.HE',
     'Arxiv cs.LG': 'https://rss.arxiv.org/rss/cs.LG',
+    'Arxiv cs.AI': 'https://rss.arxiv.org/rss/cs.AI',
+    'Github Trending (Python)' : 'https://mshibanami.github.io/GitHubTrendingRSS/daily/python.xml',
+    'Github Trending (C)' : 'https://mshibanami.github.io/GitHubTrendingRSS/daily/c.xml',
     'Nature': 'https://www.nature.com/nature.rss',
-    'Reuters': 'http://feeds.reuters.com/reuters/topNews',
     'CNN': 'http://rss.cnn.com/rss/cnn_topstories.rss',
-    'Push Square': 'http://www.pushsquare.com/feeds/latest',
-    'TechCrunch': 'http://feeds.feedburner.com/TechCrunch/',
     'NPR News': 'https://www.npr.org/rss/rss.php?id=1001',
-    'Al Jazeera': 'https://www.aljazeera.com/xml/rss/all.xml',
-    'Reddit r/worldnews': 'https://www.reddit.com/r/worldnews/.rss',
-    'Reddit r/technology': 'https://www.reddit.com/r/technology/.rss',
-    'AP News': 'https://rss.apnews.com/apf-topnews',
-    'Ars Technica': 'http://feeds.arstechnica.com/arstechnica/index',
-    'Wired': 'https://www.wired.com/feed/rss',
-    'NASA Breaking News': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
-    'ESPN': 'https://www.espn.com/espn/rss/news',
-    'XDA Developers': 'https://www.xda-developers.com/feed/',
-    'Lifehacker': 'https://lifehacker.com/rss',
-    'The Verge': 'https://www.theverge.com/rss/index.xml',
-    'Mashable': 'http://feeds.mashable.com/Mashable',
-    'Engadget': 'https://www.engadget.com/rss.xml',
-    'ZDNet': 'https://www.zdnet.com/news/rss.xml',
-    'Slashdot': 'http://rss.slashdot.org/Slashdot/slashdotMain',
-    'Medium Technology': 'https://medium.com/feed/tag/technology',
-    'Bloomberg': 'https://www.bloomberg.com/feed/podcast',
-    'Economist': 'https://www.economist.com/sections/international/rss.xml',
-    'Forbes': 'https://www.forbes.com/real-time/feed2/',
-    'Android Police': 'https://www.androidpolice.com/feed/',
-    'Polygon': 'https://www.polygon.com/rss/index.xml',
-    'Gizmodo': 'https://gizmodo.com/rss',
-    'Eurogamer': 'https://www.eurogamer.net/rss',
-    'Scientific American': 'https://rss.sciam.com/Scientific-American-News',
-    'Space.com': 'https://www.space.com/feeds/all',
-    'Inverse': 'https://www.inverse.com/rss',
-    'Smithsonian Magazine': 'https://www.smithsonianmag.com/rss/',
-    'Kottke.org': 'https://feeds.kottke.org/main',
-    'Boing Boing': 'https://boingboing.net/feed',
-    'Pocket-lint': 'https://www.pocket-lint.com/rss',
-    'CNET': 'https://www.cnet.com/rss/news/',
-    'Digital Trends': 'https://www.digitaltrends.com/feed/',
-    'AppleInsider': 'https://appleinsider.com/rss/news',
-    'MacRumors': 'https://feeds.macrumors.com/MacRumors-All',
-    '9to5Mac': 'https://9to5mac.com/feed/',
-    '9to5Google': 'https://9to5google.com/feed/',
     'The Atlantic': 'https://www.theatlantic.com/feed/all/',
     'Vox': 'https://www.vox.com/rss/index.xml',
-    'Politico': 'https://www.politico.com/rss/politics08.xml',
-    'Science Daily': 'https://www.sciencedaily.com/rss/all.xml'
-}
+    'Al Jazeera': 'https://www.aljazeera.com/xml/rss/all.xml',
+    'Ars Technica': 'http://feeds.arstechnica.com/arstechnica/index',
+    'Slashdot': 'http://rss.slashdot.org/Slashdot/slashdotMain',
+    'Gizmodo': 'https://gizmodo.com/rss',
+    'Smithsonian Magazine': 'https://www.smithsonianmag.com/rss/latest_articles/',
+    'InfoQ' : 'https://feed.infoq.com/',
+    'DistillDynomight': 'https://dynomight.net/feed.xml',
+    'Marginal Revolution': 'https://marginalrevolution.com/feed',
+    'Astral Codex Ten': 'https://astralcodexten.substack.com/feed',
+    'Not Boring': 'https://www.notboring.co/feed',
+    'Coding Horror': 'https://blog.codinghorror.com/rss/',
+    'NASA Breaking News': 'https://www.nasa.gov/rss/dyn/breaking_news.rss',
+    'Quanta Magazine': 'https://api.quantamagazine.org/feed/',
+    'Science Daily': 'https://www.sciencedaily.com/rss/all.xml',
+    'Spaceflight Now':'https://spaceflightnow.com/feed',
+    'Space Daily': 'http://spacedaily.com/spacedaily.xml',
+    'Space News': 'http://spacenews.com/feed',
+    'Martin Fowler': 'https://martinfowler.com/feed.atom',
+    'Python Insider': 'https://feeds.feedburner.com/PythonInsider',
+    'Embedded Artistry': 'https://embeddedartistry.com/feed/',
+    'Attack Magazine': 'https://www.attackmagazine.com/feed/',
+    'DJ TechTools': 'https://djtechtools.com/feed/'
+    }
 
 def read_rss_feed(site_name, url):
     feed = feedparser.parse(url)
     entries = feed.entries
     df = pd.DataFrame(entries)
     df['site_name'] = site_name
-    print(df)
+    print(f'{len(df)} results for {site_name}')
     return df
 
 def rss_df_to_html(df, output_file):
     with open(output_file, 'w') as file:
         file.write('<html>\n')
         file.write('<head>\n')
-        file.write('    <title>nx1.info</title>\n')
+        file.write('    <title>nx1.info | News</title>\n')
         file.write('    <link rel="icon" type="image/x-icon" href="../favicon.png">\n')
         file.write('    <link rel="stylesheet" type="text/css" href="../style.css">\n')
         file.write('</head>\n')
@@ -99,7 +84,7 @@ def rss_df_to_html(df, output_file):
         file.write('</html>\n')
 
 url = 'https://news.google.com/rss'
-output_file = './index.html'
+output_file = os.path.join(os.path.dirname(__file__), 'index.html')
 
 dfs = [read_rss_feed(site_name, url) for site_name, url in rss_feeds.items()]
 df = pd.concat(dfs)
