@@ -30,7 +30,7 @@ rss_feeds = {
     'Gizmodo': 'https://gizmodo.com/rss',
     'Smithsonian Magazine': 'https://www.smithsonianmag.com/rss/latest_articles/',
     'InfoQ' : 'https://feed.infoq.com/',
-    'DistillDynomight': 'https://dynomight.net/feed.xml',
+    'Dynomight': 'https://dynomight.net/feed.xml',
     'Marginal Revolution': 'https://marginalrevolution.com/feed',
     'Astral Codex Ten': 'https://astralcodexten.substack.com/feed',
     'Not Boring': 'https://www.notboring.co/feed',
