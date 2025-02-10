@@ -6,8 +6,6 @@ on:
       - main  # Trigger when pushing to the main branch
   schedule:
     - cron: '0 0 * * *'    # Midnight UTC
-    - cron: '0 8 * * *'    # 8:00 AM UTC
-    - cron: '0 16 * * *'   # 4:00 PM UTC
   workflow_dispatch:  # Add this to enable manual triggering
 
 jobs:
