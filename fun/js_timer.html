@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aligned Timer Log</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+
+</head>
+<body>
+    <pre><div id="log">Initializing...</div></pre>
+
+    <script>
+        let startTime = Date.now();
+        const logElement = document.getElementById('log');
+
+        const timer = setInterval(() => {
+            const elapsed                 = (Date.now() - startTime) / 1000; // Elapsed time in seconds
+
+            // Time series calculations
+            const ts_movingAverage        = elapsed / 2;
+            const ts_exponentialSmoothing = 0.8 * elapsed + 0.2 * (elapsed - 1);
+            const ts_linearTrend          = 2 * elapsed + 5;
+            const ts_seasonalIndex        = Math.sin(elapsed);
+            const ts_cycleLength          = Math.cos(elapsed);
+
+            // Statistical calculations
+            const stat_mean               = elapsed / 2;
+            const stat_stdDev             = Math.sqrt(elapsed);
+
+            // Computer science-related
+            const cs_hash                 = elapsed.toString(36);
+
+            // AI-related
+            const ai_loss                 = 1 / (1 + elapsed);
+            const ai_accuracy             = Math.min(elapsed / 100, 1);
+
+            const logMessage =
+                `Elapsed                 : ${elapsed.toFixed(2)}s\n` +
+                `ts_movingAverage        : ${ts_movingAverage.toFixed(2)}\n` +
+                `ts_exponentialSmoothing : ${ts_exponentialSmoothing.toFixed(2)}\n` +
+                `ts_linearTrend          : ${ts_linearTrend.toFixed(2)}\n` +
+                `ts_seasonalIndex        : ${ts_seasonalIndex.toFixed(2)}\n` +
+                `ts_cycleLength          : ${ts_cycleLength.toFixed(2)}\n` +
+                `stat_mean               : ${stat_mean.toFixed(2)}\n` +
+                `stat_stdDev             : ${stat_stdDev.toFixed(2)}\n` +
+                `cs_hash                 : ${cs_hash}\n` +
+                `ai_loss                 : ${ai_loss.toFixed(2)}\n` +
+                `ai_accuracy             : ${ai_accuracy.toFixed(2)}`;
+
+            logElement.textContent = logMessage;
+        }, 1000);
+
+        // To stop the timer, use: clearInterval(timer);
+    </script>
+</body>
+</html>

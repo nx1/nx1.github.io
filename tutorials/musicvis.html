@@ -1,9 +1,11 @@
 <html>
 <head>
     <title>nx1.info | Creating a realtime Music Visualizer</title>
-    <link rel="icon" type="image/x-icon" href="favicon.png">
-	<link rel="stylesheet" type="text/css" href="style.css">
-
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
     <style>
       .container {
         display: flex;
@@ -23,14 +25,12 @@
 <h1>nx1.info | Creating a realtime Music Visualizer</h1>
 <h2>What is digital music?</h2>
 
-The most popular digital sound formats are the lossless .flac and lossy .mp3.
-
 At the most fundemental level, a digital audio file is simply a series of numbers written
 in binary. We can see these numbers by using the <a href="https://python-soundfile.readthedocs.io/en/0.11.0/">python soundfile library</a> (pip install soundfile).
 
 read_flac.py
 ------------
-<span style="color: cyan;">import numpy as np
+<code class="language-python">import numpy as np
 import soundfile as sf
 
 file_path = 'Troya - Schizophrenic.flac'
@@ -38,10 +38,10 @@ data, sample_rate = sf.read(file_path)
 
 print(f'Sample Rate = {sample_rate}')
 for d in data:
-    print(d)</span>
-------------
+    print(d)</code>
 
-The first few lines of the script produce:
+Output
+------
 <span style="color: lime;">Sample Rate = 44100
 [ 0.00665283 -0.00546265]
 [ 0.00637817 -0.00521851]
@@ -70,10 +70,10 @@ the decimal representation to binary.
 
 to convert the signal float values to 16bit values we do 
 
-data = (data * (2**15)).astype(np.int16)
+<code class="language-python">data = (data * (2**15)).astype(np.int16)</code>
 
 and to print the values and their binary representation we can change our print function to:
-print(f'{d} {d[0]:016b} {d[1]:016b}')
+<code class="language-python">print(f'{d} {d[0]:016b} {d[1]:016b}')</code>
 
 
 <div class="container">
@@ -97,11 +97,11 @@ This now outputs:
 </div>
 
 <div>
-<img src="samples_2_sec.png" alt="Samples Image">
+<img src="samples_2_sec.png" alt="2 Second worth of flac data.">
 </div>
 
 <div>
-<img src="samples_0.3_sec.png" alt="Samples Image">
+<img src="samples_0.3_sec.png" alt="0.3 seconds of flac data.">
 </div>
 </div>
 
@@ -145,7 +145,7 @@ output.
 
 audio_streaming.py
 ------------------
-<span style="color: cyan;">import numpy as np
+<code class='language-python'>import numpy as np
 import pygame, sys
 from pygame.locals import *
 import soundfile as sf
@@ -192,29 +192,7 @@ while True:
     v2 = np.sin(v1)
 
     pygame.draw.rect(screen, (255,v1,v1), [250, v1, v1, 50], 4)
-    pygame.display.update()</span>
-------------------
-
-
-<h3>Playing the music</h3>
-
-A pygame hello_world.py
------------------------
-import pygame, sys
-from pygame.locals import *
-
-pygame.init()
-DISPLAYSURF = pygame.display.set_mode((400, 300))
-pygame.display.set_caption('Hello World!')
-while True: # main game loop
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-    pygame.display.update()
------------------------
-
-A Text in the 
+    pygame.display.update()</code>
 
 
 <h2>The structure of dance music.</h2>
@@ -233,8 +211,7 @@ if the BPM=134 for example, a 1 beat=134/60=0.44 seconds This means that as long
 do the frame drawing in 0.44 seconds, we can just sync everything up 1 beat behind.
 
 
-BELIEVE IT OR NOT THIS IS A MUSICAL INSTRUMENT...
-LOOK MUM NO COMPUTER
+BELIEVE IT OR NOT THIS IS A MUSICAL INSTRUMENT... LOOK MUM NO COMPUTER
 https://www.youtube.com/watch?v=UcbkyYdV2kE
 
 
@@ -260,26 +237,10 @@ https://www.youtube.com/watch?v=UcbkyYdV2kE
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - Norman Khan 2024 (nx1.info)
 <hr>
 <div id="clock" onload="currentTime()"></div>
-<script type="text/javascript" src="clock.js"></script>
+<script type="text/javascript" src="../clock.js"></script>
 </pre>
 </body>
 </html>

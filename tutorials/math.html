@@ -1,0 +1,194 @@
+<html>
+<head>
+    <title>nx1.info</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Formula Sheet</h1>
+<h3>Probability</h3>
+Complementary        Probability (General)                  \( P(A^c) = 1 - P(A) \) <a href="https://en.wikipedia.org/wiki/Complementary_event">Wikipedia</a>              
+Intersection / Joint Probability (General)                  \( P(A \cap B) \) <a href="https://en.wikipedia.org/wiki/Probability">Wikipedia</a>                      
+Independent          Probability (General)                  \( P(A \cap B) = P(A) P(B) \) <a href="https://en.wikipedia.org/wiki/Independence_(probability_theory)">Wikipedia</a>
+Union                Probability (General)                  \( P(A \cup B) = P(A) + P(B) - P(A \cap B) \)
+Conditional          Probability (General)                  \( P(A | B) \) <a href="https://en.wikipedia.org/wiki/Conditional_probability">Wikipedia</a>          
+Marginal             Probability (Law of Total Probability) \( P(A) = \sum_{n} P(A \cap B_{n}) = \sum_{n} P(A | B_n) P(B_n) \) <a href="https://en.wikipedia.org/wiki/Law_of_total_probability">Wikipedia</a>         
+
+Prior Probability                \( P(A) \) <a href="https://en.wikipedia.org/wiki/Prior_probability">Wikipedia</a>                
+Posterior Probability            \( P(A | B) \) <a href="https://en.wikipedia.org/wiki/Posterior_probability">Wikipedia</a>            
+Likelihood Function              \( P(X|\theta) \) 
+Prior Predictive Probability     \( P(X) = \int P(X | \theta) P(\theta) \, d\theta \)
+Posterior Predictive Probability \( P(\tilde{y} | X) = \int P(\tilde{y} | \theta) P(\theta | X) \, d\theta \)
+
+
+Bayesian Update Rule:                                      \( P(\theta | X) \propto P(X | \theta) \cdot P(\theta) \) 
+Marginal Likelihood (Evidence):                            \( P(X)             = \int P(X|\theta) \cdot P(\theta) \, d\theta \) 
+Conjugate Prior Relationship:                              \( \text{Posterior} \propto \text{Prior} \cdot \text{Likelihood} \) 
+Posterior Mean:                                            \( \mathbb{E}[\theta | X] = \int \theta \cdot P(\theta | X) \, d\theta \) 
+Posterior Variance:                                        \( \text{Var}[\theta | X] = \int (\theta - \mathbb{E}[\theta | X])^2 \cdot P(\theta | X) \, d\theta \) 
+Prior Predictive Distribution:                             \( P(X) = \int P(X|\theta) \cdot P(\theta) \, d\theta \) 
+Predictive Distribution (Future Data):                     \( P(\tilde{X} | X) = \int P(\tilde{X} | \theta) \cdot P(\theta | X) \, d\theta \) 
+Jeffreys Prior (for Invariance):                           \( P(\theta) \propto \sqrt{I(\theta)} \), where \( I(\theta) \) is the Fisher information 
+Evidence Lower Bound (ELBO):                               \( \log P(X) \geq \mathbb{E}_q[\log P(X, \theta)] - \mathbb{E}_q[\log q(\theta)] \) 
+Bayesian Model Comparison (Bayes Factor):                  \( \text{BF}_{12} = \frac{P(X|M_1)}{P(X|M_2)} \) 
+Posterior Odds:                                            \( \text{Odds}_{12} = \text{BF}_{12} \cdot \frac{P(M_1)}{P(M_2)} \) 
+Kullback-Leibler Divergence (for Posterior Approximation): \( D_{KL}(q(\theta) \| P(\theta | X)) = \int q(\theta) \log \frac{q(\theta)}{P(\theta | X)} \, d\theta \) 
+<hr>
+
+
+<h3>Possible Outcomes for 2 Events:</h3>
+1 event either can or cannot occur:
+\( A \ \mathrm{or} \ \neg A \)  
+The probability of this is:
+\( P(A) = 1 - P(\neg A) \le 1\)  
+2 events have 4 outcomes (joint probabilities/intersections):
+\( A \cap B \ , \  \neg A \cap B  \ , \ A \cap \neg B  \ , \ \neg A \cap \neg B \)
+The joint probabilities are given by:
+\( P(A \cap B) \ , \  P(\neg A \cap B) \ , \ P(A \cap \neg B) \ , \ P(\neg A \cap \neg B) \)
+
+<h3>Conditional Probability</h3>
+Probability of A given B:  \( P(A | B) \) Conditional probability represents the probability of event A happening under the condition that B has already happened.
+Marginal probability of A: \( P(A) = P(A \cap B) + P(A \cap \neg B) \)
+Marginal probability of B: \( P(B) = P(A \cap B) + P(\neg A \cap B) \)
+<hr>
+<h3>Derivation of Bayes Theorem for Discrete Events</h3>
+Events A & B:
+\( A, \ B \) 
+Priors of A & B:
+\( P(A), \ P(B) \) 
+Joint Probability of A and B:
+\( P(A \cap B) = P(A|B) \cdot P(B) = P(B|A) \cdot P(A) \) 
+Bayes Theorem:
+\( P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)} \)
+<hr>
+<h3>Bayes Theorem Example</h3>
+\( P(D|T) = \frac{P(T|D) \cdot P(D)}{P(T)} \)
+Priors of having a disease & not having a disease:    \( P(D) = 0.01 \ \ \ \ P(\neg D) = 0.99   \) 
+Probability of Testing Positive Given Disease:        \( P(T|D) = 0.95 \) 
+Probability of Testing Positive Given No Disease:     \( P(T|\neg D) = 0.05 \) 
+Total Probability of Testing Positive:                \( P(T) = (0.95 \cdot 0.01) + (0.05 \cdot 0.99) = 0.0095 + 0.0495 = 0.059 \) 
+Posterior Probability of Disease Given Positive Test: \( P(D|T) = \frac{0.95 \cdot 0.01}{0.059} = \frac{0.0095}{0.059} \approx 0.161 \) 
+<hr>
+<h3>Examples of presumably dependent events</h3>
+Having COVID-19                          | Getting a positive test for COVID-19
+Being a smoker                           | Developing lung cancer                                     
+Owning a pet                             | Having pet allergies                                       
+Studying for an exam                     | Getting a high score on the exam                           
+Being a heavy drinker                    | Developing liver disease                                   
+Exercising regularly                     | Maintaining a healthy weight                               
+Eating a high-fat diet                   | Gaining weight                                             
+Taking medication                        | Experiencing side effects                                  
+Applying for a job                       | Getting an interview call                                  
+Having a high credit score               | Being approved for a loan                                  
+Being a teenager                         | Getting acne                                               
+Owning a car                             | Getting into a car accident                                
+Having high cholesterol                  | Developing heart disease                                   
+Smoking regularly                        | Developing a cough                                         
+Reading a lot of books                   | Being knowledgeable on various topics                      
+Traveling abroad                         | Getting a vaccination shot                                 
+Attending university                     | Getting a degree                                           
+Using sunscreen regularly                | Avoiding sunburn                                           
+Running daily                            | Improving stamina                                          
+Owning a dog                             | Developing a strong bond with the pet                      
+Consuming caffeine                       | Feeling energized or jittery                               
+Practicing meditation                    | Reducing stress                                            
+Wearing glasses                          | Improving vision                                           
+Being a morning person                   | Feeling more productive in the morning                     
+Being allergic to pollen                 | Sneezing in the spring                                     
+Detecting a supernova in a galaxy        | Observing a burst of gamma rays                        
+A star being a red giant                 | The star showing a higher luminosity                       
+A planet being in the habitable zone     | The planet having liquid water                      
+A comet passing near Earth               | Observing the comet's tail in the sky                      
+A black hole forming                     | Emitting X-ray radiation                                   
+A particle collider experiment           | Discovering a new subatomic particle                       
+A substance being heated                 | The substance undergoing a phase transition                
+A chemical reaction occurring            | Formation of a new compound                                
+An atom absorbing energy                 | An electron transitioning to a higher energy state         
+A substance being exposed to light       | The substance emitting light (fluorescence)           
+A metal being heated                     | The metal expanding due to thermal expansion               
+A weightlifter training regularly        | Increasing maximal strength                            
+Performing a deadlift                    | Lifting a weight greater than your bodyweight              
+A powerlifter following a strict diet    | Gaining muscle mass                                
+A weightlifter doing squats              | Improving leg strength                                     
+Lifting a heavy load with good form      | Avoiding injury                                      
+A music producer using a synthesizer     | Creating a new melody                               
+A DJ practicing live mixing              | Getting a good crowd response                              
+A music composer writing a score         | Producing a complex musical piece                       
+A musician tuning their instrument       | Achieving the desired pitch                           
+A guitarist practicing scales            | Improving finger dexterity                                 
+A singer rehearsing vocal exercises      | Increasing vocal range                               
+A sound engineer adjusting EQ settings   | Achieving a balanced audio mix                    
+A radio telescope detecting a signal     | Identifying the source of the signal                
+A photon being emitted by an atom        | The atom undergoing an energy transition               
+A scientist conducting an experiment     | Collecting data that supports a hypothesis          
+A mathematician solving an equation      | Deriving a new formula                               
+An experiment being replicated           | The same result being observed                            
+A chemist synthesizing a new compound    | Characterizing the compound's molecular structure  
+A physicist studying gravitational waves | Detecting signals from colliding black holes    
+An astronaut leaving Earth's orbit       | Reaching the International Space Station              
+A planet experiencing high gravity       | The planet having a dense atmosphere                  
+A proton being accelerated in a collider | The proton gaining high velocity                
+<hr>
+
+<hr>
+<h3>3D</h3>
+
+<h4>Cartesian Equations</h4>
+Plane           : \( ax + by + cz + d = 0 \)
+Cube            : \( |x|, |y|, |z| \leq a \)
+Rectangle       : \( |x| \leq a, \ |y| \leq b, \ |z| \leq c \)
+Cylinder        : \( x^2 + y^2 = r^2 \)
+Cone            : \( z^2 = x^2 + y^2 \) (for a right circular cone)
+Sphere          : \( x^2 + y^2 + z^2 = r^2 \)
+Ellipsoid       : \( \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1 \)
+Oblate Spheroid : \( \frac{x^2 + y^2}{a^2} + \frac{z^2}{c^2} = 1 \) (where \( a > c \))
+Torus           : \( (\sqrt{x^2 + y^2} - R)^2 + z^2 = r^2 \) (where \( R \) is the major radius and \( r \) is the minor radius)
+
+Elliptical Cylinder       : \( \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \)  
+Hyperboloid of One Sheet  : \( \frac{x^2}{a^2} + \frac{y^2}{b^2} - \frac{z^2}{c^2} = 1 \)  
+Hyperboloid of Two Sheets : \( -\frac{x^2}{a^2} - \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1 \)  
+Paraboloid (Elliptic)     : \( \frac{x^2}{a^2} + \frac{y^2}{b^2} = z \)  
+Paraboloid (Hyperbolic)   : \( \frac{x^2}{a^2} - \frac{y^2}{b^2} = z \)  
+
+Triangular Prism          : Bounded by planes forming a triangle in the \( xy \)-plane and extruded along \( z \)  
+Rectangular Prism         : \( 0 \leq x \leq a, \ 0 \leq y \leq b, \ 0 \leq z \leq c \)  
+Pyramid                   : \( z = h - \frac{h}{a}|x| - \frac{h}{b}|y| \)  
+
+<h4>Coordinate Systems</h4>
+Polar Coordinates       : \( x = r\cos\theta, \ y = r\sin\theta \)  
+Spherical Coordinates   : \( x = \rho\sin\phi\cos\theta, \ y = \rho\sin\phi\sin\theta, \ z = \rho\cos\phi \)  
+Cylindrical Coordinates : \( x = r\cos\theta, \ y = r\sin\theta, \ z = z \)  
+Parabolic Coordinates   : \( x = \xi\eta, \ y = \frac{1}{2}(\xi^2 - \eta^2), \ z = z \)
+
+<h4>Transformation Functions</h4>
+Translation                 : \( x' = x + t_x, \ y' = y + t_y, \ z' = z + t_z \)  
+Scaling                     : \( x' = sx \cdot x, \ y' = sy \cdot y, \ z' = sz \cdot z \)  
+Reflection (about XY-plane) : \( x' = x, \ y' = y, \ z' = -z \)  
+Reflection (about YZ-plane) : \( x' = -x, \ y' = y, \ z' = z \)  
+Reflection (about XZ-plane) : \( x' = x, \ y' = -y, \ z' = z \)  
+Shear (along X-axis)        : \( x' = x + ky, \ y' = y, \ z' = z \)  
+Shear (along Z-axis)        : \( x' = x, \ y' = y, \ z' = z + kx \)  
+
+Rotation (about Z-axis) : \(\begin{pmatrix} x' \\ y' \\ z' \end{pmatrix} = 
+                            \begin{pmatrix} \cos\theta & -\sin\theta & 0 \\ 
+                                            \sin\theta & \cos\theta  & 0 \\ 
+                                            0          & 0           & 1 \end{pmatrix}
+                            \begin{pmatrix} x \\ y \\ z \end{pmatrix}\)
+
+<h4>Vector Fields and Surfaces</h4>
+Gradient Field            : \( \nabla f = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right) \)  
+Curl of a Vector Field    : \( \nabla \times \mathbf{F} = \left( \frac{\partial F_z}{\partial y} - \frac{\partial F_y}{\partial z}, \frac{\partial F_x}{\partial z} - \frac{\partial F_z}{\partial x}, \frac{\partial F_y}{\partial x} - \frac{\partial F_x}{\partial y} \right) \)  
+Surface of a Helix        : \( x = r\cos\theta, \ y = r\sin\theta, \ z = h\theta \)  
+Surface of a Mobius Strip : \( x = (R + u\cos\frac{\theta}{2})\cos\theta, \ y = (R + u\cos\frac{\theta}{2})\sin\theta, \ z = u\sin\frac{\theta}{2} \)  
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+
+</div>
+
+</body>
+</html>
