@@ -50,7 +50,7 @@ locs = [
 ]
 
 df['is_junior'] = df['title'].str.contains('junior', case=False)
-df['is_senior'] = df['title'].str.contains('senior', case=False)
+df['is_senior'] = df['title'].str.contains('senior|lead|head', case=False)
 
 
 lines = []
@@ -91,7 +91,10 @@ with open('index.html', 'w+') as f:
     f.write('<body>\n')                                                          
     f.write('<pre>\n')                                                           
     f.write('<h1>nx1.info | Jobs</h1>\n\n')                                      
-    f.write(f'Last updated: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n')   
+    f.write(f'Last updated: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n')
+    f.write('<a href="https://www.timeshighereducation.com/unijobs/listings/london-greater-/">University & Academic Jobs in London (Greater)</a>\n')
+    f.write('<a href="https://www.jobs.ac.uk/categories/london-jobs/1">jobs.ac.uk</a>\n')
+    f.write('<a href="https://aas.org/jobregister">AAS Job Register</a>\n')
     f.write('<h2>Data Scientist</h2>\n\n')                                      
     for l in lines:
         f.write(l + '\n')
@@ -99,28 +102,4 @@ with open('index.html', 'w+') as f:
 
 print('File written to: index.html')
 print(df)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
