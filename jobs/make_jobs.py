@@ -13,9 +13,6 @@ print(df.columns)
 'company_description'],                                                 
 """
 
-max_ts = 100# df['title'].str.len().max()
-
-max_company_len = df['company'].str.len().max()
 
 locs = [
     # Core locations
@@ -58,6 +55,19 @@ junior_jobs = []
 senior_jobs = []
 other_jobs = []
 
+max_ts = 75# df['title'].str.len().max()
+max_c = 40#df['company'].str.len().max()
+max_l = 25
+
+def trim_str(string, max_len):
+    if isinstance(string, float):
+        return ''
+    if len(string) > max_len:
+        return string[:max_len - 3] + '...'
+    print(string)
+    return string
+
+
 for i, r in df.iterrows():
     try:
         if not any(l in r["location"] for l in locs):
@@ -66,10 +76,13 @@ for i, r in df.iterrows():
         continue
 
     ts = r["title"]
-    if len(ts) > max_ts:
-        ts = ts[:max_ts - 3] + '...'
+    c  = r["company"]
+    l  = r["location"]
+    ts = trim_str(ts, max_ts)
+    c  = trim_str(c, max_c)
+    l  = trim_str(l, max_l)
 
-    job_line = f'<a href="{r["job_url"]}" style="color: {"green" if r["is_junior"] else "red" if r["is_senior"] else "white"};">{ts:<{max_ts}} {r["company"]:<70} {r["location"]:<40} {r["site"]}</a>'
+    job_line = f'<a href="{r["job_url"]}" style="color: {"green" if r["is_junior"] else "red" if r["is_senior"] else "white"};">{ts:<{max_ts}} {c:<{max_c}} {l:<{max_l}} {r["field"]:<20}{r["site"]}</a>'
 
     if r["is_junior"]:
         junior_jobs.append(job_line)
@@ -84,21 +97,26 @@ lines = junior_jobs + other_jobs + senior_jobs
 with open('index.html', 'w+') as f:
     f.write('<html>\n')                                                          
     f.write('<head>\n')                                                          
-    f.write('    <title>nx1.info | News</title>\n')                              
-    f.write('    <link rel="icon" type="image/x-icon" href="../favicon.png">\n') 
-    f.write('    <link rel="stylesheet" type="text/css" href="../style.css">\n') 
+    f.write('<title>nx1.info | Jobs</title>\n')                              
+    f.write('<link rel="icon" type="image/x-icon" href="../favicon.png">\n') 
+    f.write('<link rel="stylesheet" type="text/css" href="../style.css">\n') 
     f.write('</head>\n')                                                         
     f.write('<body>\n')                                                          
     f.write('<pre>\n')                                                           
     f.write('<h1>nx1.info | Jobs</h1>\n\n')                                      
     f.write(f'Last updated: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n')
+    f.write('<h3>Jobs:</h3>\n')                                                           
     f.write('<a href="https://www.timeshighereducation.com/unijobs/listings/london-greater-/">University & Academic Jobs in London (Greater)</a>\n')
     f.write('<a href="https://www.jobs.ac.uk/categories/london-jobs/1">jobs.ac.uk</a>\n')
     f.write('<a href="https://aas.org/jobregister">AAS Job Register</a>\n')
-    f.write('<h2>Data Scientist</h2>\n\n')                                      
     for l in lines:
         f.write(l + '\n')
-    f.write('</pre>\n</body>\n</html>')
+    f.write('<hr>\n')
+    f.write('<div id="clock" onload="currentTime()"></div>\n')
+    f.write('<script type="text/javascript" src="../clock.js"></script>\n')
+    f.write('</pre>\n')
+    f.write('</body>\n')
+    f.write('</html>\n')
 
 print('File written to: index.html')
 print(df)
