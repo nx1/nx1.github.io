@@ -64,7 +64,6 @@ def trim_str(string, max_len):
         return ''
     if len(string) > max_len:
         return string[:max_len - 3] + '...'
-    print(string)
     return string
 
 
@@ -105,10 +104,12 @@ with open('index.html', 'w+') as f:
     f.write('<pre>\n')                                                           
     f.write('<h1>nx1.info | Jobs</h1>\n\n')                                      
     f.write(f'Last updated: {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}\n')
-    f.write('<h3>Jobs:</h3>\n')                                                           
     f.write('<a href="https://www.timeshighereducation.com/unijobs/listings/london-greater-/">University & Academic Jobs in London (Greater)</a>\n')
     f.write('<a href="https://www.jobs.ac.uk/categories/london-jobs/1">jobs.ac.uk</a>\n')
     f.write('<a href="https://aas.org/jobregister">AAS Job Register</a>\n')
+    f.write('<a href="https://app.welcometothejungle.com/">WTTJ</a>\n')
+    f.write('<a href="https://www.unlistedjobs.com/">Unlisted Jobs</a>\n')
+    f.write('<h3>Jobs:</h3>\n')                                                           
     for l in lines:
         f.write(l + '\n')
     f.write('<hr>\n')

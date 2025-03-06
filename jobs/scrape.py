@@ -32,7 +32,7 @@ df2 = scrape_jobs(
     # proxies=["208.195.175.46:65095", "208.195.175.45:65095", "localhost"],
 )
 
-df2.to_csv('jobs1.csv')
+df2.to_csv('jobs2.csv')
 
 df3 = scrape_jobs(
     site_name=["indeed", "linkedin", "glassdoor", "google"],
@@ -48,7 +48,7 @@ df3 = scrape_jobs(
     # proxies=["208.195.175.46:65095", "208.195.175.45:65095", "localhost"],
 )
 
-df3.to_csv('jobs1.csv')
+df3.to_csv('jobs3.csv')
 
 
 df1['field'] = 'Data Scientist'
