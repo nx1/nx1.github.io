@@ -1,0 +1,342 @@
+<html>
+<head>
+    <title>nx1.info | OOP Notes</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Practical Object-Oriented Design in Python</h1>
+
+These are notes from the book Practical Object-Oriented Design in Ruby that I
+have adapted into Python.
+
+<h2>Table of Contents (click to jump)</h2>
+
+<a href="#chap1">1. Object-Oriented Design</a>
+<a href="#chap2">2. Designing Classes with a Single Responsibility</a>
+   - Deciding What Belongs in a Class
+   - Grouping Methods into Classes
+   - Organizing Code to Allow for Easy Changes
+   <a href="#srp">- Creating Classes That Have a Single Responsibility</a>
+   - An Example Application: Bicycles and Gears
+   - Why Single Responsibility Matters
+   - Determining If a Class Has a Single Responsibility
+   - Determining When to Make Design Decisions
+   - Writing Code That Embraces Change
+     - Depend on Behavior, Not Data
+     - Enforce Single Responsibility Everywhere
+   - Finally, the Real Wheel
+   - Summary
+3. Managing Dependencies
+   - Understanding Dependencies
+   - Recognizing Dependencies
+     - Coupling Between Objects (CBO)
+     - Other Dependencies
+   - Writing Loosely Coupled Code
+     - Inject Dependencies
+     - Isolate Dependencies
+     - Remove Argument-Order Dependencies
+   - Managing Dependency Direction
+     - Reversing Dependencies
+     - Choosing Dependency Direction
+   - Summary
+4. Creating Flexible Interfaces
+   - Understanding Interfaces
+   - Defining Interfaces
+     - Public Interfaces
+     - Private Interfaces
+   - Responsibilities, Dependencies, and Interfaces
+   - Finding the Public Interface
+   - An Example Application: Bicycle Touring Company
+     - Constructing an Intention
+     - Using Sequence Diagrams
+     - Asking for “What” Instead of Telling “How”
+     - Seeking Context Independence
+     - Trusting Other Objects
+     - Using Messages to Discover Objects
+     - Creating a Message-Based Application
+   - Writing Code That Puts Its Best (Inter)Face Forward
+     - Create Explicit Interfaces
+     - Honor the Public Interfaces of Others
+     - Exercise Caution When Depending on Private Interfaces
+     - Minimize Context
+   - The Law of Demeter
+     - Defining Demeter
+     - Consequences of Violations
+     - Avoiding Violations
+     - Listening to Demeter
+   - Summary
+5. Reducing Costs with Duck Typing
+   - Understanding Duck Typing
+   - Overlooking the Duck
+   - Compounding the Problem
+   - Finding the Duck
+   - Consequences of Duck Typing
+   - Writing Code That Relies on Ducks
+     - Recognizing Hidden Ducks
+     - Placing Trust in Your Ducks
+     - Documenting Duck Types
+     - Sharing Code Between Ducks
+     - Choosing Your Ducks Wisely
+   - Conquering a Fear of Duck Typing
+   - Subverting Duck Types with Static Typing
+     - Static versus Dynamic Typing
+     - Embracing Dynamic Typing
+   - Summary
+6. Acquiring Behavior Through Inheritance
+   - Understanding Classical Inheritance
+   - Recognizing Where to Use Inheritance
+     - Starting with a Concrete Class
+     - Embedding Multiple Types
+     - Finding the Embedded Types
+   - Choosing Inheritance
+   - Drawing Inheritance Relationships
+   - Misapplying Inheritance
+   - Finding the Abstraction
+   - Creating an Abstract Superclass
+     - Promoting Abstract Behavior
+     - Separating Abstract from Concrete
+   - Using the Template Method Pattern
+     - Implementing Every Template Method
+   - Managing Coupling Between Superclasses and Subclasses
+     - Understanding Coupling
+     - Decoupling Subclasses Using Hook Messages
+   - Summary
+7. Sharing Role Behavior with Modules
+   - Understanding Roles
+   - Finding Roles
+   - Organizing Responsibilities
+   - Removing Unnecessary Dependencies
+   - Writing the Concrete Code
+   - Extracting the Abstraction
+   - Looking Up Methods
+   - Inheriting Role Behavior
+     - Writing Inheritable Code
+     - Recognize the Antipatterns
+     - Insist on the Abstraction
+     - Honor the Contract
+8. Testing
+   - Testing Private Methods
+     - Ignoring Private Methods During Tests
+     - Removing Private Methods from the Class Under Test
+     - Choosing to Test a Private Method
+   - Testing Outgoing Messages
+     - Ignoring Query Messages
+     - Proving Command Messages
+   - Testing Duck Types
+   - Testing Roles
+     - Using Role Tests to Validate Doubles
+   - Testing Inherited Code
+     - Specifying the Inherited Interface
+     - Specifying Subclass Responsibilities
+     - Testing Unique Behavior
+   - Summary
+
+<h2 id="chap1">Chapter 1: Object-oriented design (OOD)</h2>
+
+While procedural programming follows a fixed sequence of steps, OOD models the
+world as interacting objects with independent behaviors. This enables emergent
+behavior without explicitly coding every scenario. OOD requires shifting
+perspective from procedures to message-passing between objects. 
+
+Software exists to fulfill a purpose, and efficient, enjoyable programming
+aligns with cost-effective development. Object-oriented design (OOD) addresses
+both technical and moral challenges by making code flexible and maintainable.
+While a perfectly static application wouldn't require design, real-world
+software inevitably changes. Changing requirements introduce challenges akin to
+friction and gravity, making adaptability crucial. Well-designed applications
+are easy to modify and extend, while rigid ones become costly and frustrating
+to maintain.
+
+Change is difficult because object-oriented applications consist of
+interconnected parts that depend on each other. Dependencies make objects
+resistant to modification, causing small changes to ripple unpredictably
+through the system. Poorly managed dependencies lead to inflexible,
+hard-to-test, and duplicated code. While bad design in small applications may
+be manageable, as they grow, they become fragile and difficult to maintain.
+Good design minimizes dependencies, making code easier to change, reuse, and
+test.
+
+Design is the arrangement of code within an application, and it varies between
+programmers like an art form. Good design balances immediate functionality with
+future adaptability, as the cost of change will eventually surpass initial
+development costs. Practical design does not try to predict specific future
+requirements but instead keeps options open. Its main purpose is to make future
+design possible and reduce the cost of change.
+
+Design is both an art and a science. While every programmer arranges code
+differently, good design follows established principles that reduce the cost of
+change and keep future options open. The SOLID principles, DRY, and the Law of
+Demeter emerged from experience, but their effectiveness was later confirmed
+through empirical research. Early studies measured object-oriented design
+metrics in small applications, and later studies—such as those analyzing NASA
+software—validated that well-designed code correlates with higher quality and
+lower costs. Ultimately, good design isn't just opinion; it has measurable
+benefits.
+
+The Gang of Four (GoF) formalized common solutions to recurring design
+problems, making software more modular, reusable, and understandable. Patterns
+provide a shared language for developers, improving communication and
+collaboration. However, misuse—applying patterns to the wrong problems—can lead
+to overly complex code. While this book does not focus on patterns, it aims to
+equip readers with the foundational knowledge needed to understand and apply
+them effectively.
+
+While object-oriented design (OOD) principles and patterns provide a strong
+foundation, applying them effectively remains a challenge. Design is not just
+about knowing the right principles—it requires skill, experience, and judgment.
+The analogy to woodworking highlights that having good tools doesn’t guarantee
+good results; mastery comes from practice. Well-designed software, like
+well-crafted furniture, depends on the expertise of the creator.
+
+ways design fails:
+
+    Lack of Design:
+    Beginners can write working applications without understanding design
+    principles, but these applications become difficult to modify over time.
+    Early ease leads to long-term frustration as changes break everything.
+
+    Overdesign:
+    Intermediate programmers, excited by their newfound knowledge, overapply
+    principles and patterns, creating rigid, overly complex systems. Instead of
+    allowing for flexibility, their designs become barriers to change.
+
+    Disconnected Design:
+    When design is separated from programming, often in rigid top-down
+    approaches, it fails to evolve with real-world needs. Without iterative
+    feedback, initial misunderstandings become baked into the system, leading
+    to impractical implementations.
+
+
+The key takeaway is that good design is iterative and must evolve alongside
+development. Agile methodologies align well with this approach, ensuring that
+design remains adaptable and responsive to real-world changes.
+
+Good software design isn't about writing the most code or following arbitrary
+metrics—it’s about ``minimizing the long-term cost of change'' while delivering
+features in a reasonable timeframe.
+
+<h2 id="chap2">Chapter 2: Designing Classes with a Single Responsibility</h2>
+
+Common Questions in Class Design:
+   - How many classes should there be?
+   - What behavior should they implement?
+   - How much should one class know about others?
+   - How much should a class expose of itself to the outside world?
+
+Simplicity is Key:
+   - In the early stages, the goal is to keep things simple.
+   - The application should work but also be easy to change later.  
+   - Immediate functionality can be achieved through brute force,
+     but ease of change is more challenging and requires thoughtful design.  
+   - Easy changeability is what separates good programming from functional programming.
+     It involves skill, experience, and a bit of creativity.
+
+Creating Easy-to-Change Applications:
+   - Making an application easy to change requires knowledge of design
+     principles that promote flexibility and maintainability.
+   - By understanding and applying them, one can structure classes to be both
+     functional now and flexible in the future.
+
+
+Deciding What Belongs in a Class:
+
+When designing an object-oriented application, one is faced with the
+challenge of deciding what should belong in each class. 
+
+While the implementation of the application might be clear, the organizational
+structure is what often proves difficult.
+
+The focus on grouping methods into classes and making these decisions in a
+way that allows for future flexibility.
+
+Grouping Methods into Classes:
+
+- The classes defined will shape how you and others perceive and interact with
+  the code. They set the boundaries for how functionality is structured, and they
+  can potentially constrain future development.
+
+- Perfect organization isn’t expected at the start. Design is a balance between
+  the current needs and the potential future changes.
+
+- Preserving flexibility is more critical than achieving a perfect structure at
+  the outset. Good design allows for easy changesin the future, even when initial
+  choices are inevitably wrong.
+
+Organizing Code for Easy Changes:
+The goal is to create code that is easy to change when needed.
+
+Easy to change means:
+- No unexpected side effects from changes
+- Small changes lead to proportionally small code modifications
+- Code is reusable in new contexts
+- The easiest way to change code is to add new code that is also easy to change
+
+The mnemonic TRUE (Transparent, Reasonable, Usable, Exemplary):
+
+  Transparent: The consequences of any change should be clear both in the code
+  that is changing and in the code that relies on it.
+
+  Reasonable: The cost of any change should be proportional to the benefit it
+  provides. Avoid over-engineering or making changes that are costly without
+  significant advantages.
+
+  Usable: Existing code should be adaptable and usable in unexpected or new
+  contexts without requiring significant rewrites.
+
+  Exemplary: The code should encourage future developers to maintain these
+  qualities, making it easy to modify in the future.
+
+
+#### **Key Takeaway**
+The first step towards creating a **TRUE** codebase is to ensure that **each class has a single, well-defined responsibility**. This is foundational for both current functionality and future flexibility. By adhering to this principle, you can make your design more **flexible** and **easy to change** as the project evolves.
+
+<h3 id="srp">Creating Classes That Have a Single Responsibility</h3>
+
+On a bicycle, the gear ratio is:
+<pre><code class="language-python">gear_ratio = N_chainring / N_cog</code></pre>
+Nouns like "bicycle" and "gear" are candidates for classes, but while "bicycle"
+lacks specific behavior, "gear" involves data and behavior (chainrings, cogs,
+and ratios), making it suitable for a class.
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog):
+        self.chainring = chainring
+        self.cog = cog
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+
+print(Gear(52, 11).ratio()) # 4.72727272727273
+print(Gear(30, 27).ratio()) # 1.11111111111111
+</code></pre>
+
+Your cyclist friend requests an enhancement to the Gear calculator. She has two
+bikes with the same gearing but different wheel sizes, and wants to account for
+the impact of wheel size on the calculation. Larger wheels cover more distance
+with each rotation compared to smaller ones. To address this, you need to
+calculate "gear inches," which combines both the gear ratio and wheel size
+using the formula:
+
+**gear inches = wheel diameter * gear ratio**
+
+Where:
+- **wheel diameter = rim diameter + twice the tire diameter**. 
+
+This allows cyclists to compare bikes with different wheel sizes based on their
+gearing and wheel size together.
+
+
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+
+</div>
+</body>
+</html>
