@@ -316,20 +316,42 @@ print(Gear(52, 11).ratio()) # 4.72727272727273
 print(Gear(30, 27).ratio()) # 1.11111111111111
 </code></pre>
 
-Your cyclist friend requests an enhancement to the Gear calculator. She has two
-bikes with the same gearing but different wheel sizes, and wants to account for
-the impact of wheel size on the calculation. Larger wheels cover more distance
-with each rotation compared to smaller ones. To address this, you need to
-calculate "gear inches," which combines both the gear ratio and wheel size
-using the formula:
+Your cyclist friend requests an enhancement to the Gear calculator.
 
-**gear inches = wheel diameter * gear ratio**
+She has two bikes with the same gearing but different wheel sizes, and wants to
+account for the impact of wheel size on the calculation. Larger wheels cover
+more distance with each rotation compared to smaller ones. To address this, you
+need to calculate "gear inches" which combines both the gear ratio and wheel
+size using the formula:
 
+$$ \mathrm{gear \ inches} = D_{\mathrm{wheel}} \times \mathrm{gear \ ratio} $$
 Where:
-- **wheel diameter = rim diameter + twice the tire diameter**. 
-
+$$ D_{\mathrm{wheel}} = D_{\mathrm{rim}} + 2 D_{\mathrm{tire}}$$
 This allows cyclists to compare bikes with different wheel sizes based on their
 gearing and wheel size together.
+
+We can change the gear class to add this behavior:
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog, rim, tire):
+        self.chainring = chainring
+        self.cog = cog
+        self.rim = rim
+        self.tire = tire
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+
+    def gear_inches(self):
+        return self.ratio() * (self.rim + (2*self.tire))
+
+print(Gear(52, 11, 26, 1.5).gear_inches()) # 137.1
+print(Gear(30, 27, 24, 1.25).gear_inches()) # 125.2
+</code></pre>
+
+
+
+
+
 
 
 
