@@ -32,7 +32,7 @@ have adapted into Python.
    - Determining When to Make Design Decisions
    - Writing Code That Embraces Change
      - Depend on Behavior, Not Data
-     - Enforce Single Responsibility Everywhere
+     <a href="#srp_everywhere">- Enforce Single Responsibility Everywhere</a>
    - Finally, the Real Wheel
    - Summary
 3. Managing Dependencies
@@ -345,28 +345,244 @@ We can change the gear class to add this behavior:
 print(Gear(52, 11, 26, 1.5).gear_inches()) # 137.1
 print(Gear(30, 27, 24, 1.25).gear_inches()) # 125.2
 </code></pre>
-
-
-Writing Code That Embraces Change
-
+Writing Code That Embraces Change:
 1. Depend on Behavior, Not Data
-
-    Encapsulate behavior in methods instead of directly accessing data. Follow
-    the DRY (Don't Repeat Yourself) principle—ensure each behavior exists in
-    only one place. This makes changes easier since modifying a single method
-    updates behavior everywhere it's used.
-
-    Behavior exists in methods and is triggered by messages.
-
-    Single-responsibility classes ensure each piece of behavior has one authoritative location.
-
-    "Don't Repeat Yourself" (DRY) principle: Changes to behavior should only require modifications in one place.
+ - Encapsulate behavior in methods instead of directly accessing data.
+   DRY (Don't Repeat Yourself) to ensure each behavior exists in only one place.
+ - This makes changes easier since modifying a single method updates behavior
+   everywhere it's used.
+ - Behavior exists in methods and is triggered by messages.
+ - Single-responsibility classes ensure each piece of behavior has one
+   authoritative location.
 
 2. Hide Instance Variables
+ - Instead of referring directly to instance variables, wrap them in accessor
+   methods.
+ - In Python this is usually done using the @property decorator.
+   and private attributes proceeeded by an underscore.
+<pre><code class="language-python">class Gear:
+def __init__(self, chainring, cog, adjustment_factor=1):
+    self._chainring = chainring
+    self._cog = cog
+    self._adjustment_factor = adjustment_factor
 
-    Instead of referring directly to instance variables, wrap them in accessor
-    methods. Example of bad practice:
+@property
+def cog(self):
+    return self._cog * self._adjustment_factor  # Now cog is dynamic
 
+def ratio(self):
+        return self._chainring / float(self.cog)  # Uses encapsulated property
+</code></pre>
+This may seem pointless, however, implementing this method changes cog from
+data (which is referenced all over) to behavior (which is defined once). If the
+_cog instance variable is referred to ten times and it suddenly needs to be
+adjusted, the code will need many changes. However, if _cog is wrapped in a
+method, you can change what cog means by implementing your own version of the
+method. 
+
+Dealing with data as if it’s an object that understands messages introduces two
+new issues:
+
+1. Visibility:
+Wrapping the _cog instance variable in a public cog method
+exposes this variable to the other objects in your application; any other
+object can now send cog to a Gear. It would have been just as easy to create a
+private wrapping method, although in python there is no explicit private
+methods, they are often indicated by proceeding underscores _ . Although
+thinking about this this is not really an issue in python since attributes in
+classes can be freely accessed by externally.
+
+2. Because it’s possible to wrap every instance variable in a method and to
+therefore treat any variable as if it’s just another object, the distinction
+between data and a regular object begins to disappear. While it’s sometimes
+expedient to think of parts of your application as behavior-less data, most
+things are better thought of as plain old objects. Regardless of how far your
+thoughts move in this direction, you should hide data from yourself. Doing so
+protects the code from being affected by unexpected changes. Data very often
+has behavior that you don’t yet know about. Send messages to access variables,
+even if you think of them as data.
+
+<h3>Hide Data Structures</h3>
+This principle applies directly to Python, and the equivalent approach would
+involve encapsulation and creating structured objects instead of relying
+on nested data structures.
+
+Bad Approach: Exposing a Raw Data Structure
+<pre><code class="language-python">class ObscuringReferences:
+    def __init__(self, data):
+        self.data = data  # Stores a 2D array
+
+    def diameters(self):
+        # Hardcoded knowledge of the structure (BAD)
+        return [cell[0] + (cell[1] * 2) for cell in self.data]
+    
+# Example usage 
+data = [[622, 20], [622, 23], [559, 30], [559, 40]]
+obscure = ObscuringReferences(data)
+print(obscure.diameters())  # [662, 668, 619, 639]
+</code></pre>
+Why is this bad?
+- `diameters()` directly references the structure of `data`.
+   If `data` changes, this method (and others) will break.
+- If other methods also depend on `cell[0]` and `cell[1]`,
+  this structure is duplicated across the class.
+- Hard-to-maintain: If `data` changes (e.g., from lists to dictionaries),
+  you have to update every reference.
+
+Good Approach: Encapsulate the Data in Objects
+
+Instead of exposing raw arrays, we encapsulate the structure in a `Wheel`
+class, similar to the Ruby `Struct`.
+<pre><code class="language-python">from collections import namedtuple
+
+class RevealingReferences:
+    Wheel = namedtuple('Wheel', ['rim', 'tire'])  # Struct-like object
+
+    def __init__(self, data):
+        self.wheels = self._wheelify(data)  # Convert raw data to structured objects
+
+    def _wheelify(self, data):
+        """Convert list of lists into list of Wheel objects"""
+        return [self.Wheel(rim, tire) for rim, tire in data]
+
+    def diameters(self):
+        """Compute diameters using structured data"""
+        return [wheel.rim + (wheel.tire * 2) for wheel in self.wheels]
+
+# Example usage:
+data = [[622, 20], [622, 23], [559, 30], [559, 40]]
+revealed = RevealingReferences(data)
+print(revealed.diameters())  # [662, 668, 619, 639]
+</code></pre>
+Why is this better?
+- `diameters()` no longer cares about the internal structure of the data.
+- Instead of `cell[0]`, we use `wheel.rim`, making the code more readable and less error-prone.
+- `_wheelify()` isolates the transformation logic.
+  If the input format changes, you only modify this one method.
+
+Even Better: Use a Proper Class Instead of `namedtuple`
+If `Wheel` needs more behavior, we can use a class instead of `namedtuple`:
+
+<pre><code class="language-python">class Wheel:
+    def __init__(self, rim, tire):
+        self.rim = rim
+        self.tire = tire
+
+    def diameter(self):
+        return self.rim + (self.tire * 2)
+
+class RevealingReferences:
+    def __init__(self, data):
+        self.wheels = self._wheelify(data)
+
+    def _wheelify(self, data):
+        return [Wheel(rim, tire) for rim, tire in data]
+
+    def diameters(self):
+        return [wheel.diameter() for wheel in self.wheels]
+
+# Example usage:
+data = [[622, 20], [622, 23], [559, 30], [559, 40]]
+revealed = RevealingReferences(data)
+print(revealed.diameters())  # [662, 668, 619, 639]
+</code></pre>
+Benefits of using a full class:
+- The logic of `diameter()` belongs inside `Wheel`,
+  making `RevealingReferences` even simpler.
+- If `Wheel` later needs more behavior (e.g., weight calculations),
+  it can be added without modifying `RevealingReferences`.
+
+Takeaways:
+ - Don't expose raw data structures. Convert them into meaningful objects.  
+ - Encapsulate transformation logic.
+   Use a method like `_wheelify()` to isolate messy data.  
+ - Use namedtuples or classes to replace nested data structures.
+ - Make behavior belong to the object.
+   The `diameter()` method should be in `Wheel`, not in `RevealingReferences`.
+
+<h2 id="srp_everywhere">Enforce Single Responsibility Everywhere</h2>
+Designing classes with a single responsibility improves maintainability, but
+the same principle applies beyond class design—it should be used throughout
+your code.  
+
+Extract Extra Responsibilities from Methods:
+
+Just like classes, methods should also have a single responsibility. This makes
+them easier to modify and reuse. You can apply the same design techniques—ask
+what the method does and try to summarize its responsibility in one sentence.  
+
+Consider the `diameters` method in a `RevealingReferences` class:
+
+<pre><code class="language-python">def diameters(self):
+    return [wheel.rim + (wheel.tire * 2) for wheel in self.wheels]
+</code></pre>
+This method has two responsibilities:
+1. iterating over `self.wheels`
+2. calculating the diameter of each wheel.  
+
+To simplify the code, separate these responsibilities into distinct
+methods. The refactored version moves the diameter calculation to its
+own method:
+<pre><code class="language-python">def diameters(self): 
+    return [self.diameter(wheel) for wheel in self.wheels] 
+
+def diameter(self, wheel):
+    return wheel.rim + (wheel.tire * 2)
+</code></pre>
+Would you ever need to calculate the diameter of just one wheel? You
+already do! This refactoring isn’t overengineering it simply makes the
+code cleaner and easier to use elsewhere.  
+
+<h2>Identifying Hidden Responsibilities</h2>
+Separating iteration from the action performed on each element is an
+easy-to-spot case of multiple responsibilities. However, sometimes the
+issue is more subtle.  
+
+Take the `gear_inches` method from a `Gear` class:  
+<pre><code class="language-python">def gear_inches(self):
+    return self.ratio * (self.rim + (self.tire * 2))
+</code></pre>
+Does `gear_inches` belong in `Gear`? It might seem reasonable at
+first, but something about it feels wrong—it’s messy and unclear.
+The real issue is that it does more than one thing.  
+
+Hidden inside `gear_inches` is the calculation for wheel diameter.
+Extracting that logic into a separate method makes the class's
+responsibilities clearer:
+<pre><code class="language-python">def gear_inches(self):
+    return self.ratio * self.diameter()
+
+def diameter(self):
+    return self.rim + (self.tire * 2)
+</code></pre>
+Now, `gear_inches` simply retrieves the diameter instead of computing
+it. The logic remains unchanged, but the structure is far better.  
+
+Even when you aren’t sure about the final design, these refactorings
+help. Good practices don’t require knowing the end goal—they help
+reveal it.  
+
+The benefits of single-responsibility methods include:
+
+- Making hidden design flaws obvious – Refactoring methods to have a
+  single responsibility clarifies what a class actually does. Even if
+  you don’t move methods into different classes right away, making their
+  purpose explicit helps future design decisions.  
+
+- Reducing the need for comments – Comments often become outdated, as they
+  aren’t executable. If a method requires a comment to explain what part of it
+  does, extract that part into a separate method instead. The method name now
+  conveys the meaning.  
+
+- Encouraging reuse – Small methods naturally lead to reusable code. Other
+  developers (or your future self) will reuse methods instead of duplicating
+  logic, reinforcing good coding habits.  
+
+- Making code easier to refactor – When design changes arise, small methods are
+  easier to move between classes, reducing the effort needed to restructure code.  
+
+While each individual refactoring may seem small, their combined impact results
+in cleaner, more maintainable code.
 
 
 
