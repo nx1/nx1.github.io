@@ -16,6 +16,8 @@
 These are notes from the book Practical Object-Oriented Design in Ruby that I
 have adapted into Python.
 
+<a href="https://www.r-5.org/files/books/computers/dev-teams/diagrams/Sandi_Metz-Practical_Object-Oriented_Design_in_Ruby-EN.pdf">https://www.r-5.org/files/books/computers/dev-teams/diagrams/Sandi_Metz-Practical_Object-Oriented_Design_in_Ruby-EN.pdf</a>
+
 <h2>Table of Contents (click to jump)</h2>
 
 <a href="#chap1">1. Object-Oriented Design</a>
@@ -293,10 +295,6 @@ The mnemonic TRUE (Transparent, Reasonable, Usable, Exemplary):
   Exemplary: The code should encourage future developers to maintain these
   qualities, making it easy to modify in the future.
 
-
-#### **Key Takeaway**
-The first step towards creating a **TRUE** codebase is to ensure that **each class has a single, well-defined responsibility**. This is foundational for both current functionality and future flexibility. By adhering to this principle, you can make your design more **flexible** and **easy to change** as the project evolves.
-
 <h3 id="srp">Creating Classes That Have a Single Responsibility</h3>
 
 On a bicycle, the gear ratio is:
@@ -349,7 +347,25 @@ print(Gear(30, 27, 24, 1.25).gear_inches()) # 125.2
 </code></pre>
 
 
+Writing Code That Embraces Change
 
+1. Depend on Behavior, Not Data
+
+    Encapsulate behavior in methods instead of directly accessing data. Follow
+    the DRY (Don't Repeat Yourself) principle—ensure each behavior exists in
+    only one place. This makes changes easier since modifying a single method
+    updates behavior everywhere it's used.
+
+    Behavior exists in methods and is triggered by messages.
+
+    Single-responsibility classes ensure each piece of behavior has one authoritative location.
+
+    "Don't Repeat Yourself" (DRY) principle: Changes to behavior should only require modifications in one place.
+
+2. Hide Instance Variables
+
+    Instead of referring directly to instance variables, wrap them in accessor
+    methods. Example of bad practice:
 
 
 
