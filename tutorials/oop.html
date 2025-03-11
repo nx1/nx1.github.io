@@ -11,13 +11,10 @@
 
 <body>
 <div style="font-family: monospace; white-space: pre;">
-<h1>nx1.info | Practical Object-Oriented Design in Python</h1>
+<h1>nx1.info | Object-Oriented Design in Python</h1>
 
 These are notes from the book Practical Object-Oriented Design in Ruby that I
-have adapted into Python.
-
-<a href="https://www.r-5.org/files/books/computers/dev-teams/diagrams/Sandi_Metz-Practical_Object-Oriented_Design_in_Ruby-EN.pdf">https://www.r-5.org/files/books/computers/dev-teams/diagrams/Sandi_Metz-Practical_Object-Oriented_Design_in_Ruby-EN.pdf</a>
-
+have adapted into Python. | <a href="https://www.r-5.org/files/books/computers/dev-teams/diagrams/Sandi_Metz-Practical_Object-Oriented_Design_in_Ruby-EN.pdf">(link)</a> | <a href="https://www.r-5.org/files/books/">(More books r-5.org)</a>
 <h2>Table of Contents (click to jump)</h2>
 
 <a href="#chap1">1. Object-Oriented Design</a>
@@ -33,9 +30,9 @@ have adapted into Python.
    - Writing Code That Embraces Change
      - Depend on Behavior, Not Data
      <a href="#srp_everywhere">- Enforce Single Responsibility Everywhere</a>
-   - Finally, the Real Wheel
+   <a href="#real_wheel">- Finally, the Real Wheel</a>
    - Summary
-3. Managing Dependencies
+<a href="#chap3">3. Managing Dependencies</a>
    - Understanding Dependencies
    - Recognizing Dependencies
      - Coupling Between Objects (CBO)
@@ -456,7 +453,7 @@ print(revealed.diameters())  # [662, 668, 619, 639]
 </code></pre>
 Why is this better?
 - `diameters()` no longer cares about the internal structure of the data.
-- Instead of `cell[0]`, we use `wheel.rim`, making the code more readable and less error-prone.
+- `cell[0]` --> `wheel.rim`, making the code more readable and less error-prone.
 - `_wheelify()` isolates the transformation logic.
   If the input format changes, you only modify this one method.
 
@@ -543,7 +540,7 @@ Take the `gear_inches` method from a `Gear` class:
     return self.ratio * (self.rim + (self.tire * 2))
 </code></pre>
 Does `gear_inches` belong in `Gear`? It might seem reasonable at
-first, but something about it feels wrong—it’s messy and unclear.
+first, but something about it feels wrong it’s messy and unclear.
 The real issue is that it does more than one thing.  
 
 Hidden inside `gear_inches` is the calculation for wheel diameter.
@@ -584,6 +581,289 @@ The benefits of single-responsibility methods include:
 While each individual refactoring may seem small, their combined impact results
 in cleaner, more maintainable code.
 
+<h2 id="real_wheel">Finally, the Real Wheel</h2>
+
+While you're refining the design of the Gear class, a new request comes in. You
+show your calculator to your cyclist friend again, and she tells you that while
+it’s nice, she’d also like a way to calculate "bicycle wheel circumference."
+Her bike computer needs this information to properly calculate speed.
+
+This is exactly the kind of feature request that informs your next design
+decision.
+
+\(\mathrm{circumference} = Dπ\). 
+
+embedded Wheel class already calculates diameter, adding a method to compute
+circumference is straightforward. However, this request also reveals that your
+application now has a clear need for a standalone Wheel class, independent of
+Gear. It’s time to separate Wheel into its own class.
+
+Because you've already isolated wheel-related behavior within the Gear class,
+extracting it is painless. You just need to convert the existing Wheel logic
+into a separate class and add the new circumference method:
+<pre><code class="language-python">import math
+
+class Gear:
+    def __init__(self, chainring, cog, wheel=None):
+        self.chainring = chainring
+        self.cog = cog
+        self.wheel = wheel
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+
+    def gear_inches(self):
+        return self.ratio() * self.wheel.diameter()
+
+class Wheel:
+    def __init__(self, rim, tire):
+        self.rim = rim
+        self.tire = tire
+
+    def diameter(self):
+        return self.rim + (self.tire * 2)
+
+    def circumference(self):
+        return self.diameter() * math.pi
+
+# Example usage:
+wheel = Wheel(26, 1.5)
+print(wheel.circumference())  
+# -> 91.106186954104
+
+print(Gear(52, 11, wheel).gear_inches())  
+# -> 137.090909090909
+
+print(Gear(52, 11).ratio())  
+# -> 4.72727272727273
+<pre></code>
+Both classes now have a single responsibility. While the design isn’t perfect,
+it achieves an important goal: it is good enough. Summary
+
+The foundation of changeable and maintainable object-oriented software lies in
+classes with a single responsibility. Classes that focus on one thing remain
+isolated from the rest of the application, making them easy to change without
+unintended consequences and easy to reuse without duplication.
+
+<h1 id="chap3">Chapter 3: Managing Dependencies</h1>
+
+<h2>Collaborating Objects and Managing Dependencies</h2>
+
+Object-oriented programming languages model real-world problems naturally.
+Objects represent qualities of a real-world system, and their interactions
+provide solutions. These interactions are unavoidable no single object can know
+everything, so it must communicate with others.  
+
+If you could observe the internal workings of a complex application, the flow
+of messages between objects might seem overwhelming. However, stepping back to
+see the bigger picture reveals a pattern:
+    - every [message] originates from an [object] to trigger some [behavior].
+
+The [behavior] itself is distributed among different [objects].
+For any given [action] an [object]:
+    - either knows how to do it itself
+    - inherits the behavior
+    - knows another object that can do it.  
+
+The previous chapter focused on the first case: ensuring that a class
+implements its own behavior. The second case inheriting behavior will be
+covered in Chapter 6. This chapter focuses on the third: accessing behavior
+implemented in other objects.
+
+Because well-designed objects follow the single responsibility principle,
+they must collaborate to perform complex tasks. This collaboration is both
+powerful and risky. For an object to work with another, it must have some
+knowledge of it. This creates **dependencies**, which, if not carefully
+managed, can make your application fragile and difficult to maintain.
+
+<h2>Understanding Dependencies</h2>
+
+An object depends on another object if changes in one force modifications in
+the other:
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog, rim, tire):
+        self.chainring = chainring
+        self.cog = cog
+        self.rim = rim
+        self.tire = tire
+
+    def gear_inches(self):
+        return self.ratio() * Wheel(self.rim, self.tire).diameter()
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+
+
+class Wheel:
+    def __init__(self, rim, tire):
+        self.rim = rim
+        self.tire = tire
+
+    def diameter(self):
+        return self.rim + (self.tire * 2)
+
+
+print(Gear(52, 11, 26, 1.5).gear_inches())
+</code></pre>
+Gear has dependencies on Wheel.
+If Wheel changes, Gear may need to change as well.
+
+Here are four dependencies that make Gear harder to maintain:
+
+    1. Explicit instantiation:
+    Gear() directly creates a Wheel() instance instead of accepting an existing
+    one. If Wheel's initialization changes, Gear must also change.
+
+    2. Hardcoded structure:
+    Gear assumes that Wheel will always be initialized with rim and tire. If
+    Wheel's arguments change, Gear will break.
+
+    3. Direct method call:
+    Gear calls Wheel().diameter() directly, assuming this method exists. If
+    diameter() is renamed or removed, Gear must be updated.
+
+    4. Implicit coupling:
+    Gear knows too much about Wheel’s internal behavior, reducing flexibility
+    and making modifications risky.
+
+
+These dependencies are unnecessary and make Gear harder to change. A better
+design would inject a Wheel instance into Gear rather than having Gear create
+it internally.
+
+
+<h3>Recognizing Dependencies in Python</h3>
+
+A class has a dependency when it knows:
+
+    1. The name of another class:
+    Gear() explicitly references Wheel(), assuming it exists.
+
+    2. The name of a method it intends to call on another object:
+    Gear expects Wheel to have a diameter() method.
+
+    3. The arguments required by another class's constructor:
+    Gear assumes Wheel is initialized with rim and tire.
+
+    4. The order of those arguments:
+    Gear expects Wheel(rim, tire), meaning changes to this order could break it.
+
+Each of these dependencies makes Gear tightly coupled to Wheel, increasing the
+risk that changes to Wheel will force changes in Gear.
+
+Why Is This a Problem?
+
+    If Wheel changes, Gear must also change:
+    If Wheel's constructor changes, Gear's call to Wheel(self.rim, self.tire) will break.
+
+    Reusability is reduced:
+    Gear cannot easily work with a different wheel-like object because it assumes a specific Wheel class.
+
+    Testing becomes harder:
+    Gear cannot be tested in isolation since it always requires a Wheel instance.
+
+The Design Challenge
+
+A good design minimizes dependencies so that each class only knows what it
+absolutely needs to function. The next step is refactoring to reduce coupling
+and improve flexibility.
+
+<h3>Coupling Between Objects (CBO)</h3>
+
+These dependencies couple Gear to Wheel. In other words, each coupling 
+creates a dependency. The more Gear knows about Wheel, the tighter the 
+coupling. When two objects are tightly coupled, they effectively behave 
+as a single unit.
+
+hen objects are so tightly coupled that they act as one unit, it becomes 
+impossible to reuse just one. Changes to one force changes to all, and unmanaged 
+dependencies can turn minor tweaks into major undertakings.
+
+Other dependency issues include:
+  - Chained messages: When an object relies on a series of calls to reach a 
+    behavior in a distant object, increasing the chance that any change 
+    affects the entire chain.
+  - Over-coupled tests: Tests written too tightly to the code may break 
+    every time the code is refactored, even if the core behavior remains the 
+    same.
+
+Despite these challenges, you can avoid a tangled mess of dependencies by 
+recognizing and managing them carefully. The design goal is to have each 
+class know only what is necessary for its function.
+
+
+Writing Loosely Coupled Code
+----------------------------
+Every dependency is like a dot of glue that causes your class to stick to the
+things it touches. A few dots are necessary, but too much glue will harden your
+application into a solid block. Reducing dependencies means recognizing and
+removing the ones you don't need.
+
+Inject Dependencies
+-------------------
+Referring to another class by its name creates a major sticky spot. In the
+version of Gear we've been discussing, the gear_inches method contains an
+explicit reference to the Wheel class:
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog, rim, tire):
+        self.chainring = chainring
+        self.cog = cog
+        self.rim = rim
+        self.tire = tire
+
+    def gear_inches(self):
+        return self.ratio() * Wheel(self.rim, self.tire).diameter()
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+</code></pre>
+In this code, Gear explicitly calls Wheel(self.rim, self.tire), meaning that
+if the name of the Wheel class changes, Gear's gear_inches method must also
+change.
+
+Although this dependency might seem minor (and can be fixed with a global find/
+replace), it reveals a deeper problem. When Gear hard-codes a reference to Wheel,
+it declares that it is only willing to calculate gear inches for instances of Wheel.
+Gear refuses to collaborate with any other kind of object, even if that object
+has a diameter.
+
+If your application later includes objects such as disks or cylinders that have a
+diameter, Gear won't be able to calculate their gear inches because it is stuck
+to Wheel.
+
+The code above forces an unjustified attachment to static types. Gear only needs
+an object that responds to diameter; it doesn't care about the object's class.
+This tight coupling reduces Gear's reusability and makes it more likely to break
+if any dependency changes.
+
+To decouple, refactor Gear so it is initialized with an object that responds to
+diameter:
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog, wheel):
+        self.chainring = chainring
+        self.cog = cog
+        self.wheel = wheel
+
+    def gear_inches(self):
+        return self.ratio() * self.wheel.diameter()
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+</code></pre>
+Now, Gear does not care if the object is an instance of Wheel. It only needs an
+object that implements a diameter method.
+
+This technique is known as dependency injection. It reduces Gear's explicit
+dependencies on the Wheel class and its constructor arguments, limiting Gear's
+dependency to just the diameter method. Gear becomes smarter by knowing less.
+
+Dependency injection relies on the idea that the responsibility for knowing a
+class's name and the responsibility for sending a specific message may belong in
+different objects. Just because Gear needs to call diameter does not mean it
+should know about Wheel.
+
+In summary, by injecting dependencies, you reduce coupling, increase reusability,
+and make your code more flexible.
 
 
 
