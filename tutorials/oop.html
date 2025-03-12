@@ -757,7 +757,8 @@ Why Is This a Problem?
     If Wheel's constructor changes, Gear's call to Wheel(self.rim, self.tire) will break.
 
     Reusability is reduced:
-    Gear cannot easily work with a different wheel-like object because it assumes a specific Wheel class.
+    Gear cannot easily work with a different wheel-like object
+    because it assumes a specific Wheel class.
 
     Testing becomes harder:
     Gear cannot be tested in isolation since it always requires a Wheel instance.
@@ -792,20 +793,10 @@ recognizing and managing them carefully. The design goal is to have each
 class know only what is necessary for its function.
 
 
-Writing Loosely Coupled Code
-----------------------------
-Every dependency is like a dot of glue that causes your class to stick to the
-things it touches. A few dots are necessary, but too much glue will harden your
-application into a solid block. Reducing dependencies means recognizing and
-removing the ones you don't need.
-
-Inject Dependencies
--------------------
-Referring to another class by its name creates a major sticky spot. In the
-version of Gear we've been discussing, the gear_inches method contains an
-explicit reference to the Wheel class:
+<h2>Writing Loosely Coupled Code</h2>
+<h3>Inject Dependencies</h3>
 <pre><code class="language-python">class Gear:
-    def __init__(self, chainring, cog, rim, tire):
+def __init__(self, chainring, cog, rim, tire):
         self.chainring = chainring
         self.cog = cog
         self.rim = rim
@@ -817,8 +808,8 @@ explicit reference to the Wheel class:
     def ratio(self):
         return self.chainring / float(self.cog)
 </code></pre>
-In this code, Gear explicitly calls Wheel(self.rim, self.tire), meaning that
-if the name of the Wheel class changes, Gear's gear_inches method must also
+Gear explicitly calls Wheel(self.rim, self.tire)
+If the name of the Wheel class changes, Gear's gear_inches method must also
 change.
 
 Although this dependency might seem minor (and can be fixed with a global find/
@@ -864,6 +855,90 @@ should know about Wheel.
 
 In summary, by injecting dependencies, you reduce coupling, increase reusability,
 and make your code more flexible.
+
+<h2>Isolate Dependencies</h2>
+
+It's best to break all unnecessary dependencies, but while this is always 
+technically possible, it may not be practically feasible. When working on an 
+existing application, you might face severe constraints on how much you can change.
+If perfection is out of reach, aim to improve the overall situation by leaving the 
+code better than you found it.
+
+If you cannot remove unnecessary dependencies, isolate them within your class. 
+In "Designing Classes with a Single Responsibility," you isolated extra 
+responsibilities so they would be easy to recognize and remove when the time was 
+right. Here, isolate unnecessary dependencies so they are easy to spot and reduce 
+when circumstances permit.
+
+Think of every dependency as an alien bacterium trying to infect your class. 
+Give your class a vigorous immune system; quarantine each dependency. Dependencies 
+are foreign invaders that represent vulnerabilities, so they should be concise, 
+explicit, and isolated.
+
+<h3>Isolate Instance Creation</h3>
+If you're so constrained that you cannot change the code to inject a Wheel into a 
+Gear, isolate the creation of a new Wheel within the Gear class. The idea is to 
+explicitly expose the dependency while reducing its reach in your class.
+
+Example 1: Move the creation of a new Wheel from the gear_inches method to the 
+initialization method. This cleans up gear_inches and publicly exposes the 
+dependency in __init__. Note that this technique creates a new Wheel every time 
+a new Gear is instantiated.
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog, rim, tire):
+        self.chainring = chainring
+        self.cog = cog
+        self._wheel = Wheel(rim, tire)
+
+    def gear_inches(self):
+        return self.ratio() * self._wheel.diameter()
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+</code></pre>
+Example 2: Isolate the creation of a new Wheel in its own wheel method. This 
+method lazily creates a new Wheel using a caching technique. The new Wheel is 
+created only when gear_inches calls the wheel method.
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog, rim, tire):
+        self.chainring = chainring
+        self.cog = cog
+        self.rim = rim
+        self.tire = tire
+        self._wheel = None
+
+    def gear_inches(self):
+        return self.ratio() * self.wheel().diameter()
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+
+    def wheel(self):
+        if self._wheel is None:
+            self._wheel = Wheel(self.rim, self.tire)
+        return self._wheel
+</code></pre>
+In both examples, Gear still takes rim and tire as initialization arguments and 
+creates its own new instance of Wheel, meaning it is still tightly coupled to Wheel; 
+it can calculate gear inches for no other kind of object.
+
+However, these coding styles reduce the number of dependencies within gear_inches 
+while publicly exposing Gear's dependency on Wheel. They reveal dependencies instead 
+of concealing them, lowering the barriers to reuse and making the code easier to 
+refactor when circumstances allow. This change makes the code more agile and better 
+able to adapt to an unknown future.
+
+The way you manage dependencies on external class names profoundly affects your 
+application. If you are mindful of dependencies and develop a habit of routinely 
+injecting them, your classes will naturally be loosely coupled. If you ignore this 
+issue and let class references proliferate, your application will resemble a big 
+woven mat rather than a set of independent objects. An application whose classes 
+are sprinkled with entangled and obscure class name references is unwieldy and 
+inflexible, while one whose class name dependencies are concise, explicit, and 
+isolated can easily adapt to new requirements.
+
+
+
 
 
 
