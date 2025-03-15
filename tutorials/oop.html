@@ -15,6 +15,12 @@
 
 These are notes from the book Practical Object-Oriented Design in Ruby that I
 have adapted into Python. | <a href="https://www.r-5.org/files/books/computers/dev-teams/diagrams/Sandi_Metz-Practical_Object-Oriented_Design_in_Ruby-EN.pdf">(link)</a> | <a href="https://www.r-5.org/files/books/">(More books r-5.org)</a>
+
+This book is extremely good at explaining <b>why</b> to do things a certain way
+as opposed to simply how (which is what I found 99% of object OOP content on
+the internet seemed to be). The book is written for Ruby however the principles
+hold for any OO language.
+
 <h2>Table of Contents (click to jump)</h2>
 
 <a href="#chap1">1. Object-Oriented Design</a>
@@ -937,15 +943,134 @@ are sprinkled with entangled and obscure class name references is unwieldy and
 inflexible, while one whose class name dependencies are concise, explicit, and 
 isolated can easily adapt to new requirements.
 
+<h3>Isolate Vulnerable External Messages</h3>
+Calls to external functions in a class (i.e. not self) should also be isolated.
 
+This means that changes to that external function or class will mean that your
+function code does not have to change, only the isolated function would have to
+change.
 
+In the `gear_inches()` method below, `ratio` is sent to `self`, but
+`diameter` is sent to `wheel`:
+<pre><code class="language-python">def gear_inches(self):
+    return self.ratio * self.wheel.diameter()
+</code></pre>
+This is fine in simple cases, but imagine that calculating `gear_inches`
+required more complex math:  
+<pre><code class="language-python">def gear_inches(self):
+    # ... a few lines of complex calculations
+    foo = some_intermediate_result * self.wheel.diameter()
+    # ... more calculations
+</code></pre>
+`wheel.diameter()` is deeply embedded in a complex method, increasing its
+vulnerability to changes in wheel. 
 
+`gear_inches()` now depends on `Gear` responding to `self.wheel` and on `Wheel`
+responding to `diameter()`.
 
+To make `gear_inches()` more resilient, isolate the dependency in its own
+method:
+
+<pre><code class="language-python">def gear_inches(self):
+    # ... a few lines of complex calculations
+    foo = some_intermediate_result * self.diameter()
+    # ... more calculations
+
+def diameter(self):
+    return self.wheel.diameter()
+</code></pre>
+At first glance, this might seem unnecessary—why create `diameter()` when
+there's only one reference to `wheel.diameter()`? However, this technique
+proactively removes an external dependency, making the code easier to modify in
+the future.
+
+Before refactoring:
+`gear_inches()` knew that `wheel` had a `diameter()`.
+
+This creates a direct dependency between `Gear` and `Wheel`. If `Wheel` ever
+changes the method name or its signature, `gear_inches` will break.
+
+By isolating `wheel.diameter()` in a separate method, `gear_inches` now relies
+only on a message to `self`. If `Wheel` changes, the only adjustment needed is
+within the `diameter()` method.
+
+This technique is especially useful when:
+- A method depends on an external message that is likely to change.
+- A class contains multiple scattered references to an external method.  
+- You want to reduce the unintended side effects when modifying dependencies.  
+
+Not every external call requires this treatment, but identifying the most
+vulnerable dependencies and wrapping them in methods can significantly improve
+maintainability.  
+
+<h2>Remove Argument-Order Dependencies</h2>
+Having fixed order arguments to function calls are vulnerable to changes.
+
+This can be especially bad during early development when one is constantly
+changing what exactly arguments will be passed to a function.
+
+One way around this is by using keyword arguments, especially for classes
+that are likely to change in the future, for example, a Model() class
+that may have many parameters that are subject to change.
+
+<pre><code class="language-python">class Gear:
+    def __init__(self, **kwargs):
+        self.chainring = kwargs.get('chainring')
+        self.cog       = kwargs.get('cog')
+        self.wheel     = kwargs['wheel']
+</pre></code>
+
+using `kwargs.get('name')` will return None if the key does not exist,
+which is essentially equivalent to: `__init__(self, name=None)`
+in contrast using kwargs['name'] will return a KeyError if the variable
+does not exist, This can actually be useful for compulsary arguments.
+
+<h3>Explicitly Define Defaults</h3>
+
+You may however want the lack of an argument to not simply default to None.
+If this is the case, the dictionary `get()` function can just be given an 
+extra argument that corresponds to the default value.
+
+<pre><code class="language-python">class Gear:
+    def __init__(self, **kwargs):
+        self.chainring = kwargs.get('chainring', 40)
+        self.cog       = kwargs.get('cog', 18)
+        self.wheel     = kwargs.get('wheel')
+
+# Usage examples:
+gear1 = Gear(chainring=52, cog=11, wheel="WheelObject")
+gear2 = Gear(wheel="WheelObject")  # Defaults used: chainring=40, cog=18
+</pre></code>
+
+If the default arguments are more complicated than simple values or strings,
+we can ask a `defaults()` function to go and get these, then overwrite them
+with whatever the user has inputted.
+
+<pre><code class="language-python">class Gear:
+    def __init__(self, **kwargs):
+        args = {**self.defaults(), **kwargs}
+        self.chainring = kwargs.get('chainring')
+        self.cog       = kwargs.get('cog')
+        self.wheel     = kwargs.get('wheel')
+
+    def default(self):
+        args = {'chainring' : 40,
+                'cog'       : self.default_cog(),
+                'wheel'     : self.default_wheel(),
+        return args
+
+    def default_cog(self): ...
+    def default_wheel(self): ... 
+</pre></code>
+The line:
+<pre><code class="language-python">args = {**self.defaults(), **kwargs}</pre></code>
+unpacks the defaults first into a dictionary, then the kwargs from the user,
+since there can only be one unique key in a dinctionary, any existing ones are
+overwriten.
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
 <script type="text/javascript" src="../clock.js"></script>
-
 </div>
 </body>
 </html>
