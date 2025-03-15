@@ -1026,7 +1026,6 @@ in contrast using kwargs['name'] will return a KeyError if the variable
 does not exist, This can actually be useful for compulsary arguments.
 
 <h3>Explicitly Define Defaults</h3>
-
 You may however want the lack of an argument to not simply default to None.
 If this is the case, the dictionary `get()` function can just be given an 
 extra argument that corresponds to the default value.
@@ -1041,7 +1040,6 @@ extra argument that corresponds to the default value.
 gear1 = Gear(chainring=52, cog=11, wheel="WheelObject")
 gear2 = Gear(wheel="WheelObject")  # Defaults used: chainring=40, cog=18
 </pre></code>
-
 If the default arguments are more complicated than simple values or strings,
 we can ask a `defaults()` function to go and get these, then overwrite them
 with whatever the user has inputted.
@@ -1067,6 +1065,132 @@ The line:
 unpacks the defaults first into a dictionary, then the kwargs from the user,
 since there can only be one unique key in a dinctionary, any existing ones are
 overwriten.
+
+<h3>Isolate Multiparameter Initialization</h3>
+
+When using external libraries, you may not be able to change the order of the
+arguments.
+
+A solution involves wrapping of the external dependency:
+
+<pre><code class="language-python"># External dependency we don't control:
+class ExternalGear:
+    def __init__(self, chainring, cog, wheel):
+        self.chainring = chainring
+        self.cog = cog
+        self.wheel = wheel
+
+    def gear_inches(self):
+        return (self.chainring / float(self.cog)) * self.wheel.diameter()
+
+class Wheel:
+    def __init__(self, rim, tire):
+        self.rim = rim
+        self.tire = tire
+
+    def diameter(self):
+        return self.rim + (self.tire * 2)
+
+# Our wrapper function isolates the fixed-order initialization.
+# It accepts keyword arguments, so callers aren't dependent on the order.
+def gear_wrapper(**kwargs):
+    # The external ExternalGear requires fixed-order parameters,
+    # so we extract them by name and pass them in the correct order.
+    return ExternalGear(kwargs['chainring'], kwargs['cog'], kwargs['wheel'])
+
+# Usage example:
+g = gear_wrapper(chainring=52, cog=11, wheel=Wheel(26, 1.5))
+print(g.gear_inches())
+</code></pre>
+This isolates the dependency on argument order so that the rest of your code
+can use a more flexible, self-documenting interface without worrying about the
+fixed parameter order required by `ExternalGear`.
+
+<h2>Managing Dependency Direction</h2>
+Dependencies have a direction.
+
+In our earlier examples:
+`Gear` --> `Wheel`
+But there is no reason the reverse cannot be true.
+ 
+You can reverse the dependency direction so that the external dependency is
+injected rather than hardcoded.
+
+For example, instead of having `Gear` directly call `wheel.diameter()`, you
+pass the diameter value into `Gear.gear_inches()`.
+
+This shifts the dependency so that `Wheel` now relies on `Gear` rather than the
+other way around.
+
+Why?
+
+Encapsulation:
+The complex dependency on an external object's method is isolated in a single
+wrapper method.
+
+Flexibility:
+If the external object's interface changes (e.g., `Wheel` changes how it
+computes diameter), you only need to update the wrapper method.
+
+Maintenance:
+It minimizes the ripple effect of changes, making the code easier to modify and
+less fragile over time.
+
+Choosing Dependency Direction:
+Generally, it is better for classes depend on abstractions rather than concrete
+implementations. If a class is likely to change, it should be lower in the
+dependency hierarchy, and other classes should depend on more stable, abstract
+interfaces.
+
+<pre><code class="language-python">class Gear:
+    def __init__(self, chainring, cog):
+        self.chainring = chainring
+        self.cog = cog
+
+    def gear_inches(self, diameter):
+        # Uses the provided diameter instead of calling wheel.diameter() directly.
+        return self.ratio() * diameter
+
+    def ratio(self):
+        return self.chainring / float(self.cog)
+
+
+class Wheel:
+    def __init__(self, rim, tire, chainring, cog):
+        self.rim = rim
+        self.tire = tire
+        # Create a Gear instance using provided chainring and cog.
+        self.gear = Gear(chainring, cog)
+
+    def diameter(self):
+        # Compute wheel diameter: rim + (tire * 2)
+        return self.rim + (self.tire * 2)
+
+    def gear_inches(self):
+        # Pass the calculated diameter to Gear's gear_inches method.
+        return self.gear.gear_inches(self.diameter())
+
+wheel_instance = Wheel(26, 1.5, 52, 11)
+print(wheel_instance.gear_inches())
+</code></pre>
+
+This Python example demonstrates how to reverse the dependency:  
+
+- `Gear.gear_inches()` now receives the diameter from `Wheel` instead of
+directly calling a method on `Wheel`.  
+
+- This isolates the dependency on `Wheel.diameter()` to a single place in
+`Wheel`, reducing the risk of widespread changes if `Wheel`'s implementation
+changes.
+
+Summary:
+Dependency management is core to creating future-proof applications. Injecting
+dependencies creates loosely coupled objects that can be reused in novel ways.
+Isolating dependencies allows objects to quickly adapt to unexpected changes.
+Depending on abstractions decreases the likelihood of facing these changes. The
+key to managing dependencies is to control their direction. The road to
+maintenance nirvana is paved with classes that depend on things that change
+less often than they do
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
