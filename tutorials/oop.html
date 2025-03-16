@@ -51,7 +51,7 @@ hold for any OO language.
      - Reversing Dependencies
      - Choosing Dependency Direction
    - Summary
-4. Creating Flexible Interfaces
+<a href="#chap4">4. Creating Flexible Interfaces</a>
    - Understanding Interfaces
    - Defining Interfaces
      - Public Interfaces
@@ -1191,6 +1191,223 @@ Depending on abstractions decreases the likelihood of facing these changes. The
 key to managing dependencies is to control their direction. The road to
 maintenance nirvana is paved with classes that depend on things that change
 less often than they do
+
+<h2 id="chap4">4. Creating Flexible Interfaces</h2>
+An object oriented application may be made up of classes, but
+it is defined by the messages.
+
+Designed must be concerned with these messages, responsibilities
+and dependencies.
+
+Conversation between objects takes places using their `interfaces'
+
+Creating flexible interfaces is important for applications to grow
+and change.
+
+<h2>Understanding Interfaces</h2>
+Although in python there is no explicit public and private keywords
+to define what can and cannot be accessed outside a class.
+Properly thinking about what is revealed to other objects and what
+isn't is of key importance.
+
+the public interface comprimises of the exposed methods of a class.
+
+<h2>Defining Interfaces</h2>
+
+Imagine the following:
+
+Resteraunt()
+    Kitchen()
+    Menu()     <-- Public interface for the Kitchen and menu
+    Customer()
+
+The Kitchen will have many internal processes relating how to make
+a certain dish but these should all be private to the Kithcen().
+
+Public Interface:
+  - Reveal its primary responsibility
+  - Are expected to be invoked by others
+  - Will not change on a whim
+  - Are safe for others to depend on
+  - Are thoroughly documented in the tests
+
+Private Interface:
+    - Handle implementation details
+    - Are not expected to be sent by other objects
+    - Can change for any reason whatsoever
+    - Are unsafe for others to depend on
+    - May not even be referenced in the tests
+
+<h2>Responsibilities, Dependencies, and Interfaces</h2>
+<h2>Finding the Public Interface</h2>
+<h2>An Example Application: Bicycle Touring Company</h2>
+<h3>Constructing an Intention</h3>
+<h3>Using Sequence Diagrams</h3>
+<h3>Asking for “What” Instead of Telling “How”</h3>
+<h3>Seeking Context Independence</h3>
+<h3>Trusting Other Objects</h3>
+<h3>Using Messages to Discover Objects</h3>
+<h3>Creating a Message-Based Application</h3>
+<h2>Writing Code That Puts Its Best (Inter)Face Forward</h2>
+<h3>Create Explicit Interfaces</h3>
+<h3>Honor the Public Interfaces of Others</h3>
+<h3>Exercise Caution When Depending on Private Interfaces</h3>
+<h3>Minimize Context</h3>
+<h2>The Law of Demeter</h2>
+<h3>Defining Demeter</h3>
+<h3>Consequences of Violations</h3>
+<h3>Avoiding Violations</h3>
+<h3>Listening to Demeter</h3>
+<h2>Summary</h2>
+
+
+
+
+<h1 id="chap5">5. Reducing Costs with Duck Typing</h1>
+
+Duck Types are public interfaced that are not tied to any specific class.
+
+if an object quacks like a duck and walks like a duck, then its class is
+immaterial, it’s a duck
+
+<h2>Understanding Duck Typing</h2>
+Python’s Type System:
+    Python categorizes variables by type (e.g., int, str, list), which
+    informs how you can interact with them (e.g., mathematical operations
+    for numbers, concatenation for strings).
+
+Dynamic Typing and Behavior:
+    In Python, an object's type is less about its class and more about the
+    behavior it exhibits through its methods and properties. This means
+    that if an object implements the necessary methods, it can be used
+    interchangeably with others, regardless of its actual class.
+    This is known as known as duck typing.
+
+Duck Typing in Python:
+    If an object "walks like a duck and quacks like a duck," it can be
+    treated as a duck. You don’t need an object to be of a specific type;
+    it just needs to provide the expected interface (i.e., the methods and
+    properties that the code relies on).
+
+Design Implications:
+    Focusing on an object’s behavior (its public interface) rather than
+    its class allows for flexible and adaptable designs. It’s important to
+    document these interfaces so that users of your code understand what
+    methods an object is expected to have.
+
+Benefits and Cautions:
+    Benefits: Increased flexibility, easier code reuse, and more dynamic
+    interactions between objects.
+
+    Cautions: Without explicit contracts (as provided by interfaces in
+    statically typed languages), designs can become chaotic if the expected
+    behaviors aren’t clearly defined and adhered to.
+
+Key Takeaway:
+    In Python, what an object does is more important than what it is.
+    Well-defined duck types (or public interfaces) are essential for building
+    maintainable and robust code.
+
+<h3>Overlooking the Duck</h3>
+<pre><code class="language-python">class Trip:
+    def __init__(self, bicycles, customers, vehicle):
+        self.bicycles = bicycles
+        self.customers = customers
+        self.vehicle = vehicle
+
+    def prepare(self, mechanic):
+        mechanic.prepare_bicycles(self.bicycles)
+
+
+class Mechanic:
+    def prepare_bicycles(self, bicycles):
+        for bicycle in bicycles:
+            self.prepare_bicycle(biclass Trip:
+    def __init__(self, bicycles, customers, vehicle):
+        self.bicycles = bicycles
+        self.customers = customers
+        self.vehicle = vehicle
+
+    def prepare(self, mechanic):
+        # Calls prepare_bicycles on the provided mechanic object.
+        mechanic.prepare_bicycles(self.bicycles)
+
+
+class Mechanic:
+    def prepare_bicycles(self, bicycles):
+        for bicycle in bicycles:
+            self.prepare_bicycle(bicycle)
+
+    def prepare_bicycle(self, bicycle):
+        # Implementation for preparing a single bicycle.
+        print(f"Preparing {bicycle}")
+
+
+# Example usage:
+trip = Trip(bicycles=["Bike1", "Bike2"], customers=[], vehicle=None)
+mechanic = Mechanic()
+trip.prepare(mechanic)
+cycle)
+
+    def prepare_bicycle(self, bicycle):
+        # Implementation for preparing a single bicycle.
+        print(f"Preparing {bicycle}")
+
+
+# Example usage:
+trip = Trip(bicycles=["Bike1", "Bike2"], customers=[], vehicle=None)
+mechanic = Mechanic()
+trip.prepare(mechanic)
+</code></pre>
+
+<h3>Compounding the Problem</h3>
+<h3>Finding the Duck</h3>
+<h3>Consequences of Duck Typing</h3>
+<h2>Writing Code That Relies on Ducks</h2>
+<h3>Recognizing Hidden Ducks</h3>
+<h3>Placing Trust in Your Ducks</h3>
+<h3>Documenting Duck Types</h3>
+<h3>Sharing Code Between Ducks</h3>
+<h3>Choosing Your Ducks Wisely</h3>
+<h2>Conquering a Fear of Duck Typing</h2>
+<h3>Subverting Duck Types with Static Typing</h3>
+<h3>Static versus Dynamic Typing</h3>
+<h3>Embracing Dynamic Typing</h3>
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
