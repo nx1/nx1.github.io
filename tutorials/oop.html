@@ -240,8 +240,8 @@ Simplicity is Key:
    - The application should work but also be easy to change later.  
    - Immediate functionality can be achieved through brute force,
      but ease of change is more challenging and requires thoughtful design.  
-   - Easy changeability is what separates good programming from functional programming.
-     It involves skill, experience, and a bit of creativity.
+   - Easy changeability is what separates good programming from functional
+     programming. It involves skill, experience, and a bit of creativity.
 
 Creating Easy-to-Change Applications:
    - Making an application easy to change requires knowledge of design
@@ -760,7 +760,7 @@ risk that changes to Wheel will force changes in Gear.
 Why Is This a Problem?
 
     If Wheel changes, Gear must also change:
-    If Wheel's constructor changes, Gear's call to Wheel(self.rim, self.tire) will break.
+    If Wheel.__init__ changes, Gear's call to Wheel(self.rim, self.tire) will break.
 
     Reusability is reduced:
     Gear cannot easily work with a different wheel-like object
@@ -1271,44 +1271,28 @@ if an object quacks like a duck and walks like a duck, then its class is
 immaterial, it’s a duck
 
 <h2>Understanding Duck Typing</h2>
-Python’s Type System:
-    Python categorizes variables by type (e.g., int, str, list), which
-    informs how you can interact with them (e.g., mathematical operations
-    for numbers, concatenation for strings).
 
-Dynamic Typing and Behavior:
-    In Python, an object's type is less about its class and more about the
-    behavior it exhibits through its methods and properties. This means
-    that if an object implements the necessary methods, it can be used
-    interchangeably with others, regardless of its actual class.
-    This is known as known as duck typing.
+An object's type is less about its class and more about the behavior it
+exhibits through its methods and properties. This means that if an object
+implements the necessary methods, it can be used interchangeably with others,
+regardless of its actual class. This is known as known as duck typing.
 
-Duck Typing in Python:
-    If an object "walks like a duck and quacks like a duck," it can be
-    treated as a duck. You don’t need an object to be of a specific type;
-    it just needs to provide the expected interface (i.e., the methods and
-    properties that the code relies on).
+Focusing on an object’s behavior (its public interface) rather than its class
+allows for flexible and adaptable designs. It’s important to document these
+interfaces so that users of your code understand what methods an object is
+expected to have.
 
-Design Implications:
-    Focusing on an object’s behavior (its public interface) rather than
-    its class allows for flexible and adaptable designs. It’s important to
-    document these interfaces so that users of your code understand what
-    methods an object is expected to have.
+Benefits: Increased flexibility, easier code reuse, and more dynamic
+interactions between objects.
 
-Benefits and Cautions:
-    Benefits: Increased flexibility, easier code reuse, and more dynamic
-    interactions between objects.
-
-    Cautions: Without explicit contracts (as provided by interfaces in
-    statically typed languages), designs can become chaotic if the expected
-    behaviors aren’t clearly defined and adhered to.
-
-Key Takeaway:
-    In Python, what an object does is more important than what it is.
-    Well-defined duck types (or public interfaces) are essential for building
-    maintainable and robust code.
+Cautions: Without explicit contracts (as provided by interfaces in statically
+typed languages), designs can become chaotic if the expected behaviors aren’t
+clearly defined and adhered to.
 
 <h3>Overlooking the Duck</h3>
+In the following example: Trip.prepare() sends the message .prepare_bicycles()
+to the object contained in self.mechanic No reference is made to the Mechanic
+class.
 <pre><code class="language-python">class Trip:
     def __init__(self, bicycles, customers, vehicle):
         self.bicycles = bicycles
@@ -1317,21 +1301,6 @@ Key Takeaway:
 
     def prepare(self, mechanic):
         mechanic.prepare_bicycles(self.bicycles)
-
-
-class Mechanic:
-    def prepare_bicycles(self, bicycles):
-        for bicycle in bicycles:
-            self.prepare_bicycle(biclass Trip:
-    def __init__(self, bicycles, customers, vehicle):
-        self.bicycles = bicycles
-        self.customers = customers
-        self.vehicle = vehicle
-
-    def prepare(self, mechanic):
-        # Calls prepare_bicycles on the provided mechanic object.
-        mechanic.prepare_bicycles(self.bicycles)
-
 
 class Mechanic:
     def prepare_bicycles(self, bicycles):
@@ -1347,21 +1316,126 @@ class Mechanic:
 trip = Trip(bicycles=["Bike1", "Bike2"], customers=[], vehicle=None)
 mechanic = Mechanic()
 trip.prepare(mechanic)
-cycle)
-
-    def prepare_bicycle(self, bicycle):
-        # Implementation for preparing a single bicycle.
-        print(f"Preparing {bicycle}")
-
-
-# Example usage:
-trip = Trip(bicycles=["Bike1", "Bike2"], customers=[], vehicle=None)
-mechanic = Mechanic()
-trip.prepare(mechanic)
 </code></pre>
+Using this code as it shown in the example requires that some external object
+sends .prepare() to Trip along with a mechanic argument.
+
+Even though the prepare() method has no explicit dependency on the Mechanic
+class, it does depend on receiving an object that can respond to
+prepare_bicycles(). This dependency is so fundamental that it’s easy to miss or
+to discount, but nonetheless, it exists. Trip’s prepare method firmly believes
+that its argument contains a preparer of bicycles.
 
 <h3>Compounding the Problem</h3>
+Imagine that requirements change. In addition to a mechanic, trip preparation
+now involves a trip coordinator and a driver.
+
+You Create TripCoordinator() and Driver().
+
+You also change Trip.prepare() to invoke the correct behavior from each of its
+arguments.
+<pre><code class="language-python">class Trip:
+    def __init__(self, bicycles, customers, vehicle):
+        self.bicycles = bicycles
+        self.customers = customers
+        self.vehicle = vehicle
+
+    def prepare(self, preparers):
+        for preparer in preparers:
+            if isinstance(preparer, Mechanic):
+                preparer.prepare_bicycles(self.bicycles)
+            elif isinstance(preparer, TripCoordinator):
+                preparer.buy_food(self.customers)
+            elif isinstance(preparer, Driver):
+                preparer.gas_up(self.vehicle)
+                preparer.fill_water_tank(self.vehicle)
+
+class Mechanic:
+    def prepare_bicycles(self, bicycles):
+        # Implementation for preparing bicycles.
+        print("Mechanic: Preparing bicycles.")
+
+class TripCoordinator:
+    def buy_food(self, customers):
+        # Implementation for buying food.
+        print("TripCoordinator: Buying food for customers.")
+
+class Driver:
+    def gas_up(self, vehicle):
+        # Implementation for gassing up.
+        print("Driver: Gassing up vehicle.")
+
+    def fill_water_tank(self, vehicle):
+        # Implementation for filling water tank.
+        print("Driver: Filling water tank.")
+
+# Example usage:
+bicycles = ["Bike1", "Bike2"]
+customers = ["Alice", "Bob"]
+vehicle = "Van"
+trip = Trip(bicycles, customers, vehicle)
+preparers = [Mechanic(), TripCoordinator(), Driver()]
+trip.prepare(preparers)
+</code></pre>
+Trip.prepare() now refers to three different classes by name and knows specific
+methods implemented in each. Risks have dramatically gone up. Trip’s prepare
+method might be forced to change because of a change elsewhere and it might
+unexpectedly break as the result of a distant, unrelated change.
+
+This code is the first step in a process that will paint you into a corner with
+no way out.
+
+Blinded by existing classes and neglecting overlooked messages results in this
+dependent-laden code that is a natural outgrowth of a class-based perspective.
+
+Initially, prepare() required a mechanic that knew how to prepare_bicycle().
+After a change, prepare() now received arguments of other classes that do not
+know how to prepare_bicycle(). As a result, you now go hunting for messages in
+the new classes (TripCoordinator() and Drive()) for the behavior we want
+buy_food() gas_up() and fill_water_tank()
+
+The most obvious way to invoke this behavior is to send these very messages,
+but now you’re stuck. Every one of your arguments is of a different class and
+implements different methods; you must determine each argument’s class to know
+which message to send. Adding a case statement that switches on class solves
+the problem of sending the correct message to the correct object but causes an
+explosion of dependencies.
+
+Count the number of new dependencies in the prepare method.
+- It relies on specific classes, no others will do.
+- It relies on the explicit names of those classes.
+- It knows the names of the messages that each class understands
+- It knows the arguments that those messages require.
+
+many distant changes will now have side effects on this code. To make matters
+worse, this style of code propagates itself. When another new trip preparer
+appears, you, or the next person down the programming line, will add a new when
+branch to the case statement. Your application will accrue more and more
+methods like this, where the method knows many class names and sends a specific
+message based on class. The logical endpoint of this programming style is a
+stiff and inflexible application, where it eventually becomes easier to rewrite
+everything than to change anything.
+
 <h3>Finding the Duck</h3>
+Removing the dependencies requires the recognicion that Trip.prepare()
+serves a single purpose.
+
+The arguments passed prepare() wish to collaborate to accomplish a single goal.
+Every argument is here for the same reason and that reason is unrelated to the
+argument’s underlying class. Avoid getting sidetracked by your knowledge of
+what each argument’s class already does
+
+Think instead about what prepare() needs. Considered from prepare’s point of
+view, the problem is straightforward. The prepare method wants to prepare the
+trip. Its arguments arrive ready to collaborate in trip preparation. The design
+would be simpler if prepare just trusted them to do so. Figure 5.3 illustrates
+this idea. Here the prepare method doesn’t have a preordained expectation about
+the class of its arguments, instead it expects each to be a “Preparer.” This
+expectation neatly turns the tables. You’ve pried yourself loose from existing
+classes and invented a duck type. The next step is to ask what message the
+prepare method can fruitfully send each Preparer. From this point of view, the
+answer is obvious: prepare_trip.
+
 <h3>Consequences of Duck Typing</h3>
 <h2>Writing Code That Relies on Ducks</h2>
 <h3>Recognizing Hidden Ducks</h3>
