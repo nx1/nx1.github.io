@@ -325,9 +325,11 @@ more distance with each rotation compared to smaller ones. To address this, you
 need to calculate "gear inches" which combines both the gear ratio and wheel
 size using the formula:
 
-$$ \mathrm{gear \ inches} = D_{\mathrm{wheel}} \times \mathrm{gear \ ratio} $$
+\( \mathrm{gear \ inches} = D_{\mathrm{wheel}} \times \mathrm{gear \ ratio} \)
+
 Where:
-$$ D_{\mathrm{wheel}} = D_{\mathrm{rim}} + 2 D_{\mathrm{tire}}$$
+\( D_{\mathrm{wheel}} = D_{\mathrm{rim}} + 2 D_{\mathrm{tire}} \)
+
 This allows cyclists to compare bikes with different wheel sizes based on their
 gearing and wheel size together.
 
@@ -1417,8 +1419,8 @@ stiff and inflexible application, where it eventually becomes easier to rewrite
 everything than to change anything.
 
 <h3>Finding the Duck</h3>
-Removing the dependencies requires the recognicion that Trip.prepare()
-serves a single purpose.
+Removing the dependencies requires the recognicion that Trip.prepare() serves a
+single purpose.
 
 The arguments passed prepare() wish to collaborate to accomplish a single goal.
 Every argument is here for the same reason and that reason is unrelated to the
@@ -1428,26 +1430,165 @@ what each argument’s class already does
 Think instead about what prepare() needs. Considered from prepare’s point of
 view, the problem is straightforward. The prepare method wants to prepare the
 trip. Its arguments arrive ready to collaborate in trip preparation. The design
-would be simpler if prepare just trusted them to do so. Figure 5.3 illustrates
-this idea. Here the prepare method doesn’t have a preordained expectation about
-the class of its arguments, instead it expects each to be a “Preparer.” This
-expectation neatly turns the tables. You’ve pried yourself loose from existing
-classes and invented a duck type. The next step is to ask what message the
-prepare method can fruitfully send each Preparer. From this point of view, the
-answer is obvious: prepare_trip.
+would be simpler if prepare just trusted them to do so. Therefore, prepare
+needs a Preparer(). You’ve pried yourself loose from existing classes and
+invented a duck type. The next step is to ask what message the prepare method
+can fruitfully send each Preparer. From this point of view, the answer is
+obvious: prepare_trip.
+
+Preparer() a this point is an abstraction, objects that implement
+prepare_trip() are Preparers.
+<pre><code class="language-python">class Trip:
+    def __init__(self, bicycles=None, customers=None, vehicle=None):
+        self.bicycles = bicycles or []
+        self.customers = customers or []
+        self.vehicle = vehicle
+
+    def prepare(self, preparers):
+        for preparer in preparers:
+            preparer.prepare_trip(self)
+
+
+class Mechanic:
+    def prepare_trip(self, trip):
+        for bicycle in trip.bicycles:
+            self.prepare_bicycle(bicycle)
+
+    def prepare_bicycle(self, bicycle):
+        print(f"Preparing bicycle {bicycle}")
+
+
+class TripCoordinator:
+    def prepare_trip(self, trip):
+        self.buy_food(trip.customers)
+
+    def buy_food(self, customers):
+        print(f"Buying food for {len(customers)} customers")
+
+
+class Driver:
+    def prepare_trip(self, trip):
+        vehicle = trip.vehicle
+        self.gas_up(vehicle)
+        self.fill_water_tank(vehicle)
+
+    def gas_up(self, vehicle):
+        print(f"Gassing up vehicle {vehicle}")
+
+    def fill_water_tank(self, vehicle):
+        print(f"Filling water tank for vehicle {vehicle}")
+</code></pre>
+
+There is a temptation here to create a Prepare() class or interface (abstract
+base class) and then have Driver() TripCoordinator() and mechnic all inherit
+from it ensuring that the prepare_trip() method is implemented. But when you
+step back, you realize this isn't needed. If prepare() gets an object that
+doesn't implement prepare_trip, you will get an error that will tell you what
+you need to know (that object does not have .prepapre_trip()).
 
 <h3>Consequences of Duck Typing</h3>
+Duck typing shifts your code from relying on concrete classes to depending on
+behavior, which makes it easier to extend without modifying existing code.
+Although concrete code is simpler to understand, it’s costly to change;
+abstract, duck-typed code requires a deeper initial understanding but is far
+more adaptable. This design approach embraces polymorphism—the idea that many
+different objects can respond to the same message—allowing them to be used
+interchangeably as long as they behave correctly. Ultimately, by focusing on
+behavior rather than class, you gain flexibility, but you must ensure that all
+objects reliably implement the expected methods.
+
+
 <h2>Writing Code That Relies on Ducks</h2>
 <h3>Recognizing Hidden Ducks</h3>
+1. Case statements that switch on class
+<pre><code class="language-python">class Trip:
+    def __init__(self, bicycles, customers, vehicle):
+        self.bicycles = bicycles
+        self.customers = customers
+        self.vehicle = vehicle
+
+    def prepare(self, preparers):
+        for preparer in preparers:
+            if isinstance(preparer, Mechanic):
+                preparer.prepare_bicycles(self.bicycles)
+            elif isinstance(preparer, TripCoordinator):
+                preparer.buy_food(self.customers)
+            elif isinstance(preparer, Driver):
+                preparer.gas_up(self.vehicle)
+                preparer.fill_water_tank(self.vehicle)
+</code></pre>
+2. kind_of? and is_a?
+<pre><code class="language-python">if isinstance(preparer, Mechanic):
+    preparer.prepare_bicycles(bicycle)
+elif isinstance(preparer, TripCoordinator):
+    preparer.buy_food(customers)
+elif isinstance(preparer, Driver):
+    preparer.gas_up(vehicle)
+    preparer.fill_water_tank(vehicle)
+</code></pre>
+3. responds_to?
+<pre><code class="language-python">if hasattr(preparer, 'prepare_bicycles'):
+    preparer.prepare_bicycles(bicycle)
+elif hasattr(preparer, 'buy_food'):
+    preparer.buy_food(customers)
+elif hasattr(preparer, 'gas_up'):
+    preparer.gas_up(vehicle)
+    preparer.fill_water_tank(vehicle)
+</code></pre>
 <h3>Placing Trust in Your Ducks</h3>
+
+Use of kind_of?, is_a?, responds_to?, and case statements that switch on your
+classes indicate the presence of an unidentified duck.
+
+In each case the code is effectively saying “I know who you are and because of
+that I know what you do.”
+
+This knowledge exposes a lack of trust in collaborating objects and acts as a
+millstone around your object’s neck.
+
+It introduces dependencies that make code difficult to change.
+
+Just as in Demeter violations, this style of code is an indication that you are
+missing an object, one whose public interface you have not yet discovered.
+
+The fact that the missing object is a duck type instead of a concrete class
+matters not at all; it’s the interface that matters, not the class of the
+object that implements it.
+
+Flexible applications are built on objects that operate on trust; it is your
+job to make your objects trustworthy.
+
+When you see these code patterns, concentrate on the offending code’s
+expectations and use those expectations to find the duck type.
+
+Once you have a duck type in mind, define its interface, implement that
+interface where necessary, and then trust those implementers to behave
+correctly
+
+
 <h3>Documenting Duck Types</h3>
+Because the Prepare() duck type is an abstraction, it doesn't appear
+anywhere in the code, there is no class Prepare() anywhere.
+
+This can make it difficult to see that it exists, therefore good documentation
+in the form of tests should be used, more in Chapter 9.
+
 <h3>Sharing Code Between Ducks</h3>
-<h3>Choosing Your Ducks Wisely</h3>
-<h2>Conquering a Fear of Duck Typing</h2>
-<h3>Subverting Duck Types with Static Typing</h3>
-<h3>Static versus Dynamic Typing</h3>
-<h3>Embracing Dynamic Typing</h3>
+in our example the only thing Mechanic, Driver and TripCoordinator have in
+common is prepare_trip() however, if there is more share code it becomes more
+involved, more in Chapter 7.
+
 <h2>Summary</h2>
+Messages are at the center of object-oriented applications and they pass among
+objects along public interfaces.
+
+Duck typing detaches these public interfaces from specific classes, creating
+virtual types that are defined by what they do instead of by who they are.
+
+Duck typing reveals underlying abstractions that might otherwise be invisible.
+Depending on these abstractions reduces risk and increases flexibility, making
+your application cheaper to maintain and easier to change.
+
 
 
 
