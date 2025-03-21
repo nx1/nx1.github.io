@@ -1589,11 +1589,180 @@ Duck typing reveals underlying abstractions that might otherwise be invisible.
 Depending on these abstractions reduces risk and increases flexibility, making
 your application cheaper to maintain and easier to change.
 
+<h1>6. Acquiring Behavior Through Inheritance</h1>
+<h2>Understanding Classical Inheritance</h2>
+Inheritance is a mechanism for automatic message delegation.
+It does this by creating a forwarding path for messages that are
+not understood by a subclass to a superclass.
 
+Classical inheritance just refers to inheritance through superclass and
+subclasses. As opposed to other mechnisms such as prototypical inheritance in
+javascript.
 
+<h2>Recognizing Where to Use Inheritance</h2>
+Scenario:
+A company called FastFeet offers road bike trips, these bikes are maintained by
+mechanics who take an asortment of spare parts on every trip.
+<h3>Starting with a Concrete Class</h3>
+<code class="language-python">class Bicycle:
+    def __init__(self, size, tape_color):
+        self.size = size
+        self.tape_color = tape_color
 
+    def spares(self):
+        s = {'chain'     : '10-speed',
+             'tire_size' : '23',
+             'tape_color': self.tape_color}
+        return s
 
+bike = Bicycle(size='M', 'tape_color'='red')
+print(bike.size)      # -> 'M'
+print(bike.spares())  # -> {'chain': '10-speed', 'tire_size': '23', 'tape_color': 'red'}
+</code>
 
+Bicycle instances can respond to the spares, size, and tape_color messages and
+a Mechanic can figure out what spare parts to take by asking each Bicycle for
+its spares.
+
+Imagine now that FastFeet begins to lead mountain bike trips.
+
+Mountain bikes and road bikes are much alike but there are clear differences
+between them. Mountain bikes are meant to be ridden on dirt paths instead of
+paved roads. They have sturdy frames, fat tires, straight-bar handlebars (with
+rubber hand grips instead of tape), and suspension. The bicycle in Figure 6.2
+has front suspension only, but some mountain bikes also have rear, or “full”
+suspension.
+
+Your design task is to add support for mountain bikes to FastFeet’s
+application. Much of the behavior that you need already exists; mountain bikes
+are definitely bicycles. They have an overall bike size and a chain and tire
+size. The only differences between road and mountain bikes are that road bikes
+need handlebar tape and mountain bikes have suspension.
+
+<h3>Embedding Multiple Types</h3>
+When a preexisting concrete class contains most of the behavior you need, it’s
+tempting to solve this problem by adding code to that class. 
+
+<code class="language-python">class Bicycle:
+    def __init__(self, **kwargs):
+        self.style       = kwargs['style']
+        self.size        = kwargs['size']
+        self.tape_color  = kwargs['tape_color']
+        self.front_shock = kwargs['front_shock']
+        self.rear_shock  = kwargs['rear_shock']
+
+    # This starts down a slippery slope.
+    def spares(self):
+        if self.style == 'road'
+            s = {'chain'     : '10-speed',
+                 'tire_size' : '23',
+                 'tape_color': self.tape_color}
+        else:
+            s = {'chain'     : '10-speed',
+                 'tire_size' : '2.1',
+                 'tape_color': self.rear_shock}
+
+        return s
+
+bike1 = Bicycle(style='road',
+                size='M',
+                tape_color='red',
+                front_shock=None,
+                rear_shock=None)
+
+bike2 = Bicycle(style='mountain',
+                size='S',
+                tape_color'='red',
+                front_shock='Manitou',
+                rear_shock='Fox')
+</code>
+The new front_shock and rear_shock variables hold mountain bike specific parts.
+The new style variable determines which parts appear on the spares list.
+
+This example illustrates an antipattern in object-oriented design. The
+`Bicycle` class embeds multiple types by using a `style` attribute to determine
+behavior in the `spares` method. This approach introduces several problems:
+
+- If you add a new style you must change the if statement.
+
+- If you write careless code where the last option is the default (as does the
+  code above) an unexpected style will do something but perhaps not what you
+  expect.
+
+- The spares method started out containing embedded default strings, some of
+  these strings are now duplicated on each side of the if statement.
+
+- Bicycle has an implied public interface that includes spares, size, and all
+  the individual parts.
+
+- The size method still works, spares generally works, but the parts methods
+  are now unreliable.
+
+- It’s impossible to predict, for any specific instance of Bicycle, whether a
+  specific part has been initialized.
+
+- Objects holding onto an instance of Bicycle may, for example, be tempted to
+  check style before sending it tape_color or rear_shock.
+
+The code wasn’t great to begin with; this change did nothing to improve it. The
+initial Bicycle class was imperfect but its imperfections were hidden,
+encapsulated within the class.
+
+These new flaws have broader consequences. Bicycle now has more than one
+responsibility, contains things that might change for different reasons, and
+cannot be reused as is. 
+
+checking an attribute like `style' to determine behavior is the same as checking
+an object's class.
+
+In the first approach, we ask:
+    "What is your style?" → Then behave accordingly.
+In the second approach, Python asks:
+    "What class are you?" → And behaves accordingly.
+
+<h3>Finding the Embedded Types</h3>
+The if statement in the spares method above switches on a variable named style,
+but it would have been just as natural to call that variable type or category.
+Variables with these kinds of names are your cue to notice the underlying
+pattern. 
+
+Type and category are words perilously similar...
+
+The style variable effectively divides instances of Bicycle into two different
+kinds of things. These two things share a great deal of behavior but differ
+along the style dimension. 
+
+Some of Bicycle’s behavior applies to all bicycles, some only to road bikes,
+and some only to mountain bikes. This single class contains several different,
+but related, types. This is the exact problem that inheritance solves; that of
+highly related types that share common behavior but differ along some
+dimension.
+<h2>Choosing Inheritance</h2>
+Objects receive messages.
+
+The receiving object ultimately handles any message in one of two ways:
+    1. It either responds directly
+    2. or it passes the message on to some other object for a response.
+
+Inheritance provides a way to define two objects as having a relationship such
+that when the first receives a message that it does not understand, it
+automatically forwards, or delegates, the message to the second. 
+
+<h2>Misapplying Inheritance</h2>
+
+<h2>Finding the Abstraction</h2>
+<h2>Creating an Abstract Superclass</h2>
+<h3>Promoting Abstract Behavior</h3>
+<h3>Separating Abstract from Concrete</h3>
+
+<h2>Using the Template Method Pattern</h2>
+<h3>Implementing Every Template Method</h3>
+
+<h2>Managing Coupling Between Superclasses and Subclasses</h2>
+<h3>Understanding Coupling</h3>
+
+<h3>Decoupling Subclasses Using Hook Messages</h3>
+<h2>Summary</h2>
 
 
 
