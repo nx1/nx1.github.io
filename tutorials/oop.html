@@ -1843,8 +1843,7 @@ have the abstract right. One is more likely to get the abstraction right once
 once more behaviour is implemented as you can see what is shared between the
 objects.
 
-The following shows the possible steps of refactoring: 
-
+The following steps show a possible approach when refactoring: 
 <code class="language-python"># Create the abstract class
 class Bicycle:
     pass
@@ -1853,21 +1852,33 @@ class Bicycle:
 class RoadBike(Bicycle):
     # unchanged
 
-# MountainBike also becomes a subclass of Bicycle
+# Create the MountainBike which subclass of Bicycle
 class MountainBike(Bicycle):
-    # unchanged
+    # empty 
+</code>
+<h3>Promoting Abstract Behavior</h3>
+.size and spares() are common to both bikes we can promote them to the
+super-class. .size is simpler, so we do that first:
+<code class="language-python">class Bicycle:
+    def __init__(self, **kwargs):
+        self.size = kwargs['size']
+
+class RoadBike(Bicycle):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.tape_color = kwargs['tape_color']
+
+class MountainBike(Bicycle):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.front_shock = kwargs['front_shock']
+        self.rear_shock  = kwargs['rear_shock']
+
+b1 = RoadBike(size='M', tape_color='red')
+b2 = MountainBike(size='L', front_shock='Manitou', rear_shock='Fox')
+print(b1.size, b2.size) # M L
 </code>
 
-
-
-
-
-
-
-
-
-
-<h3>Promoting Abstract Behavior</h3>
 <h3>Separating Abstract from Concrete</h3>
 
 <h2>Using the Template Method Pattern</h2>
