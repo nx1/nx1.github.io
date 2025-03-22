@@ -1744,14 +1744,129 @@ The receiving object ultimately handles any message in one of two ways:
     1. It either responds directly
     2. or it passes the message on to some other object for a response.
 
-Inheritance provides a way to define two objects as having a relationship such
-that when the first receives a message that it does not understand, it
+Inheritance provides a way to define two objects as having a relationship
+such that when the first receives a message that it does not understand, it
 automatically forwards, or delegates, the message to the second. 
 
 <h2>Misapplying Inheritance</h2>
+In this example, we illustrate a problematic use of inheritance.
+
+The Bicycle class was originally designed with road bike behavior in mind.
+When MountainBike is subclassed from Bicycle, it inherits both the general
+bicycle behavior and road-specific defaults, leading to mixed-up, inconsistent
+behavior. For example, a MountainBike may report a tire size of "23" and have
+a tape_color (meant for road bikes), even though these attributes don’t apply.
+
+The problematic design forces us to modify the Bicycle class (a concrete class)
+when creating a subclass that needs different behavior, which violates the 
+Open-Closed Principle and makes the design rigid and error-prone.
+<code class="language-python">class Bicycle:
+    def __init__(self, size, tape_color=None, tire_size="23", chain="10-speed"):
+        self.size = size
+        self.tape_color = tape_color
+        self.tire_size = tire_size
+        self.chain = chain
+
+    def spares(self):
+        return {
+            "tire_size": self.tire_size,
+            "chain": self.chain,
+            "tape_color": self.tape_color
+        }
+
+class MountainBike(Bicycle):
+    def __init__(self, size, front_shock, rear_shock, **kwargs):
+        self.front_shock = front_shock
+        self.rear_shock = rear_shock
+        super().__init__(size, **kwargs)
+
+    def spares(self):
+        base_spares = super().spares()
+        base_spares.update({"rear_shock": self.rear_shock})
+        return base_spares
+
+# Example usage:
+mountain_bike = MountainBike(
+    size='S',
+    front_shock='Manitou',
+    rear_shock='Fox',
+    tape_color=None
+)
+
+print(mountain_bike.size) # Expected: 'S'
+print(mountain_bike.spares())
+# {'tire_size': '23', 'chain': '10-speed', 'tape_color': None, 'rear_shock': 'Fox'}
+</code>
+This design shows how MountainBike, as a subclass of Bicycle, ends up with
+behavior that mixes road bike defaults (like tire_size and tape_color) with
+mountain bike parts (front_shock and rear_shock). Embedding these defaults in
+Bicycle forces MountainBike to inherit unwanted behavior, which is a common
+antipattern when a concrete class is used as a superclass. A better design
+would separate the general bicycle behavior from the specifics of each bike
+type, possibly through duck typing or by refactoring Bicycle into more
+abstract components.
 
 <h2>Finding the Abstraction</h2>
+Initially Bicycle() was designed for road bikes. However, once MountainBike is
+introduced, the name Bicycle becomes misleading, since it implies a general
+type while actually representing only road bikes.
+
+Inheritance works best when a subclass (like MountainBike) is a true
+specialization of its superclass (a generic Bicycle). A MountainBike should
+have all the features of a Bicycle, plus extra features. For inheritance to be
+effective, your classes must reflect a true generalization–specialization
+relationship and be implemented correctly.
+
+Since the current Bicycle class mixes general bicycle behavior with
+road-specific code, it’s better to separate them. Move the road bike–specific
+code into a RoadBike subclass, leaving Bicycle as a true, generic abstraction
+for all bicycles.
+
 <h2>Creating an Abstract Superclass</h2>
+What we want to do is create an abstract class Bicycle() that will contain the
+common behavior.
+
+Abstract classes are not meant to be instanced themselves, in Python, the abc
+module allows you to explicitly defined abstract classes, however this is not
+strictly needed, in many cases the programmer should be able to use their brain
+to figure out what is abstract or not.
+
+It almost never makes sense to create an abstract superclass with only one sub-
+class. Even though its possible you anticipate having other kinds of bikes and
+it is possible to imagine modeling it as two classes from the very beginning,
+do not. Regardless of how strongly you anticipate having other kinds of bikes,
+that day may never come. 
+
+Even two bikes, it still may not be right to commit to inheritance, creating a
+hierarchy has costs, and the best way to minimize this cost is to ensure you
+have the abstract right. One is more likely to get the abstraction right once
+once more behaviour is implemented as you can see what is shared between the
+objects.
+
+The following shows the possible steps of refactoring: 
+
+<code class="language-python"># Create the abstract class
+class Bicycle:
+    pass
+
+# Rename the old Bicycle() to RoadBike() and inherit from Bicycle
+class RoadBike(Bicycle):
+    # unchanged
+
+# MountainBike also becomes a subclass of Bicycle
+class MountainBike(Bicycle):
+    # unchanged
+</code>
+
+
+
+
+
+
+
+
+
+
 <h3>Promoting Abstract Behavior</h3>
 <h3>Separating Abstract from Concrete</h3>
 
