@@ -1878,8 +1878,54 @@ b1 = RoadBike(size='M', tape_color='red')
 b2 = MountainBike(size='L', front_shock='Manitou', rear_shock='Fox')
 print(b1.size, b2.size) # M L
 </code>
+An approach when refactoring classes is to first push everything down into the
+concrete classes, i.e. atrributes and functions. Then only after proceed to
+promote up the shared abstractions between the classes.
+
+The reason for this is to try and avoid leaving remnants of concrete parts of
+the code in the super class.
+
+A more general way of looking at this is to ask the question of:
+"What will happen if I'm wrong?"
+
+In the case of failing to correctly identify and promote the abstraction, and
+as a result, some of it is left behind in the subclass, then the problem will
+be realized when another subclass requires that behaviour. You'll either have
+to duplicate the code or promote that behaviour.
+
+In the case of not pushing down the concrete behaviour, and leaving them in the
+super-class, it now means that all the sub-classes will inherit it. this is a
+problem as the subclasses now do not truely specializations of their
+superclasses and the hierarchy becomes untrustworthy. The result is that new
+code will embed knowlege of these quirks, such as checking classes of objects,
+the consequences of not having concrete behaviour in the superclass are far
+more severe.
 
 <h3>Separating Abstract from Concrete</h3>
+We now return to the .spares() function
+
+<code class="language-python">class Bicycle:
+    def __init__(self, **kwargs):
+        self.size = kwargs['size']
+
+class RoadBike(Bicycle):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.tape_color = kwargs['tape_color']
+
+class MountainBike(Bicycle):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.front_shock = kwargs['front_shock']
+        self.rear_shock  = kwargs['rear_shock']
+
+b1 = RoadBike(size='M', tape_color='red')
+b2 = MountainBike(size='L', front_shock='Manitou', rear_shock='Fox')
+print(b1.size, b2.size) # M L
+</code>
+
+
+
 
 <h2>Using the Template Method Pattern</h2>
 <h3>Implementing Every Template Method</h3>
