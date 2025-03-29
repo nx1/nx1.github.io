@@ -1950,13 +1950,96 @@ print(b1.spares())
 print(b2.spares())
 </code>
 
-
-
-
 <h2>Using the Template Method Pattern</h2>
+The template method pattern is used to define a common initialization structure
+in a superclass (Bicycle) while allowing subclasses (RoadBike and MountainBike)
+to customize parts of the behavior.
+
+The Bicycle class sets up defaults for attributes, and if a value isn’t
+provided, it calls a template method to obtain the default. Subclasses can
+override these template methods to supply their own default values.
+<code class="language-python">class Bicycle:
+    def __init__(self, size, chain=None, tire_size=None):
+        self.size      = size
+        self.chain     = chain or self.default_chain()
+        self.tire_size = tire_size or self.default_tire_size()
+
+    def default_chain(self):
+        return "10-speed"
+
+    def default_tire_size(self):
+        """Template method to be overwritten by subclass."""
+        raise NotImplementedError("Subclasses must implement default_tire_size()")
+
+
+class RoadBike(Bicycle):
+    def __init__(self, size, tape_color, chain=None, tire_size=None):
+        super().__init__(size, chain, tire_size)
+        self.tape_color = tape_color
+
+    def default_tire_size(self):
+        return "23"
+
+
+class MountainBike(Bicycle):
+    def __init__(self, size, front_shock, rear_shock, chain=None, tire_size=None):
+        super().__init__(size, chain, tire_size)
+        self.front_shock = front_shock
+        self.rear_shock = rear_shock
+
+    def default_tire_size(self):
+        return "2.1"
+
+road_bike = RoadBike(size="M", tape_color="red")
+print("RoadBike tire size:", road_bike.tire_size)  # Output: '23'
+print("RoadBike chain:", road_bike.chain)          # Output: '10-speed'
+
+mountain_bike = MountainBike(size="S", front_shock="Manitou", rear_shock="Fox")
+print("MountainBike tire size:", mountain_bike.tire_size)  # Output: '2.1'
+print("MountainBike chain:", mountain_bike.chain)          # Output: '10-speed'
+</code>
+default_chain() is a common default for both bikes.
+default_tire_size() is a template method, overwritten by the implementation in
+the subclass.
+
+NOTE: using the or syntax as is done above is less explicit than using:
+<code>tire_size if tire_size is not None else self.default_tire_size()</code>
+using the or syntax will treat empty strings, lists and 0s as null entries.
+This can be useful, the syntax is clearer but it is imporatnt to be aware of
+this. If the default tire size can be 0 for example, then don't use the or.
+
 <h3>Implementing Every Template Method</h3>
+In the previous example, when using the template method pattern, the superclass
+Bicycle() sends messages to get default values that subclasses must override. 
+
+If a subclass forgets to implement default_tire_size, Python wont complain,
+but it will cause an error later on. 
+
+Bicycle() imposes a requirement on its subclasses that isn’t clear by just
+reading the code. The original designer knew that every subclass needed to
+define default_tire_size, but new programmers might overlook this requirement.
+
+The abstract base class (abc) module in python lets you explicitly   
+define template functions that will scream at you if you don't implement them.
+<code class="language-python">from abc import ABC, abstractmethod
+
+class Bicycle(ABC):
+    # Same as before    
+    @abstractmethod
+    def default_tire_size(self):
+        pass
+
+class RecumbentBike(Bicycle):
+    def default_chain(self):
+        return "9-speed"
+
+bike = RecumbentBike(size="S")
+# TypeError: Can't instantiate abstract class RecumbentBike without an implementation for abstract method 'default_tire_size'
+</code>
 
 <h2>Managing Coupling Between Superclasses and Subclasses</h2>
+
+
 <h3>Understanding Coupling</h3>
 
 <h3>Decoupling Subclasses Using Hook Messages</h3>
