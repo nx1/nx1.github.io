@@ -35,7 +35,7 @@ function currentTime() {
      + '\nMJD  : ' + mjd
      + '\nAge  : ' + age
      + '\nTZ   : ' + tz;
-     let t = setTimeout(function(){ currentTime() }, 10);
+     let t = setTimeout(function(){ currentTime() }, 1000);
 }
 
 function MJD(date) {
