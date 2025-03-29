@@ -1902,16 +1902,35 @@ the consequences of not having concrete behaviour in the superclass are far
 more severe.
 
 <h3>Separating Abstract from Concrete</h3>
-We now return to the .spares() function
+We now return to the .spares() function, which in the example in the book
+ended up as a weird missmatch between the two classes.
+In a nutshell,spares should give back:
+    RoadBike:     chain, tire_size, tape_color
+    MountainBike: chain, tire_size, front_shock, rear_shock
+
+The rest of this chapter is quite confusing, so for now i'll just implement the
+most straightforward solution I can think of...
+
 
 <code class="language-python">class Bicycle:
-    def __init__(self, **kwargs):
-        self.size = kwargs['size']
+    def __init__(self, size, chain=None, tire_size=None, **kwargs):
+        self.size      = size
+        self.chain     = chain
+        self.tire_size = tire_size
+
+    def spares(self):
+        return {'chain'     : self.chain,
+                'tire_size' : self.size}
 
 class RoadBike(Bicycle):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.tape_color = kwargs['tape_color']
+
+    def spares(self):
+        s = super().spares()
+        s['tape_color'] = self.tape_color
+        return s
 
 class MountainBike(Bicycle):
     def __init__(self, **kwargs):
@@ -1919,9 +1938,16 @@ class MountainBike(Bicycle):
         self.front_shock = kwargs['front_shock']
         self.rear_shock  = kwargs['rear_shock']
 
+    def spares(self):
+        s = super().spares()
+        s['front_shock'] = self.front_shock
+        s['rear_shock']  = self.rear_shock
+        return s
+
 b1 = RoadBike(size='M', tape_color='red')
 b2 = MountainBike(size='L', front_shock='Manitou', rear_shock='Fox')
-print(b1.size, b2.size) # M L
+print(b1.spares())
+print(b2.spares())
 </code>
 
 
