@@ -2043,7 +2043,8 @@ class RecumbentBike(Bicycle):
         return "9-speed"
 
 bike = RecumbentBike(size="S")
-# TypeError: Can't instantiate abstract class RecumbentBike without an implementation for abstract method 'default_tire_size'
+# TypeError: Can't instantiate abstract class RecumbentBike without
+# an implementation for abstract method 'default_tire_size'
 </code>
 
 <h2>Managing Coupling Between Superclasses and Subclasses</h2>
@@ -2110,8 +2111,8 @@ mb = MountainBike(size='L', chain='test', tire_size=24,
                   front_shock='bob', rear_shock='smith')
 print(rb.spares())
 print(mb.spares())
-# {'tire_size': 29, 'chain': '10-speed', 'tape_color': 'red'}
-# {'tire_size': 24, 'chain': 'test', 'front_shock': 'bob', 'rear_shock': 'smith'}   
+#{'tire_size': 29, 'chain': '10-speed', 'tape_color': 'red'}
+#{'tire_size': 24, 'chain': 'test', 'front_shock': 'bob', 'rear_shock': 'smith'}
 </code>
 
 Everything works as expected, but the fact that the sub-classes in the above
@@ -2213,6 +2214,55 @@ even for programmers who know very little about the application.
 This ease of extension is inheritance’s greatest strength. When your problem is
 one of needing numerous specializations of a stable, common abstraction,
 inheritance can be an extremely low-cost solution.
+
+<h1>7. Sharing Role Behavior with Modules</h1>
+Imagine there is a need for a recumbent mountain bikes. 
+
+Creation of a recumbent mountain bike subclass requires combining the qualities
+of two existing subclasses, something that inheritance cannot readily
+accommodate. 
+
+<h2>Understanding Roles</h2>
+Some problems require sharing behavior among unrelated objects.
+
+These objects can be thought of sharing a role.
+
+Using a role creates dependencies among the objects involved and
+these dependencies introduce risks that you must take into account when
+deciding among design options.
+
+This section unearths a hidden role and creates code to share its behavior
+among all players, while at the same time minimizing the dependencies thereby
+incurred.
+
+<h2>Finding Roles</h2>
+In chapter 5, we used a "preparer" as duck type.
+<code>
+Mechanic().prepare_trip()
+Driver().prepare_trip()
+TripCoordinator().prepare_trip()
+
+# are all interchangable for
+perparer.prepare_trip()
+</code>
+The existence of a Preparer role suggests that there is also a
+Preparable role.
+
+
+
+
+
+
+<h2>Organizing Responsibilities</h2>
+<h2>Removing Unnecessary Dependencies</h2>
+<h2>Writing the Concrete Code</h2>
+<h2>Extracting the Abstraction</h2>
+<h2>Looking Up Methods</h2>
+<h2>Inheriting Role Behavior</h2>
+<h3>Writing Inheritable Code</h3>
+<h3>Recognize the Antipatterns</h3>
+<h3>Insist on the Abstraction</h3>
+<h3>Honor the Contract</h3>
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
