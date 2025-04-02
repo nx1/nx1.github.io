@@ -2055,7 +2055,6 @@ others. What follows are two different implementations:
 When using inheritance, one must be careful about how much each class knows
 about the other. Simple solutions may lead to tightly coupled classes which may
 cause problems later.
-
 <code class="language-python">
 from abc import ABC, abstractmethod
 
@@ -2105,117 +2104,115 @@ class MountainBike(Bicycle):
 
     def default_tire_size(self):
         return '2.1'
+
+rb = RoadBike(size='XL', tire_size=29, tape_color='red')
+mb = MountainBike(size='L', chain='test', tire_size=24,
+                  front_shock='bob', rear_shock='smith')
+print(rb.spares())
+print(mb.spares())
+# {'tire_size': 29, 'chain': '10-speed', 'tape_color': 'red'}
+# {'tire_size': 24, 'chain': 'test', 'front_shock': 'bob', 'rear_shock': 'smith'}   
 </code>
-Now, the specific bike types (`RoadBike`, `MountainBike`) can inherit from `Bicycle`. They need to:
 
-1.  Call the parent's `__init__` method using `super().__init__()` to ensure common properties (`size`, `chain`, `tire_size`) are set up correctly.
-2.  Implement the `default_tire_size` method, as required by `Bicycle`.
-3.  Override the `spares` method. In their version, they first call the parent's `spares` method using `super().spares()` to get the common parts, and then add their own specific parts to that dictionary.
+Everything works as expected, but the fact that the sub-classes in the above
+example have to call super() in both the __init__() and also the spares() means
+that a form of coupling has been created.
 
+Any new programmer implementing a subclass of bicycle must remember to add this
+to the functions or else things will not work as expected.
+<h3>Decoupling Subclasses Using Hook Messages</h3>
+There is a way to avoid having the subclasses needing to send super()
+to the parent class.
 
-```
+This can be done via the use of a hook:
+<code>
+from abc import ABC, abstractmethod
 
-This setup works. Both `RoadBike` and `MountainBike` rely on `Bicycle` for common setup (`__init__`) and common spare parts (`spares`), adding their own specifics.
-
-**The Hidden Problem: The `super()` Dependency**
-
-This structure looks reasonable, but it contains a hidden danger. Notice the pattern: both `RoadBike` and `MountainBike` *must* remember to call `super().__init__()` in their `__init__` methods and `super().spares()` in their `spares` methods.
-
-This creates a dependency. The subclasses (`RoadBike`, `MountainBike`) don't just know about their *own* special features (like `tape_color` or `rear_shock`); they also need to know *how* to correctly interact with their superclass (`Bicycle`). They must know that `Bicycle` expects to be initialized via `super().__init__()` and that its `spares` method provides a base dictionary they need to extend using `super().spares()`.
-
-**What Happens if You Forget `super()`?**
-
-Let's see the problem by creating a new `RecumbentBike` subclass. What if the programmer forgets to call `super()`?
-
-```python
-# recumbent_bike.py
-from bicycle import Bicycle
-
-class RecumbentBike(Bicycle):
+class Bicycle(ABC):
     def __init__(self, **kwargs):
-        self._flag = kwargs.get('flag')
-        # OOPS! Forgot to call super().__init__(**kwargs)
-        print("Warning: RecumbentBike forgot to call super().__init__!")
+        self.size      = kwargs.get('size')
+        self.chain     = kwargs.get('chain', self.default_chain())
+        self.tire_size = kwargs.get('tire_size', self.default_tire_size())
+        self.post_init(**kwargs)
 
-    @property
-    def flag(self):
-        return self._flag
+    def post_init(self, **kwargs):
+        pass # To be overwritten by subclass
+
+    def default_chain(self):
+        return '10-speed'
+
+    @abstractmethod
+    def default_tire_size(self):
+        pass
 
     def spares(self):
-        # OOPS! Forgot to call super().spares()
-        print("Warning: RecumbentBike forgot to call super().spares()!")
-        # This will only return RecumbentBike's specific parts
-        return {'flag': self.flag}
+        return {'tire_size': self.tire_size,
+                'chain'    : self.chain,
+                **self.local_spares}
 
-    # Let's assume it also needs default_tire_size and default_chain (if different)
+class RoadBike(Bicycle):
+    def post_init(self, **kwargs):
+        self.tape_color = kwargs.get('tape_color')
+
     @property
+    def local_spares(self):
+        return {'tape_color': self.tape_color}
+
     def default_tire_size(self):
-        return '28'
+        return '23'
 
-    # Example if it had a different default chain
-    # @property
-    # def default_chain(self):
-    #    return '9-speed'
+class MountainBike(Bicycle):
+    def post_init(self, **kwargs):
+        self.front_shock = kwargs.get('front_shock')
+        self.rear_shock  = kwargs.get('rear_shock')
+    
+    @property
+    def local_spares(self):
+        return {'front_shock': self.front_shock,
+                'rear_shock' : self.rear_shock}
 
-# --- Trying it out ---
-bent = RecumbentBike(flag='tall and orange', size='L') # size is passed but ignored by __init__
+    def default_tire_size(self):
+        return '2.1'
 
-print(f"Recumbent Size: {bent.size}") # This will cause an AttributeError!
+rb = RoadBike(size='XL', tire_size=29, tape_color='red')
+mb = MountainBike(size='L', chain='test', tire_size=24,
+                  front_shock='bob', rear_shock='smith')
+print(rb.spares())
+print(mb.spares())
+</code>
 
-# The original `__init__` in Bicycle sets _tire_size and _chain.
-# Since super().__init__ was skipped, these were never set.
-# Calling spares will now fail if it relies on those base properties being set,
-# or if we correctly called super().spares() it would fail there.
-# In our "forgotten super().spares()" version:
+Adding post_init() to the parent __init__()
+means that it is always called on constructing a bike.
 
-spares_result = bent.spares()
-print(f"Recumbent Spares: {spares_result}")
+Implementing this function in subclasses means that it is called
+in the parent class, this means we do not need an __init__ in the subclasses.
 
-# If we tried to access properties set by Bicycle's __init__:
-try:
-    print(f"Recumbent Tire Size: {bent.tire_size}")
-except AttributeError as e:
-    print(f"Error accessing tire_size: {e}") # We'll get an error here
-try:
-    print(f"Recumbent Chain: {bent.chain}")
-except AttributeError as e:
-    print(f"Error accessing chain: {e}") # And here
-```
+A similar thing is done for spares() where we just add the local_spares to
+the dictionary in the parent class and return it.
 
-**Output of the problematic example:**
-
-```
-Warning: RecumbentBike forgot to call super().__init__!
-Error accessing size: 'RecumbentBike' object has no attribute '_size'
-Warning: RecumbentBike forgot to call super().spares()!
-Recumbent Spares: {'flag': 'tall and orange'}
-Error accessing tire_size: 'RecumbentBike' object has no attribute '_tire_size'
-Error accessing chain: 'RecumbentBike' object has no attribute '_chain'
-```
-
-Because `RecumbentBike.__init__` didn't call `super().__init__()`, the `_size`, `_chain`, and `_tire_size` attributes (which `Bicycle.__init__` normally sets up) are never created for the `bent` object. This leads to `AttributeError`s later.
-
-Similarly, if `RecumbentBike.spares` forgets `super().spares()`, it won't include the common parts (`tire_size`, `chain`) defined in the `Bicycle` class. The resulting `spares` dictionary will be incomplete, which might only be discovered much later when someone actually needs those spare parts.
-
-**Why This Coupling is Harmful**
-
-This requirement for subclasses to explicitly call `super()` at the right places causes several problems:
-
-1.  **Knowledge Burden:** Subclasses are forced to know *how* the superclass expects to be used (the internal algorithm). They shouldn't need to know these details.
-2.  **Code Duplication:** Every subclass needs the same `super().__init__(...)` and `super().spares()` calls.
-3.  **Error-Prone:** Programmers (especially those new to the code) can easily forget to add the `super()` calls when creating new subclasses, leading to subtle bugs that are hard to find.
-4.  **Fragility:** If the way `Bicycle` needs to be initialized or how its `spares` method works changes, *all* subclasses might need to be updated, even if their own specific logic hasn't changed.
-
-In essence, forcing subclasses to manage the interaction with their superclass via `super()` creates tight coupling. While this inheritance structure works, this coupling makes the code less flexible, harder to maintain, and more likely to break in the future.
-
----
-
-
-<h3>Decoupling Subclasses Using Hook Messages</h3>
 <h2>Summary</h2>
+The best way to create an abstract superclass is by pushing code up from
+concrete subclasses.
 
+Identifying the correct abstraction is easiest if you have access to at least
+three existing concrete classes. 
 
+Abstract superclasses use the template method pattern to invite inheritors to supply
+specializations, and use hook methods to allow these inheritors to contribute
+these specializations without being forced to send super. 
 
+Hook methods allow subclasses to contribute specializations without knowing the
+abstract algorithm. 
+
+They remove the need for subclasses to send super and therefore reduce the
+coupling between layers of the hierarchy and increase its tolerance for change.
+
+Well-designed inheritance hierarchies are easy to extend with new subclasses,
+even for programmers who know very little about the application. 
+
+This ease of extension is inheritance’s greatest strength. When your problem is
+one of needing numerous specializations of a stable, common abstraction,
+inheritance can be an extremely low-cost solution.
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
