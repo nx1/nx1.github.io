@@ -1,0 +1,674 @@
+<html>
+<head>
+    <title>nx1.info | Machine Learning Notes</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Machine Learning Notes</h1>
+
+These my notes from the book Hands-On Machine Learning with Scikit-Learn,
+Keras, and Tensorflow 3rd Edition.
+
+<h1>Table of Contents</h1>
+
+I. The Fundamentals of Machine Learning
+    1. The Machine Learning Landscape
+        What Is Machine Learning?
+        Why Use Machine Learning?
+        Examples of Applications
+        Types of Machine Learning Systems
+            Training Supervision
+            Batch Versus Online Learning
+            Instance-Based Versus Model-Based Learning
+        Main Challenges of Machine Learning
+            Insufficient Quantity of Training Data
+            Nonrepresentative Training Data
+            Poor-Quality Data
+            Irrelevant Features
+            Overfitting the Training Data
+            Underfitting the Training Data
+            Stepping Back
+        Testing and Validating
+            Hyperparameter Tuning and Model Selection
+            Data Mismatch
+        Exercises
+
+    2. End-to-End Machine Learning Project
+        Working with Real Data
+        Look at the Big Picture
+            Frame the Problem
+            Select a Performance Measure
+            Check the Assumptions
+        Get the Data
+            Running the Code Examples Using Google Colab
+            Saving Your Code Changes and Your Data
+            The Power and Danger of Interactivity
+            Book Code Versus Notebook Code
+            Download the Data
+            Take a Quick Look at the Data Structure
+            Create a Test Set
+        Explore and Visualize the Data to Gain Insights
+            Visualizing Geographical Data
+            Look for Correlations
+            Experiment with Attribute Combinations
+        Prepare the Data for Machine Learning Algorithms
+            Clean the Data
+            Handling Text and Categorical Attributes
+            Feature Scaling and Transformation
+            Custom Transformers
+            Transformation Pipelines
+        Select and Train a Model
+            Train and Evaluate on the Training Set
+            Better Evaluation Using Cross-Validation
+        Fine-Tune Your Model
+            Grid Search
+            Randomized Search
+            Ensemble Methods
+            Analyzing the Best Models and Their Errors
+            Evaluate Your System on the Test Set
+        Launch, Monitor, and Maintain Your System
+        Try It Out!
+        Exercises
+
+    3. Classification
+        MNIST
+        Training a Binary Classifier
+        Performance Measures
+            Measuring Accuracy Using Cross-Validation
+            Confusion Matrices
+            Precision and Recall
+            The Precision/Recall Trade-off
+            The ROC Curve
+        Multiclass Classification
+        Error Analysis
+        Multilabel Classification
+        Multioutput Classification
+        Exercises
+
+    4. Training Models
+        Linear Regression
+            The Normal Equation
+            Computational Complexity
+        Gradient Descent
+            Batch Gradient Descent
+            Stochastic Gradient Descent
+            Mini-Batch Gradient Descent
+        Polynomial Regression
+        Learning Curves
+        Regularized Linear Models
+            Ridge Regression
+            Lasso Regression
+            Elastic Net Regression
+            Early Stopping
+        Logistic Regression
+            Estimating Probabilities
+            Training and Cost Function
+            Decision Boundaries
+            Softmax Regression
+        Exercises
+
+    5. Support Vector Machines
+        Linear SVM Classification
+            Soft Margin Classification
+        Nonlinear SVM Classification
+            Polynomial Kernel
+            Similarity Features
+            Gaussian RBF Kernel
+            SVM Classes and Computational Complexity
+        SVM Regression
+        Under the Hood of Linear SVM Classifiers
+        The Dual Problem
+            Kernelized SVMs
+        Exercises
+
+    6. Decision Trees
+        Training and Visualizing a Decision Tree
+        Making Predictions
+        Estimating Class Probabilities
+        The CART Training Algorithm
+        Computational Complexity
+        Gini Impurity or Entropy?
+        Regularization Hyperparameters
+        Regression
+        Sensitivity to Axis Orientation
+        Decision Trees Have a High Variance
+        Exercises
+
+    7. Ensemble Learning and Random Forests
+        Voting Classifiers
+        Bagging and Pasting
+            Bagging and Pasting in Scikit-Learn
+            Out-of-Bag Evaluation
+            Random Patches and Random Subspaces
+        Random Forests
+            Extra-Trees
+            Feature Importance
+        Boosting
+            AdaBoost
+            Gradient Boosting
+            Histogram-Based Gradient Boosting
+        Stacking
+        Exercises
+
+    8. Dimensionality Reduction
+        The Curse of Dimensionality
+        Main Approaches for Dimensionality Reduction
+            Projection
+            Manifold Learning
+        PCA
+            Preserving the Variance
+            Principal Components
+            Projecting Down to d Dimensions
+            Using Scikit-Learn
+            Explained Variance Ratio
+            Choosing the Right Number of Dimensions
+            PCA for Compression
+            Randomized PCA
+            Incremental PCA
+        Random Projection
+        LLE
+        Other Dimensionality Reduction Techniques
+        Exercises
+
+    9. Unsupervised Learning Techniques
+        Clustering Algorithms: k-means and DBSCAN
+            k-means
+            Limits of k-means
+            Using Clustering for Image Segmentation
+            Using Clustering for Semi-Supervised Learning
+            DBSCAN
+            Other Clustering Algorithms
+        Gaussian Mixtures
+            Using Gaussian Mixtures for Anomaly Detection
+            Selecting the Number of Clusters
+            Bayesian Gaussian Mixture Models
+            Other Algorithms for Anomaly and Novelty Detection
+        Exercises
+
+II. Neural Networks and Deep Learning
+    10. Introduction to Artificial Neural Networks with Keras
+        From Biological to Artificial Neurons
+            - Biological Neurons
+            - Logical Computations with Neurons
+            - The Perceptron
+            - The Multilayer Perceptron and Backpropagation
+            - Regression MLPs
+            - Classification MLPs
+        Implementing MLPs with Keras
+            - Building an Image Classifier Using the Sequential API
+            - Building a Regression MLP Using the Sequential API
+            - Building Complex Models Using the Functional API
+            - Using the Subclassing API to Build Dynamic Models
+            - Saving and Restoring a Model
+            - Using Callbacks
+            - Using TensorBoard for Visualization
+        Fine-Tuning Neural Network Hyperparameters
+            - Number of Hidden Layers
+            - Number of Neurons per Hidden Layer
+            - Learning Rate, Batch Size, and Other Hyperparameters
+        Exercises
+
+    11. Training Deep Neural Networks
+        The Vanishing/Exploding Gradients Problems
+            - Glorot and He Initialization
+            - Better Activation Functions
+            - Batch Normalization
+            - Gradient Clipping
+        Reusing Pretrained Layers
+            - Transfer Learning with Keras
+            - Unsupervised Pretraining
+            - Pretraining on an Auxiliary Task
+        Faster Optimizers
+            - Momentum
+            - Nesterov Accelerated Gradient
+            - AdaGrad
+            - RMSProp
+            - Adam
+            - AdaMax
+            - Nadam
+            - AdamW
+        Learning Rate Scheduling
+        Avoiding Overfitting Through Regularization
+            - ℓ1 and ℓ2 Regularization
+            - Dropout
+            - Monte Carlo (MC) Dropout
+            - Max-Norm Regularization
+        Summary and Practical Guidelines
+        Exercises
+
+    12. Custom Models and Training with TensorFlow
+        A Quick Tour of TensorFlow
+        Using TensorFlow like NumPy
+            - Tensors and Operations
+            - Tensors and NumPy
+            - Type Conversions
+            - Variables
+            - Other Data Structures
+        Customizing Models and Training Algorithms
+            - Custom Loss Functions
+            - Saving and Loading Models That Contain Custom Components
+            - Custom Activation Functions, Initializers, Regularizers, and Constraints
+            - Custom Metrics
+            - Custom Layers
+            - Custom Models
+            - Losses and Metrics Based on Model Internals
+            - Computing Gradients Using Autodiff
+            - Custom Training Loops
+        TensorFlow Functions and Graphs
+            - AutoGraph and Tracing
+            - TF Function Rules
+        Exercises
+
+    13. Loading and Preprocessing Data with TensorFlow
+        The tf.data API
+            - Chaining Transformations
+            - Shuffling the Data
+            - Interleaving Lines from Multiple Files
+            - Preprocessing the Data
+            - Putting Everything Together
+            - Prefetching
+            - Using the Dataset with Keras
+        The TFRecord Format
+            - Compressed TFRecord Files
+            - A Brief Introduction to Protocol Buffers
+            - TensorFlow Protobufs
+            - Loading and Parsing Examples
+            - Handling Lists of Lists Using the SequenceExample Protobuf
+        Keras Preprocessing Layers
+            - The Normalization Layer
+            - The Discretization Layer
+            - The CategoryEncoding Layer
+            - The StringLookup Layer
+            - The Hashing Layer
+            - Encoding Categorical Features Using Embeddings
+            - Text Preprocessing
+            - Using Pretrained Language Model Components
+            - Image Preprocessing Layers
+        The TensorFlow Datasets Project
+        Exercises
+
+    14. Deep Computer Vision Using Convolutional Neural Networks
+        The Architecture of the Visual Cortex
+        Convolutional Layers
+            - Filters
+            - Stacking Multiple Feature Maps
+            - Implementing Convolutional Layers with Keras
+            - Memory Requirements
+        Pooling Layers
+        Implementing Pooling Layers with Keras
+        CNN Architectures
+            - LeNet-5
+            - AlexNet
+            - GoogLeNet
+            - VGGNet
+            - ResNet
+            - Xception
+            - SENet
+            - Other Noteworthy Architectures
+            - Choosing the Right CNN Architecture
+        Implementing a ResNet-34 CNN Using Keras
+        Using Pretrained Models from Keras
+        Pretrained Models for Transfer Learning
+        Classification and Localization
+        Object Detection
+            - Fully Convolutional Networks
+            - You Only Look Once
+        Object Tracking
+        Semantic Segmentation
+        Exercises
+
+    15. Processing Sequences Using RNNs and CNNs
+        Recurrent Neurons and Layers
+            - Memory Cells
+            - Input and Output Sequences
+        Training RNNs
+        Forecasting a Time Series
+            - The ARMA Model Family
+            - Preparing the Data for Machine Learning Models
+            - Forecasting Using a Linear Model
+            - Forecasting Using a Simple RNN
+            - Forecasting Using a Deep RNN
+            - Forecasting Multivariate Time Series
+            - Forecasting Several Time Steps Ahead
+            - Forecasting Using a Sequence-to-Sequence Model
+        Handling Long Sequences
+            - Fighting the Unstable Gradients Problem
+            - Tackling the Short-Term Memory Problem
+        Exercises
+
+    16. Natural Language Processing with RNNs and Attention
+        Generating Shakespearean Text Using a Character RNN
+            - Creating the Training Dataset
+            - Building and Training the Char-RNN Model
+            - Generating Fake Shakespearean Text
+            - Stateful RNN
+        Sentiment Analysis
+            - Masking
+            - Reusing Pretrained Embeddings and Language Models
+        An Encoder–Decoder Network for Neural Machine Translation
+            - Bidirectional RNNs
+            - Beam Search
+        Attention Mechanisms
+            - Attention Is All You Need: The Original Transformer Architecture
+        An Avalanche of Transformer Models
+        Vision Transformers
+        Hugging Face’s Transformers Library
+        Exercises
+
+    17. Autoencoders, GANs, and Diffusion Models
+        Efficient Data Representations
+        Performing PCA with an Undercomplete Linear Autoencoder
+        Stacked Autoencoders
+            - Implementing a Stacked Autoencoder Using Keras
+            - Visualizing the Reconstructions
+            - Visualizing the Fashion MNIST Dataset
+            - Unsupervised Pretraining Using Stacked Autoencoders
+            - Tying Weights
+            - Training One Autoencoder at a Time
+        Convolutional Autoencoders
+        Denoising Autoencoders
+        Sparse Autoencoders
+        Variational Autoencoders
+        Generating Fashion MNIST Images
+        Generative Adversarial Networks
+            - The Difficulties of Training GANs
+            - Deep Convolutional GANs
+            - Progressive Growing of GANs
+            - StyleGANs
+        Diffusion Models
+        Exercises
+
+    18. Reinforcement Learning
+        Learning to Optimize Rewards
+        Policy Search
+        Introduction to OpenAI Gym
+        Neural Network Policies
+        Evaluating Actions: The Credit Assignment Problem
+        Policy Gradients
+        Markov Decision Processes
+        Temporal Difference Learning
+        Q-Learning
+            - Exploration Policies
+            - Approximate Q-Learning and Deep Q-Learning
+        Implementing Deep Q-Learning
+        Deep Q-Learning Variants
+            - Fixed Q-value Targets
+            - Double DQN
+            - Prioritized Experience Replay
+            - Dueling DQN
+        Overview of Some Popular RL Algorithms
+        Exercises
+
+    19. Training and Deploying TensorFlow Models at Scale
+        Serving a TensorFlow Model
+            - Using TensorFlow Serving
+            - Creating a Prediction Service on Vertex AI
+            - Running Batch Prediction Jobs on Vertex AI
+        Deploying a Model to a Mobile or Embedded Device
+        Running a Model in a Web Page
+        Using GPUs to Speed Up Computations
+        Training Models Across Multiple Devices
+        Exercises
+
+    A. Machine Learning Project Checklist
+    B. Autodiff
+    C. Special Data Structures
+    D. TensorFlow Graphs
+    Index
+    About the Author
+
+<h1>1. The Machine Learning Landscape</h1>
+<h2>What Is Machine Learning?</h2>
+Programming computers so that they are able to learn from data.
+This is usually an interative process, whereby the computer performs
+some task (T), and measures its performance (P), it is then able
+to improve its performance on the experience (E)
+
+<h2>Why Use Machine Learning?</h2>
+One area where machine learning shines is for problems that
+are too complex to be programmed by hand, e.g. speech recognision
+or visual classification.
+
+<h2>Examples of Applications</h2>
+Classifiying products based on images, detecting tumors in brain scans,
+classifying news articles, self driving cars, classifying astronomical sources,
+detection of features in time series.
+
+<h2>Types of Machine Learning Systems</h2>
+Supervised/Unsupervised Learning
+
+Supervised systems are those where the training data contains the desired
+solution.
+
+    Classification:
+    For example a database of images where each of them has been given a label
+    corresponding to the contents of the image.
+
+    Regression: 
+    A time series where we are trying to predict the power output based on
+    other values in the time serieswhich is provided in historical data.
+
+An unsupervised system is one where the labels are not provided in the training
+data the algorithm will therefore try to learn without a teacher.
+
+    Clustering:
+        - K-Means
+        - DBSCAN
+        - Hierarchical Cluster Analysis (HCA)
+        - Gaussian Mixture Models (GMMs)
+        - Mean-Shift Clustering
+
+    Anomaly/Novelty Detection:
+        - One-class SVM
+        - Isolation Forest
+        - Local Outlier Factor (LOF)
+        - Autoencoders for Anomaly Detection
+
+    Visualization:
+        - t-Distributed Stochastic Neighbor-Embedding (t-SNE)
+        - Uniform Manifold Approxmiation and Projection (UMAP)
+        - Multidimensional Scaling (MDS)
+
+    Dimensionality Reduction:
+        - Principal component analysis (PCA)
+        - Kernel PCA
+        - Locally-Linear Embedding (LLE)
+        - Independent Compenent Analysis (ICA)
+        - Feature Agglomeration
+
+    Association Rule Learning (Finding patterns in transaction-like data)
+        - Apriori
+        - Eclat (Equivalence Class Clustering and Bottom-Up Lattice Traversal)
+        - FP-Growth (Frequent Pattern Growth)
+
+Semi-Supervised learning can be used for datasets that are partially labelled.
+An example of this is the facial recognition on google photos. First the faces
+are clustered (unsupervised) then after labelling one photo per person It will
+label the rest (supervised). Most semi-supervised algorithms are Combinations
+of supervised and unsupervised algorithms.
+
+Self-supervised involves generating a labelled dataset from an unlabelled
+dataset. An example of this training a model to reconstruct masked images
+by providing original images (labels) that have been manually masked.
+
+Reinforcement learning is when an agent learns which actions to perform (the
+policy) based upon rewards and penalities. e.g. teaching robots to walk.
+                
+<h3>Batch and Online Learning</h3>
+Batch learning refers to when the system cannot learn incrementally but must be
+trained all at once. Online learning is when the system can learn incrementally
+via data that is provided either individually or in groups called mini batches.
+
+<h3>Instance-Based Versus Model-Based Learning</h3>
+You can make a prediction on unseen data in two ways:
+
+1. Instance Based learning:
+    Comparing the new data to previous data via a similarity score.
+
+2. Model Based:
+    Predict on new data based on a model.
+
+The algorithms themselves are classified as being instance based or model based:
+    - LinearRegression()    : Model based
+    - KneighborsRegressor() : Instance Based
+<h2>Main Challenges of Machine Learning</h2>
+    - Insufficient Quantity of Training Data
+    - Nonrepresentative Training Data
+    - Poor-Quality Data
+    - Irrelevant Features
+    - Overfitting the Training Data
+    - Underfitting the Training Data
+<h2>Testing and Validating</h2>
+No Free Lunch Theorem:
+- Without making assumptions about the data, it is not possible to know aprori
+  which model will be better for a given problem.
+
+<h2>Exercises</h2>
+1. How would you define Machine Learning?
+    Machine learning is the name given to the science or art of programming
+    computers so that it is able to learn from data.
+
+2. Can you name four types of problems where it shines?
+    Natural language processing, optical character regonition, optimal bhop
+    method, spam filter
+
+3. What is a labeled training set?
+    A labelled training set is one where the data has information relating to
+    the classification the sample falls into, for example a set of emails,
+    labelled spam or not spam or a set of images labelled cat,dog,frog, etc...
+
+4. What are the two most common supervised tasks?
+    Classification, regression
+
+5. Can you name four common unsupervised tasks?
+    - Clustering
+    - Anomaly / Novelty Detection
+    - Density estimation
+    - Visualization 
+    - Dimensionality Reduction
+    - Association Rule Learning
+
+6. What type of Machine Learning algorithm would you use to allow a robot to
+walk in various unknown terrains?
+    - Re-enforcement learning
+            
+7. What type of algorithm would you use to segment your customers into multiple
+groups? 
+    - Classifcation/Clustering
+
+8. Would you frame the problem of spam detection as a supervised learning
+problem or an unsupervised learning problem?
+    - Strictly it is probably supervised, but in practice it is likely a
+    mixture of both hence semi-supervised. Based on a few labels + clustering 
+
+           
+9. What is an online learning system?
+    The model is able to learn from additional incoming pieces of data
+    as it arrives.
+            
+10. What is out-of-core learning?
+    - The model must be trained on large datasets that cannot fit into RAM or
+    the CPU, this may take extensive time and can be expensive to recalculate.
+
+11. What type of learning algorithm relies on a similarity measure to make
+predictions?
+    - Instance based learning
+
+12. What is the difference between a model parameter and a learning algorithm’s
+hyperparameter?
+
+    A model parameter is one that is fitted to the data such as the slope or
+    intercept, while the hyperparameter are set at the models creation and
+    influneces the way the model learns this could be the number of layers in
+    the neural network.
+
+13. What do model-based learning algorithms search for?
+    What is the most common strategy they use to succeed?
+    How do they make predictions?
+
+    - Model based algorithms search for ways to describe the data using a
+    simplification. They do this by specifing how the various values in the
+    data are linked together. They succeed well when the data it is tested on
+    is similar to the one it was trained on but they often struggle when
+    extrapolating to regions outside of the data it was trained on.
+
+    Model based algorithms rely on either a cost function or a fitness
+    function, these describe how bad, or well the data is described by the
+    model. An example of a cost function is that of least squares for a linear
+    regression model which the algorithm will attempt to minimize while
+    learning
+
+14. Can you name four of the main challenges in Machine Learning?
+    - Insufficient data
+    - Non-representitative data
+    - sampling bias
+    - poor quality data
+    - Irrelevant features
+    - overfitting/underfitting
+
+15. If your model performs great on the training data but generalizes poorly to
+    new instances, what is happening?
+    Can you name three and provide solutions?
+    
+    - The model is overfitting, 
+    Solutions:
+        - Use more representative data
+        - Working with outliers
+        - Adjust the hyperparameters
+        - Do some dimensionality reduction or feature extraction.
+        - Use a different algorithm
+
+16. What is a test set, and why would you want to use it?
+    - A test set is a set of data that has not been seen by the machine
+    learning algorithm during its training, and therefore is a test to see how
+    the model performs on unseen data.
+
+17. What is the purpose of a validation set?
+
+    A validation set is created from data that is taken out of the training set
+    and then used to test the ML model, the reason for doing this is to test
+    many different machine learning models, you would test the various models
+    on the validation set and see which one performs the best, then you would
+    use that model that performs the best on the full test set.
+
+    This is known as Holdout validation and is used for hyperparameter tuning,
+    however something else that should also be done is called cross-validation,
+    this is when many different validation sets are created, the models are
+    tested on all of them and then you would usually take the average
+    performance across all the validation sets.
+
+18. What is the train-dev set, when do you need it, and how do you use it?
+
+    - The train-dev set is created from the training data, and it used to test
+    the ML model to see if it is overfitting on the training set. If the model
+    performs badly on the model may be overfitting.
+
+    The dev set and the validation set are often used interchangably, but in
+    this instance the validation set is to do with the hyperparameters of
+    differnent models, but the dev set is to do with how one model does on the
+    data. tbh shit description in the book.
+
+    To summarize, while the terms "validation set" and "dev-set" are often used
+    interchangeably, the validation set is primarily associated with assessing
+    model performance and generalization, while the dev-set emphasizes the
+    iterative development and fine-tuning of models.
+         
+19. What can go wrong if you tune hyperparameters using the test set?
+    - Tuning hyperparameters on the test set is bad for various reasons:
+        - Overfitting to the data set : will make it seem like the model is better
+        - Leakage of information      : The model shouldn't see the test data
+        - Lack of generalization
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
