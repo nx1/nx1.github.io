@@ -666,6 +666,106 @@ hyperparameter?
         - Leakage of information      : The model shouldn't see the test data
         - Lack of generalization
 
+
+
+<h1>2. End-to-End Machine Learning Project</h1>
+
+A machine learning project may be broken into 8 steps:
+    1. Look at the big picture
+    2. Get the data
+    3. Discover and visualize the data to gain insights
+    4. Prepare the data for Machine Learning algorithms
+    5. Select a model and train it
+    6. Fine-tune your model
+    7. Present your solution
+    8. Launch, monitor, and maintain your system
+
+<h2>Working with Real Data</h2>
+<a href="https://www.kaggle.com/datasets">Kaggle Datasets</a>
+<a href="https://www.openml.org/">OpenML</a>
+<a href="https://www.kdnuggets.com/datasets/index.html">KDnuggets Datasets</a>
+<a href="https://huggingface.co/datasets">Hugging Face Datasets</a>
+<a href="https://paperswithcode.com/datasets">Papers with Code Datasets</a>
+<a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>
+<a href="http://research.zozo.jp/dataset/">Zozo Dataset</a>
+<a href="http://registry.opendata.aws/datasets/">AWS Open Data Registry</a>
+<a href="https://www.tensorflow.org/datasets">
+<a href="dataportals.org">dataportals.org</a>
+<a href="opendatamonitor.eu">opendatamonitor.eu</a>
+<a href="homl.info/9">homl.info/9</a>
+<a href="homl.info/10">homl.info/10</a>
+<a href="reddit.com/r/datasets">reddit.com/r/datasets</a>
+
+<h2>Look at the Big Picture</h2>
+
+<h3>Frame the Problem</h3>
+<h3>Select a Performance Measure</h3>
+
+Number of instances                : \( m \)
+Vector of features of ith instance : \( \mathbf{x}^{(i)} \) (ith-row of dataframe)
+Vector of labels of ith instance   : \( y^{(i)} \) (final column of dataframe)
+Matrix of features                 : \( X \) (dataframe without the final column)
+System prediction function         : \( h \) (hypothesis)
+
+The prediction function will predict a label based on an instance vector:
+\( \hat{y}^{(i)} = h(x^{(i)}) \)
+
+RMSE (Root Mean Square Error):
+\( RMSE(X, h) = \sqrt{\frac{1}{m}\sum_{i=1}^{m}(h(\mathbf{x}^{(i)}) - y^{(i)})^2}\)
+MAE (Mean Absolute Error) aka Average Absolute Deviation:
+\( MAE(X, h) = \frac{1}{m}\sum_{i=1}^{m}|h(\mathbf{x}^{(i)}) - y^{(i)}|\)
+
+RMSE and MAE are methods of calculating distances between two vectors.
+
+<h3>Distance Measures</h3>
+Various distance measures norms are possible:
+Euclidean norm (\( l_2 \) norm) denoted by \( ||x||_2 \) or \( ||x|| \)
+\(||\mathbf{x}||_2 = \sqrt{\sum_{i=1}^{n}x_i^2}\)
+
+Manhattan norm (\( l_1 \) norm) denoted by \( ||x||_1 \)
+\(||\mathbf{x}||_1 = \sum_{i=1}^{n}|x_i|\)
+Distance between two points if you can only travel along orthogonal city blocks.
+
+More gernerally, the \( l_k \) norm of vector \( \mathbf{v} \) containing n elements:
+\(||\mathbf{v}||_k = (\sum_{i=1}^{n}|v_i|^k)^{1/k}\)
+
+\( l_0 \) gives the number of non-zero elements in the vector,
+\( l_{\infty} \) gives the maximum element in the vector.
+
+The higher the norm index, \( k \), the more weight is given to the large values
+and the less weight is given to the small values.
+
+This is why RMSE (l2 norm) is more sensitive to outliers than MAE (l1 norm).
+However even when outlier are exponentially rare such as in a gaussian, the RMSE
+still performs very well and is generally preferred.
+
+<h3>Download the Data</h3>
+<h3>Take a Quick Look at the Data Structure</h3>
+<h3>Create a Test Set</h3>
+<h2>Explore and Visualize the Data to Gain Insights
+<h3>Visualizing Geographical Data
+<h3>Look for Correlations
+<h3>Experiment with Attribute Combinations
+<h2>Prepare the Data for Machine Learning Algorithms
+<h3>Clean the Data
+<h3>Handling Text and Categorical Attributes
+<h3>Feature Scaling and Transformation
+<h3>Custom Transformers
+<h3>Transformation Pipelines
+<h2>Select and Train a Model
+<h3>Train and Evaluate on the Training Set
+<h3>Better Evaluation Using Cross-Validation
+<h2>Fine-Tune Your Model
+<h3>Grid Search
+<h3>Randomized Search
+<h3>Ensemble Methods
+<h3>Analyzing the Best Models and Their Errors
+<h3>Evaluate Your System on the Test Set
+<h2>Launch, Monitor, and Maintain Your System
+<h2>Try It Out!
+<h2>Exercises
+
+
 <hr>
 <div id="clock" onload="currentTime()"></div>
 <script type="text/javascript" src="../clock.js"></script>
