@@ -1,0 +1,73 @@
+<html>
+<head>
+    <title>nx1.info | Vim Cheat Sheet</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+<pre>
+<h1>nx1.info | Vim Cheat Sheet</h1>
+
+Basics:                                     Navigation:
+i   - insert before cursor                  h    - left
+I   - insert at beginning of line           j    - down
+a   - append after cursor                   k    - up
+A   - append at end of line                 l    - right
+ESC - return to normal mode                 w    - next word
+:w  - write/save                            b    - previous word
+:q  - quit                                  0    - beginning of line
+:wq - write and quit                        ^    - first non-blank of line
+:q! - quit without saving                   $    - end of line
+.   - repeat last change                    G    - go to end of file
+                                            gg   - go to beginning of file
+                                            :NUM - go to line NUM
+                                            %    - jump between brackets
+
+Editing:                                    Visual Mode:
+x       - delete character under cursor     v       - visual mode (character-wise)
+dd      - delete line                       V       - visual line mode
+dw      - delete word                       CTRL-v  - visual block mode
+D       - delete to end of line             y       - yank selection
+yy      - yank (copy) line                  d       - delete selection
+p       - paste after cursor                ~       - toggle case
+P       - paste before cursor
+u       - undo                                          
+CTRL-r  - redo                                          
+r       - replace character                Search & Replace:                                       
+                                           /word           - search forward for "word"             
+                                           ?word           - search backward                       
+Buffers, Windows, Tabs:                    n               - next match                            
+:ls or :buffers   - list buffers           N               - previous match                        
+:bn               - next buffer            :%s/foo/bar/g   - replace all foo with bar              
+:bp               - previous buffer        :%s/foo/bar/gc  - replace with confirmation             
+:bd               - delete buffer
+:split or :sp     - horizontal split       Formatting / Text Manipulation:
+:vsplit or :vsp   - vertical split         gqip - reformat paragraph (text object 'ip' = inner paragraph)
+CTRL-w w          - switch window          gqap - reformat paragraph (including surrounding blank lines)
+CTRL-w h/j/k/l    - move to window         gqq  - reformat current line
+:tabnew           - open new tab           gwip - reformat paragraph, preserving cursor
+gt                - next tab               gwap - same as above but with surrounding blank lines
+gT                - previous tab
+
+Deleting with motions:                                Jumping to start/end of blocks:
+daw - delete a word (and surrounding whitespace)      [[ - jump to previous function start
+diw - delete inner word (no surrounding space)        ]] - jump to next function start
+dap - delete a paragraph                              [] - jump to previous block start (like { )
+dip - delete inner paragraph                          ][ - jump to next block end     (like } )
+das - delete a sentence (includes punctuation)
+dis - delete inner sentence
+d}  - delete until next paragraph
+di( - delete inside parentheses
+da( - delete around parentheses
+di{ - delete inside curly braces
+di[ - delete inside square brackets
+vi( - visually select inside parentheses
+va[ - visually select around square brackets
+ci( - change inside parentheses
+yi{ - yank inside curly braces
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
