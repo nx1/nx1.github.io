@@ -669,6 +669,8 @@ hyperparameter?
 
 
 <h1>2. End-to-End Machine Learning Project</h1>
+A nice flowchart of the process of selecting the right estimator in sklearn:
+<a href="https://scikit-learn.org/stable/machine_learning_map.html">scikit-learn.org/stable/machine_learning_map.html</a>
 
 A machine learning project may be broken into 8 steps:
     1. Look at the big picture
@@ -793,7 +795,84 @@ scaler.transform(X_validation)
 </code></pre>
 Fitting to anything else is leaking information from the test or validation data into your model. 
 <h3>Custom Transformers</h3>
+Transformations that do not require training can be implemented as functions:
+<pre><code class="language-python">from sklearn.preprocessing import FunctionTransformer
+
+log_transformer = FunctionTransformer(func=np.log, inverse_func=np.exp)
+X_log = log_transformer.fit_transform(X)
+</code></pre>
+Transformers can also take keyword arguments:
+<pre><code class="language-python">def scale(X, factor):
+    return X * factor
+
+def unscale(X, factor):
+    return X / factor
+
+ft = FunctionTransformer(func=scale, inverse_func=unscale,
+                         kw_args={'factor':5}, inv_kw_args={'factor':5})
+X_scaled   = ft.fit_transform(X)
+X_unscaled = ft.inverse_transform(X_scaled)
+</code></pre>
+
+Transformers that depend on the data (require training) can be created by
+making a class that implements the fit() and transform() methods:
+<pre><code class="language-python">class InformedScale:
+    def __init__(self, factor=1.0):
+        self.factor = factor
+
+    def fit(self, X, y=None):
+        self.mean_ = X.mean(axis=0)
+        self.std_  = X.std(axis=0)
+        return self
+
+    def transform(self, X):
+        return (self.mean_ / self.std_) * X * self.factor
+</code></pre>
+The above example illustrates the idea, but there are useful classes in sklearn our
+transformer class can inherit from:
+    BaseEstimator:    Provides get_params() and set_params() methods.
+    TransformerMixin: Provides fit_transform() method.
+
+Additionally, there are attributes and functions that the estimator should have:
+    self.n_features_in_          : Number of features seen during fit.
+    self.get_feature_names_out() : Returns feature names after transformation.
+    self.inverse_transform()     : Returns the inverse transformation of the data.
+
+The BaseEstimator provides get_params() and set_params() methods.
+The TransformerMixin provides fit_transform().
+
+Custom transformers should implement:
+ - fit(X, y=None): Returns self
+ - transform(X): Returns transformed X
+ - fit_transform(X, y=None): Calls fit() then transform()
+
+They can optionally implement:
+ - get_feature_names_out(): Returns feature names after transformation
+
 <h3>Transformation Pipelines</h3>
+Pipelines chain estimators.
+They call fit_transform() on each estimator except the last, which is 
+called using fit().
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+    
+Pipeline([
+    ('step 1', Estimator_1),
+    ('step 2', Estimator_2),
+    ...
+])
+</code></pre>
+Pipelines can be created in in a short hand way:
+<pre><code class="language-python">from sklearn.pipeline import make_pipeline
+
+pipe = make_pipeline(SimpleImputer(strategy='median'),
+                     StandardScaler(),
+                     LogisticRegression())
+
+pipe.fit(X_train, y_train)
+pipe.predict(X_test)
+</code></pre>
+
+
 
 
 <h2>Select and Train a Model</h2>
