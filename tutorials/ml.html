@@ -689,16 +689,13 @@ A machine learning project may be broken into 8 steps:
 <a href="https://archive.ics.uci.edu/ml/index.php">UCI Machine Learning Repository</a>
 <a href="http://research.zozo.jp/dataset/">Zozo Dataset</a>
 <a href="http://registry.opendata.aws/datasets/">AWS Open Data Registry</a>
-<a href="https://www.tensorflow.org/datasets">
-<a href="dataportals.org">dataportals.org</a>
-<a href="opendatamonitor.eu">opendatamonitor.eu</a>
-<a href="homl.info/9">homl.info/9</a>
-<a href="homl.info/10">homl.info/10</a>
-<a href="reddit.com/r/datasets">reddit.com/r/datasets</a>
+<a href="https://www.tensorflow.org/datasets">tensorflow.org/datasets</a>
+<a href="https://dataportals.org">dataportals.org</a>
+<a href="https://opendatamonitor.eu">opendatamonitor.eu</a>
+<a href="https://homl.info/9">homl.info/9</a>
+<a href="https://homl.info/10">homl.info/10</a>
+<a href="https://reddit.com/r/datasets">reddit.com/r/datasets</a>
 
-<h2>Look at the Big Picture</h2>
-
-<h3>Frame the Problem</h3>
 <h3>Select a Performance Measure</h3>
 
 Number of instances                : \( m \)
@@ -743,27 +740,74 @@ still performs very well and is generally preferred.
 <h3>Take a Quick Look at the Data Structure</h3>
 <h3>Create a Test Set</h3>
 <h2>Explore and Visualize the Data to Gain Insights
-<h3>Visualizing Geographical Data
-<h3>Look for Correlations
-<h3>Experiment with Attribute Combinations
-<h2>Prepare the Data for Machine Learning Algorithms
-<h3>Clean the Data
-<h3>Handling Text and Categorical Attributes
-<h3>Feature Scaling and Transformation
-<h3>Custom Transformers
-<h3>Transformation Pipelines
-<h2>Select and Train a Model
-<h3>Train and Evaluate on the Training Set
-<h3>Better Evaluation Using Cross-Validation
-<h2>Fine-Tune Your Model
-<h3>Grid Search
-<h3>Randomized Search
-<h3>Ensemble Methods
-<h3>Analyzing the Best Models and Their Errors
-<h3>Evaluate Your System on the Test Set
-<h2>Launch, Monitor, and Maintain Your System
-<h2>Try It Out!
-<h2>Exercises
+<h3>Visualizing Geographical Data</h3>
+<h3>Look for Correlations</h3>
+<h3>Experiment with Attribute Combinations</h3>
+<h2>Prepare the Data for Machine Learning Algorithms</h2>
+<h3>Clean the Data</h3>
+
+Missing values may be imputed using sklearn.impute:
+ - SimpleImputer    : strategy='mean', 'median', 'most_frequent', 'constant'
+ - KNNImputer       : value is replaced with knn mean based on all features
+ - IterativeImputer : Trains a regression model for each feature iteratively.
+
+The ._statistics Attribute of the imputer hold the value of the strategy:
+<pre><code>SimpleImputer(strategy='median').fit(df)._statistics == df.median.values()</code></pre>
+<h3>Handling Text and Categorical Attributes</h3>
+Categorical features may be encoded with either sklearn.preprocessing
+    OrdinalEncoder : Better for sliding scale categoricals
+    OneHotEncoder  : Better for non-related categoricals.
+
+other encodings are available in:
+<a href="https://contrib.scikit-learn.org/category_encoders/">contrib.scikit-learn.org/category_encoders/</a>
+
+One-hot encoding can be done with pandas using pd.get_dummies() however it is
+better to use the OneHotEncoder because it remember which categories it was
+trained on.
+<h3>Feature Scaling and Transformation</h3>
+sklearn.preprocessing:
+StandardScaler(): \( \mu = 0 \) \( \ sigma = 1 \) (z-score).
+MinMaxScaler():   scale between 0 - 1 (by default)
+MaxAbsScaler():   \( x / \mathrm{max}(|x|) \) (useful for spare data).
+RobustScaler():   \( (x - X_{\mathrm{median}}) / IQR \) (robust to outliers)
+Normalizer():     norm='l2': \( \frac{x}{\|x\|_2} = \frac{x}{\sqrt{x_1^2 + x_2^2 + \dots + x_n^2}} \)
+                  norm='l1': \( \frac{x}{\|x\|_1} = \frac{x}{|x_1| + |x_2| + \dots + |x_n|} \)
+
+Scaling should only be applied to the training set. Then the SAME scaling can 
+and should be applied to any other sets: validation, test set, etc...
+
+It is possible that these other sets may have ranges outside the training
+range, these will have to be handled seperately.
+
+Features with heavy tails, can be tranformed via log() or sqrt() to bring them
+closer to a guassian.
+Alternatively, heavy tailed features can be binned
+<pre><code class="language-python"></code></pre>
+
+
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+scaler.transform(X_test)
+scaler.transform(X_validation)
+</code></pre>
+Fitting to anything else is leaking information from the test or validation data into your model. 
+<h3>Custom Transformers</h3>
+<h3>Transformation Pipelines</h3>
+
+
+<h2>Select and Train a Model</h2>
+<h3>Train and Evaluate on the Training Set</h3>
+<h3>Better Evaluation Using Cross-Validation</h3>
+<h2>Fine-Tune Your Model</h2>
+<h3>Grid Search</h3>
+<h3>Randomized Search</h3>
+<h3>Ensemble Methods</h3>
+<h3>Analyzing the Best Models and Their Errors</h3>
+<h3>Evaluate Your System on the Test Set</h3>
+<h2>Launch, Monitor, and Maintain Your System</h2>
+<h2>Try It Out!</h2>
+<h2>Exercises</h2>
 
 
 <hr>
