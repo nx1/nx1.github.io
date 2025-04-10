@@ -1,0 +1,183 @@
+<html>
+<head>
+    <title>nx1.info | DDIA Notes</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Designing Data-Intensive Applications</h1>
+
+These are notes from the book Designing Data Intensive Applications.
+
+
+Overview:
+Part I: Fundamental ideas
+Ch1 - Reliability, Scalability, Maintainability
+Ch2 - Data Models and Query Languages 
+Ch3 - Storage Engines
+Ch4 - Data Encoding
+
+Part II: Distributed Data
+Ch5 - Replication
+Ch6 - Partitioning / Sharding
+Ch7 - Transactions
+Ch8 - Problems with Distributed Systems
+Ch9 - Consistency and consensus in distuted Systems
+
+Part III: Derived Data
+Ch10 - Batch Processing
+Ch11 - Stream Processing
+Ch12 - Putting it all together
+
+
+Part I:
+<h2>Chapter 1: Reliable, Scalable & Maintainable Applications</h2>
+
+Data may be accessed and stored in a multitude of different ways. The umbrella
+term Data Systems is a catch all for anything from databases, caches, queues,
+etc... An application may use many differnet data systems together.
+
+A major concern for software is that it is:
+Reliable     : System works correctly in the face of adversity (software/hardware/human)
+Scalable     : As the system grows, there should be ways to deal with it
+Maintainable : Many people should be able to maintain and adapt the system productively.
+
+<h2>Chapter 2: Data Models and Query Languages</h2>
+
+Data models are crucial to software development because they shape how problems
+are represented and solved. 
+
+Applications typically involve layers of data modeling, starting from
+real-world concepts (like people or actions), moving through general-purpose
+models (like JSON, tables, or graphs), down to how data is physically stored
+and processed.
+
+Each data model layer abstracts the complexity of the one beneath it, allowing
+different stakeholders (e.g., app developers and database engineers) to
+collaborate effectively. However, every model comes with trade-offs—certain
+operations are easy, others are hard or inefficient—so selecting the right
+model is vital.
+
+General-purpose data models used for storage and querying are 
+relational, document, and graph models. These are often accesse using
+differnet query languages.
+
+
+
+<h2>Relational Model Versus Document Model</h2>
+SQL is the best known data model, it based on the relational model introduced
+1970, it organizes data into tables (relations) of rows (tuples).
+
+Despite changes in computing power and application diversity, relational
+databases have remained widely applicable and are still heavily used across
+modern web services and applications.
+
+<h2>NoSQL</h2>
+
+NoSQL emerged in the 2010s as a reaction to the limitations of relational
+databases, especially in web startups. Although the term started as a Twitter
+hashtag in 2009, it quickly gained traction and now refers to a variety of
+nonrelational, often open-source, distributed databases. 
+
+Key drivers for NoSQL adoption include:
+- Need for scalability (handling large datasets or high write throughput)
+- Preference for open-source tools
+- Use cases not well served by the relational model
+- Desire for flexible, dynamic schemas
+
+Rather than replacing relational databases entirely, NoSQL promotes "polyglot
+persistence": using different types of databases for different needs within the
+same application ecosystem.
+
+<h2>The Object-Relational Mismatch</h2>
+
+Data in OOP languages and SQL are structured differently, data stored in
+relational tables therefore require an awkward translation layer.
+
+i. A term borrowed from electronics. Every electric circuit has a certain impedance (resistance to alternating
+current) on its inputs and outputs. When you connect one circuit’s output to another one’s input, the power
+transfer across the connection is maximized if the output and input impedances of the two circuits match. An
+impedance mismatch can lead to signal reflections and other troubles.
+application code and the database model of tables, rows, and columns. The discon‐
+nect between the models is sometimes called an impedance mismatch.i
+Object-relational mapping (ORM) frameworks like ActiveRecord and Hibernate
+reduce the amount of boilerplate code required for this translation layer, but they
+can’t completely hide the differences between the two models.
+For example, Figure 2-1 illustrates how a résumé (a LinkedIn profile) could be
+expressed in a relational schema. The profile as a whole can be identified by a unique
+identifier, user_id. Fields like first_name and last_name appear exactly once per
+user, so they can be modeled as columns on the users table. However, most people
+have had more than one job in their career (positions), and people may have varying
+numbers of periods of education and any number of pieces of contact information.
+There is a one-to-many relationship from the user to these items, which can be repre‐
+sented in various ways:
+• In the traditional SQL model (prior to SQL:1999), the most common normalized
+representation is to put positions, education, and contact information in separate
+tables, with a foreign key reference to the users table, as in Figure 2-1.
+• Later versions of the SQL standard added support for structured datatypes and
+XML data; this allowed multi-valued data to be stored within a single row, with
+support for querying and indexing inside those documents. These features are
+supported to varying degrees by Oracle, IBM DB2, MS SQL Server, and Post‐
+greSQL [6, 7]. A JSON datatype is also supported by several databases, including
+IBM DB2, MySQL, and PostgreSQL [8].
+• A third option is to encode jobs, education, and contact info as a JSON or XML
+document, store it on a text column in the database, and let the application inter‐
+pret its structure and content. In this setup, you typically cannot use the database
+to query for values inside that encoded column.
+30 | Chapter 2: Data Models and Query Languages
+Figure 2-1. Representing a LinkedIn profile using a relational schema. Photo of Bill
+Gates courtesy of Wikimedia Commons, Ricardo Stuckert, Agência Brasil.
+For a data structure like a résumé, which is mostly a self-contained document, a JSON
+representation can be quite appropriate: see Example 2-1. JSON has the appeal of
+being much simpler than XML. Document-oriented databases like MongoDB [9],
+RethinkDB [10], CouchDB [11], and Espresso [12] support this data model.
+Example 2-1. Representing a LinkedIn profile as a JSON document
+{
+"user_id": 251,
+"first_name": "Bill",
+"last_name": "Gates",
+"summary": "Co-chair of the Bill & Melinda Gates... Active blogger.",
+"region_id": "us:91",
+"industry_id": 131,
+"photo_url": "/p/7/000/253/05b/308dd6e.jpg",
+Relational Model Versus Document Model | 31
+"positions": [
+{"job_title": "Co-chair", "organization": "Bill & Melinda Gates Foundation"},
+{"job_title": "Co-founder, Chairman", "organization": "Microsoft"}
+],
+"education": [
+{"school_name": "Harvard University", "start": 1973, "end": 1975},
+{"school_name": "Lakeside School, Seattle", "start": null, "end": null}
+],
+"contact_info": {
+"blog": "http://thegatesnotes.com",
+"twitter": "http://twitter.com/BillGates"
+}
+}
+Some developers feel that the JSON model reduces the impedance mismatch between
+the application code and the storage layer. However, as we shall see in Chapter 4,
+there are also problems with JSON as a data encoding format. The lack of a schema is
+often cited as an advantage; we will discuss this in “Schema flexibility in the docu‐
+ment model” on page 39.
+The JSON representation has better locality than the multi-table schema in
+Figure 2-1. If you want to fetch a profile in the relational example, you need to either
+perform multiple queries (query each table by user_id) or perform a messy multi-
+way join between the users table and its subordinate tables. In the JSON representa‐
+tion, all the relevant information is in one place, and one query is sufficient.
+The one-to-many relationships from the user profile to the user’s positions, educa‐
+tional history, and contact information imply a tree structure in the data, and the
+JSON representation makes this tree structure explicit (see Figure 2-2).
+
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
