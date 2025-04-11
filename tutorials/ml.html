@@ -4,6 +4,7 @@
     <link rel="icon" type="image/x-icon" href="../favicon.png">
 	<link rel="stylesheet" type="text/css" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
 	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -872,8 +873,15 @@ pipe.fit(X_train, y_train)
 pipe.predict(X_test)
 </code></pre>
 
+It is possible to handle categorical and numerical column seperately using a
+single transformer.
 
+To do this, we create two pipelines for categorical and numerical columns, then
+we combine them using the ColumnTransformer() and which tells which pipeline to
+apply to which columns.
 
+The columns can be selected using the make_column_selector()
+<pre><code class="language-python">from sklearn.compose import ColumnTransformer
 
 <h2>Select and Train a Model</h2>
 <h3>Train and Evaluate on the Training Set</h3>

@@ -1,0 +1,345 @@
+<html>
+<head>
+    <title>nx1.info | Introduction to Algorithms Notes</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Introduction to Algorithms Notes</h1>
+
+These are some notes from the book Introduction to Algorithms (CLRS) 4th Edition.
+
+<h1>Table of Contents</h1>
+
+Chapters:
+I.    Foundations 
+II.   Sorting and Order Statistics 
+III.  Data Structures 
+IV.   Advanced Design and Analysis Techniques
+V.    Advanced Data Structures
+VI.   Graph Algorithms
+VII.  Selected Topics
+VIII. Appendix: Mathematical Background
+
+
+I. Foundations
+    1. The Role of Algorithms in Computing
+        1.1 Algorithms
+        1.2 Algorithms as a Technology
+        1.3 Exercises
+
+    2. Getting Started
+        2.1 Insertion Sort
+        2.2 Analyzing Algorithms
+        2.3 Designing Algorithms
+        2.4 Exercises
+
+    3. Characterizing Running Times
+        3.1 O-notation, Ω-notation, and Θ-notation
+        3.2 Asymptotic Notations: Formal Definitions
+        3.3 Standard Notations and Common Functions
+        3.4 Exercises
+
+    4. Divide-and-Conquer
+        4.1 The Maximum-Subarray Problem
+        4.2 Strassen's Algorithm for Matrix Multiplication
+        4.3 The Substitution Method for Solving Recurrences
+        4.4 The Recursion-Tree Method for Solving Recurrences
+        4.5 The Master Method for Solving Recurrences
+        4.6 Proof of the Continuous Master Theorem
+        4.7 Arka-Bazzi Recurrences
+        4.8 Exercises
+
+    5. Probabilistic Analysis and Randomized Algorithms
+        5.1 The Hiring Problem
+        5.2 Indicator Random Variables
+        5.3 Randomized Algorithms
+        5.4 Probabilistic Analysis and Further Uses of Indicator Random Variables
+        5.5 Exercises
+
+II. Sorting and Order Statistics
+    6. Heapsort
+        6.1 Heaps
+        6.2 Maintaining the Heap Property
+        6.3 Building a Heap
+        6.4 The Heapsort Algorithm
+        6.5 Priority Queues
+        6.6 Exercises
+
+    7. Quicksort
+        7.1 Description of Quicksort
+        7.2 Performance of Quicksort
+        7.3 A Randomized Version of Quicksort
+        7.4 Analysis of Quicksort
+        7.5 Exercises
+
+    8. Sorting in Linear Time
+        8.1 Lower Bounds for Sorting
+        8.2 Counting Sort
+        8.3 Radix Sort
+        8.4 Bucket Sort
+        8.5 Exercises
+
+    9. Medians and Order Statistics
+        9.1 Minimum and Maximum
+        9.2 Selection in Expected Linear Time
+        9.3 Selection in Worst-Case Linear Time
+        9.4 Exercises
+
+III. Data Structures
+    10. Elementary Data Structures
+        10.1 Stacks and Queues
+        10.2 Linked Lists
+        10.3 Implementing Pointers and Objects
+        10.4 Representing Rooted Trees
+        10.5 Exercises
+
+    11. Hash Tables
+        11.1 Direct-Address Tables
+        11.2 Hash Tables
+        11.3 Hash Functions
+        11.4 Open Addressing
+        11.5 Perfect Hashing
+        11.6 Exercises
+
+    12. Binary Search Trees
+        12.1 What Is a Binary Search Tree?
+        12.2 Querying a Binary Search Tree
+        12.3 Insertion and Deletion
+        12.4 Randomly Built Binary Search Trees
+        12.5 Exercises
+
+    13. Red-Black Trees
+        13.1 Properties of Red-Black Trees
+        13.2 Rotations
+        13.3 Insertion
+        13.4 Deletion
+        13.5 Exercises
+
+    14. Augmenting Data Structures
+        14.1 Dynamic Order Statistics
+        14.2 How to Augment a Data Structure
+        14.3 Interval Trees
+        14.4 Exercises
+
+IV. Advanced Design and Analysis Techniques
+    15. Dynamic Programming
+        15.1 Rod Cutting
+        15.2 Matrix-Chain Multiplication
+        15.3 Elements of Dynamic Programming
+        15.4 Longest Common Subsequence
+        15.5 Optimal Binary Search Trees
+        15.6 Exercises
+
+    16. Greedy Algorithms
+        16.1 An Activity-Selection Problem
+        16.2 Elements of the Greedy Strategy
+        16.3 Huffman Codes
+        16.4 Matroids and Greedy Methods
+        16.5 A Task-Scheduling Problem as a Matroid
+        16.6 Exercises
+
+    17. Amortized Analysis
+        17.1 Aggregate Analysis
+        17.2 The Accounting Method
+        17.3 The Potential Method
+        17.4 Dynamic Tables
+        17.5 Exercises
+
+V. Advanced Data Structures
+    18. B-Trees
+        18.1 Definition of B-Trees
+        18.2 Basic Operations on B-Trees
+        18.3 Deleting a Key from a B-Tree
+        18.4 Exercises
+
+    19. Fibonacci Heaps
+        19.1 Structure of Fibonacci Heaps
+        19.2 Mergeable-Heap Operations
+        19.3 Decreasing a Key and Deleting a Node
+        19.4 Bounding the Maximum Degree
+        19.5 Exercises
+
+    20. van Emde Boas Trees
+        20.1 Preliminary Approaches
+        20.2 A Recursive Structure
+        20.3 The van Emde Boas Tree
+        20.4 Exercises
+
+    21. Data Structures for Disjoint Sets
+        21.1 Disjoint-Set Operations
+        21.2 Linked-List Representation of Disjoint Sets
+        21.3 Disjoint-Set Forests
+        21.4 Analysis of Union by Rank with Path Compression
+        21.5 Exercises
+
+VI. Graph Algorithms
+    22. Elementary Graph Algorithms
+        22.1 Representations of Graphs
+        22.2 Breadth-First Search
+        22.3 Depth-First Search
+        22.4 Topological Sort
+        22.5 Strongly Connected Components
+        22.6 Exercises
+
+    23. Minimum Spanning Trees
+        23.1 Growing a Minimum Spanning Tree
+        23.2 The Algorithms of Kruskal and Prim
+        23.3 Exercises
+
+    24. Single-Source Shortest Paths
+        24.1 The Bellman-Ford Algorithm
+        24.2 Single-Source Shortest Paths in Directed Acyclic Graphs
+        24.3 Dijkstra's Algorithm
+        24.4 Difference Constraints and Shortest Paths
+        24.5 Proofs of Shortest-Path Properties
+        24.6 Exercises
+
+    25. All-Pairs Shortest Paths
+        25.1 Shortest Paths and Matrix Multiplication
+        25.2 The Floyd-Warshall Algorithm
+        25.3 Johnson's Algorithm for Sparse Graphs
+        25.4 Exercises
+
+    26. Maximum Flow
+        26.1 Flow Networks
+        26.2 The Ford-Fulkerson Method
+        26.3 Maximum Bipartite Matching
+        26.4 Push-Relabel Algorithms
+        26.5 The Relabel-to-Front Algorithm
+        26.6 Exercises
+
+VII. Selected Topics
+    27. Multithreaded Algorithms
+        27.1 The Basics of Dynamic Multithreading
+        27.2 Multithreaded Matrix Multiplication
+        27.3 Multithreaded Merge Sort
+        27.4 Exercises
+
+    28. Matrix Operations
+        28.1 Solving Systems of Linear Equations
+        28.2 Inverting Matrices
+        28.3 Symmetric Positive-Definite Matrices and Least Squares
+        28.4 Exercises
+
+    29. Linear Programming
+        29.1 Standard and Slack Forms
+        29.2 Formulating Problems as Linear Programs
+        29.3 The Simplex Algorithm
+        29.4 Duality
+        29.5 The Initial Basic Feasible Solution
+        29.6 Exercises
+
+    30. Polynomials and the FFT
+        30.1 Representing Polynomials
+        30.2 The DFT and FFT
+        30.3 Efficient FFT Implementations
+        30.4 Exercises
+
+    31. Number-Theoretic Algorithms
+        31.1 Elementary Number-Theoretic Notions
+        31.2 Greatest Common Divisor
+        31.3 Modular Arithmetic
+        31.4 Solving Modular Linear Equations
+        31.5 The Chinese Remainder Theorem
+        31.6 Powers of an Element
+        31.7 The RSA Public-Key Cryptosystem
+        31.8 Primality Testing
+        31.9 Integer Factorization
+        31.10 Exercises
+
+    32. String Matching
+        32.1 The Naive String-Matching Algorithm
+        32.2 The Rabin-Karp Algorithm
+        32.3 String Matching with Finite Automata
+        32.4 The Knuth-Morris-Pratt Algorithm
+        32.5 Exercises
+
+    33. Computational Geometry
+        33.1 Line-Segment Properties
+        33.2 Determining Whether Any Pair of Segments Intersects
+        33.3 Finding the Convex Hull
+        33.4 Finding the Closest Pair of Points
+        33.5 Exercises
+
+    34. NP-Completeness
+        34.1 Polynomial Time
+        34.2 Polynomial-Time Verification
+        34.3 NP-Completeness and Reducibility
+        34.4 NP-Completeness Proofs
+        34.5 NP-Complete Problems
+        34.6 Exercises
+
+    35. Approximation Algorithms
+        35.1 The Vertex-Cover Problem
+        35.2 The Traveling-Salesperson Problem
+        35.3 The Set-Covering Problem
+        35.4 Randomization and Linear Programming
+        35.5 The Subset-Sum Problem
+        35.6 Exercises
+
+VIII. Appendix: Mathematical Background
+    [A: Mathematical Tools and Techniques for Summation Analysis]
+    [B: Set Theory, Relations, Functions, Graphs, and Trees]
+    [C: Basic Probability Theory and Combinatorial Analysis]
+    [D: Matrix Operations and Properties]
+    
+    A. Summations
+    B. Sets, Etc.
+    C. Counting and Probability
+    D. Matrices
+
+Bibliography
+Index
+
+<h1>1. The Role of Algorithms in Computing</h1>
+
+Mathmetical tools exists for describing algorithms and can tell if you it does
+the right thing efficiently.
+
+<h2>1.1 Algorithms</h2>
+Simply put:
+Input:  \( \langle a_1, a_2, \ldots, a_n \rangle \)
+Output: \( \langle a'_1, a'_2, \ldots, a'_n \rangle \)
+
+Data Structures:
+- Ways to store and organize data for efficient access and modification.
+Different structures have different strengths and limitations.  
+
+Algorithm Design Techniques:
+- Covers various methods such as:  
+   - Divide-and-conquer (Chapter 4)  
+   - Dynamic programming (Chapter 15)  
+   - Amortized analysis (Chapter 17)  
+
+Hard Problems & NP-Completeness:
+- Some problems have no known efficient solution.  
+   - NP-complete problems (Chapter 34): If one has an efficient solution, all do.  
+   - Example: Traveling Salesman Problem, where finding the shortest route for deliveries is NP-complete, but approximation algorithms can provide near-optimal solutions (Chapter 35).  
+
+Parallelism:
+- Traditional speed increases through higher clock speeds are limited.  
+   - Multicore processors require multithreaded algorithms to optimize performance (Chapter 27).  
+   - Used in applications like chess programs and high-performance computing.  
+
+The section emphasizes the importance of efficient algorithms, understanding problem complexity, and adapting to modern computing architectures.
+
+Exercises:
+
+1.1-1 : Describe your own real world example that requires sorting.
+        Describe one that requires finding the shortest distance between two points.
+
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html> 
