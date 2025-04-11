@@ -1,0 +1,228 @@
+<html>
+<head>
+    <title>nx1.info | OOP Notes</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+	<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Object-Oriented Design in Python</h1>
+
+These are notes from the book The Lean Product Playbook By
+Dan Olsen.
+
+<h2>Table of Contents (click to jump)</h2>
+
+Introduction: Why Products Fail and How Lean Changes the Game
+
+PART I Core Concepts
+    Chapter 1 Achieving Product-Market Fit with the Lean
+        Product Process 3
+        What Is Product-Market Fit? 3
+        The Product-Market Fit Pyramid 4
+        Quicken: from #47 to #1 7
+        The Lean Product Process 8
+    Chapter 2 Problem Space versus Solution Space 13
+        The Space Pen 13
+        Problems Define Markets 15
+        The What and the How 16
+        Outside-In Product Development 16
+        Should You Listen to Customers? 17
+        A Tale of Two Apple Features 18
+        Using the Solution Space to Discover the Problem Space 20
+PART II The Lean Product Process
+    Chapter 3 Determine Your Target Customer (Step 1) 25
+    Fishing for Customers 25
+    How to Segment Your Target Market 26
+    Users versus Buyers 28
+    Technology Adoption Life Cycle 29
+    Personas 30
+
+Chapter 4 Identify Underserved Customer Needs (Step 2)
+    A Customer Need by Any Other Name 37
+    Customer Needs Example: TurboTax 38
+    Customer Discovery Interviews 40
+    Customer Benefit Ladders 41
+    Hierarchies of Needs 43
+    The Importance versus Satisfaction Framework 45
+    Related Frameworks 56
+    Visualizing Customer Value 58
+    The Kano Model 63
+    Putting the Frameworks to Use 66
+Chapter 5 Define Your Value Proposition (Step 3) 67
+    Strategy Means Saying “No” 68
+    Value Propositions for Search Engines 68
+    Not So Cuil 71
+    Building Your Product Value Proposition 72
+    Skating to Where the Puck Will Be 75
+    The Flip Video Camera 75
+    Predicting the Future with Value Propositions 75
+Chapter 6 Specify Your Minimum Viable Product (MVP)
+    Feature Set (Step 4) 77
+    User Stories: Features with Benefits 78
+    Breaking Features Down 79
+    Smaller Batch Sizes Are Better 79
+    Scoping with Story Points 80
+    Using Return on Investment to Prioritize 80
+    Deciding on Your MVP Candidate 85
+Chapter 7 Create Your MVP Prototype (Step 5) 89
+    What Is (and Isn’t) an MVP? 89
+    MVP Tests 90
+    The Matrix of MVP Tests 92
+    Qualitative Marketing MVP Tests 93
+    Quantitative Marketing MVP Tests 94
+    Qualitative Product MVP Tests 99
+    Quantitative Product MVP Tests 108
+Chapter 8 Apply the Principles of Great UX Design 111
+    What Makes a Great UX? 111
+    The UX Design Iceberg 116
+    Conceptual Design 117
+    Information Architecture 120
+    Interaction Design 123
+    Visual Design 129
+    Design Principles 135
+    Copy Is Also Part of UX Design 140
+    The A-Team 140
+    UX Is in the Eye of the Beholder 141
+Chapter 9 Test Your MVP with Customers (Step 6) 143
+    How Many Customers Should I Test With? 144
+    In-Person, Remote, and Unmoderated User Testing 145
+    How to Recruit Customers in Your Target Market 148
+    User Testing at Intuit 152
+    Ramen User Testing 153
+    How to Structure the User Test 155
+    How to Ask Good Questions 156
+    Ask Open versus Closed Questions 158
+    I Feel Your Pain 159
+    Wrapping Up the User Test 160
+    How to Capture and Synthesize User Feedback 161
+    Usability versus Product-Market Fit 163
+Chapter 10 Iterate and Pivot to Improve
+    Product-Market Fit 167
+    The Build-Measure-Learn Loop 167
+    The Hypothesize-Design-Test-Learn Loop 168
+    Iterative User Testing 170
+    Persevere or Pivot? 175
+Chapter 11 An End-to-End Lean Product Case Study 181
+    MarketingReport.com 181
+    Step 1: Determine Your Target Customers 182
+    Step 2: Identify Underserved Needs 182
+    Step 3: Define Your Value Proposition 183
+    Step 4: Specify Your MVP Feature Set 185
+    Step 5: Create Your MVP Prototype 187
+    Step 6: Test Your MVP with Customers 188
+    Iterate and Pivot to Improve Product-Market Fit 193
+    Reflections 197
+    PART III Building and Optimizing Your Product
+Chapter 12 Build Your Product Using Agile Development 201
+    Agile Development 201
+    Scrum 205
+    Kanban 211
+    Picking the Right Agile Methodology 216
+    Succeeding with Agile 218
+    Quality Assurance 222
+    Test-Driven Development 225
+    Continuous Integration 226
+    Continuous Deployment 227
+Chapter 13 Measure Your Key Metrics 229
+    Analytics versus Other Learning Methods 229
+    Oprah versus Spock 231
+    User Interviews 231
+    Usability Testing 232
+    Surveys 232
+    Analytics and A/B Testing 235
+    Analytics Frameworks 236
+    Identify the Metric That Matters Most 240
+    Retention Rate 242
+    The Equation of Your Business 249
+    Achieving Profitability 255
+Chapter 14 Use Analytics to Optimize Your Product
+    and Business 259
+    The Lean Product Analytics Process 259
+    A Lean Product Analytics Case Study: Friendster 263
+    Optimization with A/B Testing 272
+    Chapter 15 Conclusion 277
+    Contents xv
+    Acknowledgments 283
+    References 285
+    Resources 287
+    Index 291
+    About the Author 3
+
+<h1>Introduction: Why Products Fail and How Lean Changes the Game</h1>
+
+Building great products is hard. Most fail.
+
+The reason most fail is because they fail to meet customer needs in a way that
+is better than other alternatives. (product market fit)
+
+The Lean Startup movement started by Eric Ries aims to Prioritize the product
+market fit.
+
+The Lean Product Process:
+    1. Determine your target customers
+    2. Identify underserved customer needs
+    3. Define your value proposition
+    4. Specify your minimum viable product (MVP) feature set
+    5. Create your MVP prototype
+    6. Test your MVP with customers
+<h1>Part I: Core Concepts</h1>
+<h2>Chapter 1: Achieving Product-Market Fit with the Lean Product Process</h2>
+
+You have built a product that creates significant customer value. This means
+that your product meets real customer needs and does so in a way that is better
+than the alternatives.
+
+    5. User Experience (UX)         (product) <-- Top
+    4. Feature Set.                 (product)
+    3. Value Proposition            (product)
+    |
+    |--Product Market Fit   
+    |
+    2. Customers underserved needs  (market)
+    1. Target Customer              (market)   <-- Bottom of pyramid
+
+The Market:
+Starting at the bottom, the market consists of all the existing and potential
+customers that share a particular customer need or set of related
+needs.
+
+The size of a market by the total number of customers in the market or the
+total revenue generated by those customers.
+
+Different customers within a market choose different solutions to meet their
+needs.
+
+Within a given market, you can analyze the market share of each competing
+product.
+
+Your Product:
+A product is a specific offering intended to meet a set of customer needs.
+
+For software, the product itself is intangible code, often running on
+servers that the customer never sees. The real-world manifestation
+of software products that customers see and use is the user experience
+(UX), which is the top layer of the Product-Market Fit Pyramid.
+
+To decide which features to build, you need to identify the specific
+customer needs your product should address. In doing so, you want
+to determine how your product will be better than the others in the
+market. This is the essence of product Strategy
+
+Product Market Fit:
+Viewing product-market fit in light of this model, it is the measure of how
+well your product (the top three layers of the pyramid) satisfies the
+market (the bottom two layers of the pyramid).
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>

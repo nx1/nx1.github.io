@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Numbers with Errors</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="chart"></canvas>
+    <script>
+        const numPoints = 1000;
+        const data = [];
+        
+        for (let i = 0; i < numPoints; i++) {
+            let value = Math.random() * 100;
+            data.push({ x : i,
+                        y : value });
+        }
+        
+        const ctx = document.getElementById('chart').getContext('2d');
+        
+        new Chart(ctx, {
+            type: 'scatter',
+            data: {datasets: [{label            : 'Random Numbers with Errors',
+                               data             : data,
+                               borderColor      : 'blue',
+                               backgroundColor  : 'rgba(0, 0, 255, 0.5)',
+                               pointRadius      : 2,
+                               pointHoverRadius : 4}]},
+            options    : {
+            plugins    : {
+            tooltip    : {
+            callbacks  : {
+            afterLabel : (tooltipItem) => {return `Error: ±${errors[tooltipItem.dataIndex].toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {x : {type: 'linear', position: 'bottom', beginAtZero: true},
+                         y : {beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

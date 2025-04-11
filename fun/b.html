@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fireworks</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: black; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        class Firework {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.particles = [];
+                for (let i = 0; i < 50; i++) {
+                    this.particles.push({
+                        x: x,
+                        y: y,
+                        size: Math.random() * 3 + 1,
+                        speedX: Math.random() * 4 - 2,
+                        speedY: Math.random() * 4 - 2,
+                        life: Math.random() * 100 + 50,
+                        color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                    });
+                }
+            }
+            update() {
+                this.particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.life--;
+                    p.size *= 0.97;
+                });
+                this.particles = this.particles.filter(p => p.life > 0);
+            }
+            draw() {
+                this.particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+        }
+        
+        const fireworks = [];
+        
+        window.addEventListener("click", (event) => {
+            fireworks.push(new Firework(event.x, event.y));
+        });
+        
+        function animate() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            fireworks.forEach((firework, index) => {
+                firework.update();
+                firework.draw();
+                if (firework.particles.length === 0) {
+                    fireworks.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
