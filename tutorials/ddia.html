@@ -97,8 +97,37 @@ same application ecosystem.
 
 <h2>The Object-Relational Mismatch</h2>
 
-Data in OOP languages and SQL are structured differently, data stored in
-relational tables therefore require an awkward translation layer.
+Data in OOP languages and SQL have different structures, this implies that some kind
+of translation layer is required between the application code and database.
+
+Object-relational mapping (ORM) frameworks like ActiveRecord and Hibernate help
+reduce the boilerplate but cannot completely hide the differences between the
+models.
+
+Imagine storing a CV:
+    - user_id
+    - first_name
+    - last_name
+    - positions <-- there can be a variable number of these
+
+This one-to-many relationship, would traditionally be stored in a seperate table
+with a foreign key to the users table.
+    Positions:
+    - position_name
+    - user_id <-- foreign key
+
+Later versions of SQL added support for structured datatypes and XML data,
+allowing for multi-valued data to be stored in a single row. These
+features have varying support. 
+
+A third option is to encode jobs, education and contact info as JSON or XML.
+and store it on a text column in the database. This has the problem of not
+being able to query for values inside the column. (why would you do this)
+
+
+
+
+
 
 i. A term borrowed from electronics. Every electric circuit has a certain impedance (resistance to alternating
 current) on its inputs and outputs. When you connect one circuit’s output to another one’s input, the power
