@@ -16,6 +16,9 @@
 
 These are notes from the book Designing Data Intensive Applications.
 
+External Links:
+<a href="https://en.wikipedia.org/wiki/Comparison_of_relational_database_management_systems">Wikipedia: Comparison of relational database management systems</a>
+
 
 Overview:
 Part I: Fundamental ideas
@@ -125,84 +128,138 @@ A third option is to encode jobs, education and contact info as JSON or XML.
 and store it on a text column in the database. This has the problem of not
 being able to query for values inside the column. (why would you do this)
 
-
-
-
-
-
-i. A term borrowed from electronics. Every electric circuit has a certain impedance (resistance to alternating
-current) on its inputs and outputs. When you connect one circuit’s output to another one’s input, the power
-transfer across the connection is maximized if the output and input impedances of the two circuits match. An
-impedance mismatch can lead to signal reflections and other troubles.
-application code and the database model of tables, rows, and columns. The discon‐
-nect between the models is sometimes called an impedance mismatch.i
-Object-relational mapping (ORM) frameworks like ActiveRecord and Hibernate
-reduce the amount of boilerplate code required for this translation layer, but they
-can’t completely hide the differences between the two models.
-For example, Figure 2-1 illustrates how a résumé (a LinkedIn profile) could be
-expressed in a relational schema. The profile as a whole can be identified by a unique
-identifier, user_id. Fields like first_name and last_name appear exactly once per
-user, so they can be modeled as columns on the users table. However, most people
-have had more than one job in their career (positions), and people may have varying
-numbers of periods of education and any number of pieces of contact information.
-There is a one-to-many relationship from the user to these items, which can be repre‐
-sented in various ways:
-• In the traditional SQL model (prior to SQL:1999), the most common normalized
-representation is to put positions, education, and contact information in separate
-tables, with a foreign key reference to the users table, as in Figure 2-1.
-• Later versions of the SQL standard added support for structured datatypes and
-XML data; this allowed multi-valued data to be stored within a single row, with
-support for querying and indexing inside those documents. These features are
-supported to varying degrees by Oracle, IBM DB2, MS SQL Server, and Post‐
-greSQL [6, 7]. A JSON datatype is also supported by several databases, including
-IBM DB2, MySQL, and PostgreSQL [8].
-• A third option is to encode jobs, education, and contact info as a JSON or XML
-document, store it on a text column in the database, and let the application inter‐
-pret its structure and content. In this setup, you typically cannot use the database
-to query for values inside that encoded column.
-30 | Chapter 2: Data Models and Query Languages
-Figure 2-1. Representing a LinkedIn profile using a relational schema. Photo of Bill
-Gates courtesy of Wikimedia Commons, Ricardo Stuckert, Agência Brasil.
-For a data structure like a résumé, which is mostly a self-contained document, a JSON
-representation can be quite appropriate: see Example 2-1. JSON has the appeal of
-being much simpler than XML. Document-oriented databases like MongoDB [9],
-RethinkDB [10], CouchDB [11], and Espresso [12] support this data model.
-Example 2-1. Representing a LinkedIn profile as a JSON document
-{
-"user_id": 251,
-"first_name": "Bill",
-"last_name": "Gates",
-"summary": "Co-chair of the Bill & Melinda Gates... Active blogger.",
-"region_id": "us:91",
-"industry_id": 131,
-"photo_url": "/p/7/000/253/05b/308dd6e.jpg",
-Relational Model Versus Document Model | 31
+For a data structure like a résumé, which is mostly a self-contained document,
+a JSON representation can be quite appropriate:
+   
+<pre><code class="language-SQL">{"user_id"    :  251,
+"first_name"  : "Bill",
+"last_name"   : "Gates",
+"summary"     : "Co-chair of the Bill & Melinda Gates... Active blogger.",
+"region_id"   : "us:91",
+"industry_id" : 131,
+"photo_url"   : "/p/7/000/253/05b/308dd6e.jpg",
 "positions": [
-{"job_title": "Co-chair", "organization": "Bill & Melinda Gates Foundation"},
-{"job_title": "Co-founder, Chairman", "organization": "Microsoft"}
-],
+    {"job_title": "Co-chair", "organization": "Bill & Melinda Gates Foundation"},
+    {"job_title": "Co-founder, Chairman", "organization": "Microsoft"}
+    ],
 "education": [
-{"school_name": "Harvard University", "start": 1973, "end": 1975},
-{"school_name": "Lakeside School, Seattle", "start": null, "end": null}
-],
+    {"school_name": "Harvard University", "start": 1973, "end": 1975},
+    {"school_name": "Lakeside School, Seattle", "start": null, "end": null}
+    ],
 "contact_info": {
-"blog": "http://thegatesnotes.com",
-"twitter": "http://twitter.com/BillGates"
+    "blog": "http://thegatesnotes.com", 
+    "twitter": "http://twitter.com/BillGates"}
 }
-}
-Some developers feel that the JSON model reduces the impedance mismatch between
-the application code and the storage layer. However, as we shall see in Chapter 4,
-there are also problems with JSON as a data encoding format. The lack of a schema is
-often cited as an advantage; we will discuss this in “Schema flexibility in the docu‐
-ment model” on page 39.
-The JSON representation has better locality than the multi-table schema in
-Figure 2-1. If you want to fetch a profile in the relational example, you need to either
-perform multiple queries (query each table by user_id) or perform a messy multi-
-way join between the users table and its subordinate tables. In the JSON representa‐
-tion, all the relevant information is in one place, and one query is sufficient.
-The one-to-many relationships from the user profile to the user’s positions, educa‐
-tional history, and contact information imply a tree structure in the data, and the
-JSON representation makes this tree structure explicit (see Figure 2-2).
+</code></pre>
+- JSON may reduce the mismatch between the application code storage.
+- JSON representation has better locality than the multi-table schema 
+- The one-to-many relationships imply a tree structure in the data.
+
+<h2>Many-to-One & One-to-many relationships</h2>
+Using IDs instead of plaintext gives:
+    - consistency     - easier updates
+    - localization    - better search capabilities
+
+This practice is part of "normalization", where human-readable values are
+stored in one place and referenced by ID elsewhere.
+
+Relational databases handle many-to-one and many-to-many relationships well
+using joins, making normalization natural.
+
+Document databases (like MongoDB) don’t support joins easily, so such
+relationships are harder to manage. You often have to handle joins in the
+application code, which can be cumbersome.
+
+Although document models work well for tree-like, one-to-many data (like
+résumés), data becomes more interconnected as features are added. For example,
+turning "organization" or "school_name" into referenceable entities with their
+own pages, or supporting "recommendations" that must reflect updates (like
+profile photo changes). These growing relationships suggest that document
+models may become limiting over time, especially without strong join support.
+
+<h2>Are Document Databases Repeating History?</h2>
+Hierarchical models like JSON work well for one-to-many relationships but
+struggles with many-to-many relationships. This leads to either duplicating
+data or manually handle references between records.
+
+These limitations mirror the challenges faced with modern document databases.
+The same issues led to the rise of new data models in the 1970s: the relational
+model (which evolved into SQL and became dominant) and the network model (which
+eventually faded). The longstanding debate over the best way to represent
+relationships in databases remains relevant today.
+<h3>The Network Model and the Rise of the Relational Model</h3>
+The network model, extends the hierarchical model by allowing records to have
+multiple parents, enabling many-to-one and many-to-many relationships.
+
+Rather than using foreign keys, it used pointer-like links between records, and
+queries followed fixed access paths like a linked list traversal. This gave
+fine control over performance, but made the system inflexible and complex to
+work with, especially when access paths needed to change.
+
+In contrast, the relational model introduced a simpler structure: data was
+stored in tables (relations), with rows (tuples) and columns. There were no
+access paths—data could be queried freely using arbitrary conditions. The heavy
+lifting of choosing access paths was delegated to a query optimizer, making
+queries much easier to write and maintain. This flexibility allowed the
+relational model to scale better as applications evolved.
+<h3>Document Databases Comparison</h3>
+Document databases resemble the hierarchical model by nesting related data
+within parent documents. While this works well for one-to-many relationships,
+many-to-one and many-to-many relationships are still handled via identifiers
+(document references), much like foreign keys in relational databases. However,
+document databases do not follow the complex pointer system of CODASYL and have
+not adopted its model for handling relationships.
+
+<h2>Relational Versus Document Databases Today</h2>
+The differences between relational and document databases extend beyond
+fault-tolerance and concurrency to their underlying data models.
+<h3>Schema Flexibility and Application Code</h3>
+Document databases offer schema flexibility, meaning they use a schema-on-read
+approach which allows for dynamic, loosely structured data. This can simplify
+the code when dealing with document-like, nested data that is usually loaded in
+one go. However, if the data is highly interconnected or involves many-to-many
+relationships, the document model may require denormalization or complex
+application-level joins, potentially complicating code and hurting performance.
+<h3>Support for Joins and Complex Relationships</h3>
+Relational databases naturally support joins, making them better suited for
+many-to-one and many-to-many relationships. Their schema-on-write approach
+enforces consistency and often leads to cleaner handling of interconnected data
+compared to the document model, where related items are typically referenced by
+unique identifiers and must be joined through additional queries.
+<h3>Data Locality for Queries</h3>
+Document databases store an entire document as one continuous block, providing
+performance benefits when most of a document is frequently accessed together.
+This locality can reduce disk seeks compared to relational databases that
+spread data across multiple tables. However, this benefit may turn into a
+drawback if only small portions of a document are needed, as the entire
+document still must be loaded and updated.
+<h3>Convergence of Data Models</h3>
+The gap between document and relational databases is closing. Relational
+databases now support JSON and XML, enabling them to handle document-like data.
+Document databases are beginning to introduce features like join-like
+operations. This convergence means that hybrid approaches can provide the best
+of both worlds, allowing applications to leverage the strengths of each model
+as needed.
+
+<h2>Query Languages for Data</h2>
+Declarative query languages like SQL, are inspired by relational algebra. In
+contrast to imperative programming, You need only to simply state the
+conditions that the results must satisfy, letting the database engine decide
+the best way to execute the query.
+
+<strong>Conciseness and Simplicity:</strong>
+Queries specify the desired result pattern rather than the processing
+algorithm, resulting in more concise code.
+
+<strong>Implementation Abstraction:</strong>
+The database engine’s query optimizer handles the execution details (e.g.,
+index selection and join order), which enables improvements without changing
+the query.
+
+<strong>Parallel Execution:</strong>
+Declarative queries can be more readily parallelized because they do not depend
+on a specific order of operations, taking advantage of multi-core and
+distributed computing environments.
 
 
 <hr>
