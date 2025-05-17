@@ -46,7 +46,7 @@ locs = [
     'East Ham', 'West Ham', 'Ilford', 'Dagenham'
 ]
 
-df['is_junior'] = df['title'].str.contains('junior', case=False)
+df['is_junior'] = df['title'].str.contains('junior|intern|internship|Junior', case=False)
 df['is_senior'] = df['title'].str.contains('senior|lead|head', case=False)
 
 

@@ -2,20 +2,7 @@ import numpy as np
 import pandas as pd
 import ast 
 
-def trim_str(string, max_length):
-    if len(string) > max_length:
-        return string[:max_length-3] + '...'
-    return string
-
-def colorize(value, min_val, max_val):
-    """Returns an HTML color code from red (low) to green (high) based on the value."""
-    if max_val == min_val:
-        return "#FFFFFF"  # Avoid division by zero, default to white
-    ratio = (value - min_val) / (max_val - min_val)  # Normalize between 0 and 1
-    r = int(255 * (1 - ratio))  # Red decreases as value increases
-    g = int(255 * ratio)  # Green increases as value increases
-    return f"rgb({r},{g},0)"
-
+from make_proghouse import trim_str, colorize
 
 df = pd.read_csv('psyprog.csv')
 df['have'] = df['community'].apply(lambda s: ast.literal_eval(s)['have'])

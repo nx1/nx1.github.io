@@ -63,6 +63,7 @@ def rss_df_to_html(df, output_file):
         file.write('    <title>nx1.info | News</title>\n')
         file.write('    <link rel="icon" type="image/x-icon" href="../favicon.png">\n')
         file.write('    <link rel="stylesheet" type="text/css" href="../style.css">\n')
+        file.write('    <meta name="viewport" content="width=device-width, initial-scale=1">\n')
         file.write('</head>\n')
         file.write('<body>\n')
         file.write('<pre>\n')
@@ -83,7 +84,6 @@ def rss_df_to_html(df, output_file):
         file.write('</body>\n')
         file.write('</html>\n')
 
-url = 'https://news.google.com/rss'
 output_file = os.path.join(os.path.dirname(__file__), 'index.html')
 
 dfs = [read_rss_feed(site_name, url) for site_name, url in rss_feeds.items()]
