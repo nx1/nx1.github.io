@@ -81,8 +81,8 @@ hold for any OO language.
 5. Reducing Costs with Duck Typing
    - Understanding Duck Typing
    - Overlooking the Duck
-   - Compounding the Problem
-   - Finding the Duck
+   <a href="#compounding-the-problem">- Compounding the Problem</a>
+   <a href="#finding-the-duck">- Finding the Duck</a>
    - Consequences of Duck Typing
    - Writing Code That Relies on Ducks
      - Recognizing Hidden Ducks
@@ -1329,7 +1329,7 @@ prepare_bicycles(). This dependency is so fundamental that it’s easy to miss o
 to discount, but nonetheless, it exists. Trip’s prepare method firmly believes
 that its argument contains a preparer of bicycles.
 
-<h3>Compounding the Problem</h3>
+<h3 id="compounding-the-problem">Compounding the Problem</h3>
 Imagine that requirements change. In addition to a mechanic, trip preparation
 now involves a trip coordinator and a driver.
 
@@ -1419,7 +1419,7 @@ message based on class. The logical endpoint of this programming style is a
 stiff and inflexible application, where it eventually becomes easier to rewrite
 everything than to change anything.
 
-<h3>Finding the Duck</h3>
+<h3 id="finding-the-duck">Finding the Duck</h3>
 Removing the dependencies requires the recognicion that Trip.prepare() serves a
 single purpose.
 
@@ -2239,22 +2239,174 @@ incurred.
 <h2>Finding Roles</h2>
 In chapter 5, we used a "preparer" as duck type.
 <code>
+# The following can be replaced
 Mechanic().prepare_trip()
 Driver().prepare_trip()
 TripCoordinator().prepare_trip()
 
-# are all interchangable for
-perparer.prepare_trip()
+# With the following (duck type):
+preparer.prepare_trip()
+                   
+# And finally using trip as a Role (more below)
+preparer.prepare(trip)
 </code>
-The existence of a Preparer role suggests that there is also a
-Preparable role.
+
+The existence of a Preparer role suggests that there is also a Preparable role.
+
+Back in Chapter 5 <a href="#finding-the-duck">[link]</a> we had:
+    Trip() acting as a Preparable role by implementing prepare
+
+This interface includes all of the messages that any Preparer might expect to
+send to a Preparable.
+
+The Preparable role is not terribly obvious because Trip is its only player but
+it’s important to recognize that it exists. This is discussed further in Chapter 9.
+
+Although the Preparer role has multiple players, it is so simple that it is
+entirely defined by its interface.
+
+To play this role all an object need do is implement its own personal version
+of prepare_trip. 
+
+Objects that act as Preparers have only this interface in common. 
+They share the method signature but no other code. 
+
+Preparer and Preparable are perfectly legitimate duck types.
+
+It’s far more common, however, to discover more sophisticated roles, ones where
+the role requires not only specific message signatures, but also specific
+behavior. 
+
+When a role needs shared behavior you’re faced with the problem of
+organizing the shared code. Ideally 142 Chapter 7. Sharing Role Behavior with
+Modules this code would be defined in a single place but be usable by any
+object that wished to act as the duck type and play the role. Many
+object-oriented languages provide a way to define a named group of meth- ods
+that are independent of class and can be mixed in to any object. In Ruby, these
+mix-ins are called modules. Methods can be defined in a module and then the
+module can be added to any object. Modules thus provide a perfect way to allow
+objects of different classes to play a common role using a single set of code.
+When an object includes a module, the methods defined therein become avail-
+able via automatic delegation. If this sounds like classical inheritance, it
+also looks like it, at least from the point of view of the including object.
+From that object’s point of view, messages arrive, it doesn’t understand them,
+they get automatically routed some- where else, the correct method
+implementation is magically found, it is executed, and the response is
+returned. Once you start putting code into modules and adding modules to
+objects, you expand the set of messages to which an object can respond and
+enter a new realm of design complexity. An object that directly implements few
+methods might still have a very large response set. The total set of messages
+to which an object can respond includes
+
+• Those it implements
+• Those implemented in all objects above it in the hierarchy
+• Those implemented in any module that has been added to it
+• Those implemented in all modules added to any object above it in the hierarchy
+
+If this seems like a frighteningly large and potentially confusing response set, you have
+a clear grasp of the problem. Acquiring an understanding of the behavior of a deeply
+nested hierarchy is at best intimidating, at worst, impossible.
+
+<h3>BONUS: Mixins</h3>
+In Ruby there is a `module' keyword, that allows you to group methods,
+functions, classes and constants.
+
+<code class="language-ruby">module Cream
+  def cream?
+    true
+  end
+end
+
+class Cookie
+  include Cream
+end
+
+cookie = Cookie.new
+p cookie.cream?
+# >>> true
+</code>
+
+In Python there isn't really anthing like this, you'd probably have to do some inheritance
+Mixin, these are used for example in sklearn
+see: https://scikit-learn.org/stable/modules/generated/sklearn.base.ClassifierMixin.html
+https://matplotlib.org/3.1.1/devel/MEP/MEP09.html
+
+<code># cream.py
+cream = True
+
+# cookie.py
+class Cookie:
+    import cream
+
+cookie = Cookie()
+print(cookie.cream)
+</code>
+
+are basically defined as the files eg module_1.py
+modules group together methods (functions), classes, and constants
+
+In Ruby there is a built in facility called a "mixin" 
+https://ruby-doc.com/docs/ProgrammingRuby/html/tut_modules.html
 
 
+In Python, the closest equivalent to Ruby’s “modules” and mix‑ins is simply
+defining a standalone class (often called a *mixin*), and then using multiple
+inheritance to “mix” its methods into one or more other classes.  Here’s how it
+works, step by step:
+
+
+1. **Define a mixin class**
+   A mixin contains a cohesive set of methods that aren’t tied to any particular data layout.
+
+<code>
+class JSONSerializableMixin:
+    def to_json(self):
+        import json
+        return json.dumps(self.__dict__)
+    
+    @classmethod
+    def from_json(cls, s):
+        import json
+        data = json.loads(s)
+        return cls(**data)
+
+
+class User(JSONSerializableMixin):
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+class Product(JSONSerializableMixin):
+    def __init__(self, sku, price):
+        self.sku = sku
+        self.price = price
+
+u = User("alice", "alice@example.com")
+data = u.to_json()
+restored = User.from_json(data)
+</code>
+
+As you pull more mixins (and more base classes) together, the number of places
+Python must check for a method grows:
+
+    - Methods defined directly in your class
+    - Methods in each mixin class, in MRO order
+    - Methods in any base classes of those mixins
+
+Leaning too heavily on deeply nested multiple inheritance makes it challenging
+to predict:
+    - Which class a given method actually comes from
+    - The exact search order Python uses (can check using `MyClass.mro()`)
 
 
 
 
 <h2>Organizing Responsibilities</h2>
+
+
+
+
+
 <h2>Removing Unnecessary Dependencies</h2>
 <h2>Writing the Concrete Code</h2>
 <h2>Extracting the Abstraction</h2>

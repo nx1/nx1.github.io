@@ -742,6 +742,23 @@ still performs very well and is generally preferred.
 <h3>Download the Data</h3>
 <h3>Take a Quick Look at the Data Structure</h3>
 <h3>Create a Test Set</h3>
+Functions that depend on knowning the data before transforming the data should always be applied
+after splitting the test and train set. Splitting into a seperate file is also a fairly good option.
+
+Split on informed hash function for consistent results rows:
+<pre><code class="language-python">def train_test_split_id_hash(data, test_ratio, id_column):
+    ids = data[id_column]
+    in_test_set = ids.apply(lambda id_: is_id_in_test_set(id_, test_ratio))
+    train, test = data.loc[~in_test_set], data.loc[in_test_set]
+    return train, test
+
+    train, test = train_test_split_id_hash(df, 0.2, "index")
+</code></pre>
+Split Randomly, or provide stratify= to sample evenly based based on categorical column:
+<pre><code class="language-python">
+from sklearn.model_selection import train_test_split
+train, test = train_test_split(df, test_size=0.2, stratify=df['income_cat'], random_state=5)</code></pre>
+
 <h2>Explore and Visualize the Data to Gain Insights
 <h3>Visualizing Geographical Data</h3>
 <h3>Look for Correlations</h3>
@@ -884,6 +901,7 @@ The columns can be selected using the make_column_selector()
 <pre><code class="language-python">from sklearn.compose import ColumnTransformer
 
 <h2>Select and Train a Model</h2>
+
 <h3>Train and Evaluate on the Training Set</h3>
 <h3>Better Evaluation Using Cross-Validation</h3>
 <h2>Fine-Tune Your Model</h2>
