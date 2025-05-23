@@ -68,34 +68,16 @@ ci( - change inside parentheses
 yi{ - yank inside curly braces
 
 
-CoC.nvim Basic Commands:
-------------------------
-:CocList extensions  - Show installed extensions
-:CocList marketplace - Browse available extensions
-:CocList diagnostics - Show diagnostics in a list
-:CocList symbols     - Show document symbols
-:CocList symbols -I  - Show workspace symbols
-:CocList outline     - Show document outline
-:CocList references  - Find references to symbol under cursor
+https://github.com/neoclide/coc.nvim
+CoC.nvim Commands:                    Code Action: (<leader> is \ by default)
+                                      <leader>rn - Rename symbol (e.g., <space>rn)
+Code Navigation:                      <leader>ac - Code action for cursor position
+gd      - Go to definition            <leader>a  - Code action for selected region (visual mode)
+gD      - Go to declaration           K          - Show hover documentation
+gi      - Go to implementation        <leader>f  - Format current buffer
+gr / gR - Show references (usages)    [ g        - Go to previous diagnostic
+gy      - Go to type definition       ] g        - Go to next diagnostic
 
-Code Navigation:
-gd      - Go to definition
-gD      - Go to declaration
-gi      - Go to implementation
-gr / gR - Show references (usages)
-gy      - Go to type definition
-
-Code Action
-<leader>rn - Rename symbol (e.g., <space>rn)
-<leader>ac - Code action for cursor position
-<leader>a  - Code action for selected region (visual mode)
-K          - Show hover documentation
-<leader>f  - Format current buffer
-[ g        - Go to previous diagnostic
-] g        - Go to next diagnostic
-
-Diagnostics
-:CocDiagnostics            - Open full diagnostics window
 
 Completion & Snippets
 <C-Space>     - Trigger completion
@@ -103,10 +85,17 @@ Completion & Snippets
 <C-j> / <C-k> - Navigate completion menu
 <C-n> / <C-p> - Next/Previous completion item
 
-Misc
-:CocCommand - Run any CoC command
-:CocRestart - Restart CoC
-:CocUpdate  - Update CoC extensions
+Misc:
+:CocList extensions  - Show installed extensions
+:CocList marketplace - Browse available extensions
+:CocList diagnostics - Show diagnostics in a list
+:CocList symbols     - Show document symbols
+:CocList symbols -I  - Show workspace symbols
+:CocList outline     - Show document outline
+:CocList references  - Find references to symbol under cursor
+:CocCommand          - Run any CoC command
+:CocRestart          - Restart CoC
+:CocUpdate           - Update CoC extensions
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
