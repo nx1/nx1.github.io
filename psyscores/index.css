@@ -203,3 +203,44 @@ html {
 .album-rating-bar .rating-star.filled {
     background: #00ff00;
 }
+
+.album-title,
+.album-artist,
+.album-info {
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  line-height: 1.15;
+}
+
+/* Responsive album grid and text for mobile */
+@media (max-width: 600px) {
+  .album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 6px;
+  }
+  .album-card {
+    padding: 4px;
+  }
+  .album-cover {
+    width: 60px;
+    height: 60px;
+    font-size: 9px;
+  }
+  .album-title {
+    font-size: 10px !important;
+    line-height: 1.1;
+    max-width: 100%;
+  }
+  .album-artist {
+    font-size: 9px !important;
+    line-height: 1.1;
+    max-width: 100%;
+  }
+  .album-info {
+    font-size: 8px !important;
+    line-height: 1.1;
+    max-width: 100%;
+  }
+}
