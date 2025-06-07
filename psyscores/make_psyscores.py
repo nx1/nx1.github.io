@@ -1,4 +1,5 @@
 # Psyscores
+import json
 import pandas as pd
 import eyed3
 from io import BytesIO
@@ -12,7 +13,7 @@ from pathlib import Path
 psy_path   = Path('/mnt/d/Music/psych')
 #music_path = Path('/mnt/c/Users/norma/Music')
 
-def get_album_art(tags):
+def get_mp3_album_art(tags):
     d = tags.getall('APIC')[0].data
     im = Image.open(BytesIO(d))
     return im
@@ -21,6 +22,11 @@ def get_flac_album_art(tags):
     d = tags.pictures[0].data
     im = Image.open(BytesIO(d))
     return im
+
+def save_image(im, filename):
+    im = im.resize((200,200), Image.LANCZOS)
+    im.save(filename, format='jpeg', optimize=True, quality=70, progressive=True)
+
 
 def plot_image(im, plot=False):
     if not plot:
@@ -36,9 +42,9 @@ ratings = {1   : 1,
            196 : 4,
            255 : 5}
 
-all_res   = []
-
+all_res  = []
 last_dir = None
+img_count = 0
 for i, song_path in enumerate(psy_path.glob('*/*.flac')):
     if '_Singles' in str(song_path):
         continue
@@ -72,8 +78,12 @@ for i, song_path in enumerate(psy_path.glob('*/*.flac')):
 
     if last_dir != song_path.parent:
         im = get_flac_album_art(tags)
-        plot_image(im)
+        im_path = f'cover_art/{img_count}.jpg'
+        save_image(im, im_path)
+        # plot_image(im)
         last_dir = song_path.parent
+        img_count += 1
+    d['image_path'] = im_path
     d['image'] = im
 
 
@@ -107,14 +117,28 @@ for i, song_path in enumerate(psy_path.glob('*/*.mp3')):
 
     if last_dir != song_path.parent:
         print(song_path)
-        im = get_album_art(tags)
-        plot_image(im)
+        im = get_mp3_album_art(tags)
+        im_path = f'cover_art/{img_count}.jpg'
+        save_image(im, im_path)
+        #plot_image(im)
         # plt.close()
         last_dir = song_path.parent
+        img_count += 1
+    d['image_path'] = im_path
     d['image'] = im
-            
+
 df = pd.DataFrame(all_res)
 df.to_csv('psyscores.csv')
+
+
+# exclude image from the JSON output
+all_res_json = all_res.copy()
+for d in all_res_json:
+    if 'image' in d:
+        del d['image']
+with open('ss_songs.json', 'w+') as f:
+    json.dump(all_res_json, f, indent=2)
+
 print(df)
 
 df = df.sort_values('album').reset_index(drop=True)
@@ -122,12 +146,6 @@ df_grouped = df.groupby(['album_artist', 'album']).agg({'date':'first', 'image':
 df_sorted = df_grouped.sort_values(by='rating', ascending=False).reset_index()
 df_sorted['rank'] = df_sorted['rating'].rank(method='dense', ascending=False).astype(int)
 
-
-for i, (idx, row) in enumerate(df_sorted.iterrows()):
-    im = row['image']
-    im = im.resize((200,200), Image.LANCZOS)
-    im.save(f'cover_art/{i}.jpg', format='jpeg', optimize=True, quality=70, progressive=True)
-    print(row)
 
 with open('index.html', 'w+') as f:
     f.write("""<html>
