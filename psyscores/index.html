@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>nx1.info | Psyscores v2</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -23,7 +24,6 @@
     </div>
     <div style="flex:1;min-width:220px;">
         <div id="top-artists"></div>
-        <div id="extra-stats"></div>
     </div>
 </div>
 <script>
@@ -37,7 +37,7 @@ function populateMetadata() {
     const yearsSorted = Object.entries(yearCounts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10);
-    let yearText = '<div><b>Most Popular Years</b><ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
+    let yearText = '<div>Most Popular Years:<ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
     yearsSorted.forEach(([y, count]) => {
         const percent = ((count / totalTracks) * 100).toFixed(1);
         yearText += `<li>${y}: <span style="color:#888;">${count} tracks</span> <span style="color:#00bfff;">(${percent}%)</span></li>`;
@@ -50,7 +50,7 @@ function populateMetadata() {
     allTracks.forEach(t => {
         if (typeof t.rating === "number" && t.rating >= 1 && t.rating <= 5) ratingCounts[t.rating-1]++;
     });
-    let ratingText = '<div style="margin-top:16px;"><b>Rating Distribution</b><ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
+    let ratingText = '<div style="margin-top:16px;">Rating Distribution:<ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
     const totalRated = ratingCounts.reduce((a, b) => a + b, 0) || 1;
     ratingCounts.forEach((count, i) => {
         const percent = ((count / totalRated) * 100).toFixed(1);
@@ -67,19 +67,13 @@ function populateMetadata() {
     const topArtists = Object.entries(artistCounts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10);
-    let artistList = '<div style="margin-top:0;"><b>Top 10 Artists</b><ol style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
+    let artistList = '<div style="margin-top:0;">Top 10 Artists:<ol style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
     topArtists.forEach(([artist, count]) => {
         artistList += `<li>${artist} <span style="color:#888;">(${count} tracks)</span></li>`;
     });
     artistList += '</ol></div>';
     document.getElementById('top-artists').innerHTML = artistList;
 
-    // Extra: Average bitrate
-    const bitrates = allTracks.map(t => t.bitrate).filter(b => typeof b === "number");
-    const avgBitrate = bitrates.length ? (bitrates.reduce((a, b) => a + b, 0) / bitrates.length).toFixed(1) : "N/A";
-    let extraStats = `<div style="margin-top:16px;"><b>Average Bitrate:</b> <span style="color:#00ff00;">${avgBitrate} kbps</span></div>`;
-
-    document.getElementById('extra-stats').innerHTML = extraStats;
 }
 </script>
         </div>
@@ -174,62 +168,6 @@ function populateMetadata() {
             populateMetadata();
             populateAlbums();
             populateTracks();
-        }
-
-        // --- METADATA ANALYSIS ---
-        function populateMetadata() {
-            // Text: Most popular years
-            const yearCounts = {};
-            allTracks.forEach(t => {
-                if (t.albumYear) yearCounts[t.albumYear] = (yearCounts[t.albumYear] || 0) + 1;
-            });
-            const totalTracks = allTracks.length || 1;
-            const yearsSorted = Object.entries(yearCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
-            let yearText = '<div><b>Most Popular Years</b><ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
-            yearsSorted.forEach(([y, count]) => {
-                const percent = ((count / totalTracks) * 100).toFixed(1);
-                yearText += `<li>${y}: <span style="color:#888;">${count} tracks</span> <span style="color:#00bfff;">(${percent}%)</span></li>`;
-            });
-            yearText += '</ul></div>';
-            document.getElementById('year-bar-chart').innerHTML = yearText;
-
-            // Text: Rating distribution
-            const ratingCounts = [0,0,0,0,0];
-            allTracks.forEach(t => {
-                if (typeof t.rating === "number" && t.rating >= 1 && t.rating <= 5) ratingCounts[t.rating-1]++;
-            });
-            let ratingText = '<div style="margin-top:16px;"><b>Rating Distribution</b><ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
-            const totalRated = ratingCounts.reduce((a, b) => a + b, 0) || 1;
-            ratingCounts.forEach((count, i) => {
-                const percent = ((count / totalRated) * 100).toFixed(1);
-                ratingText += `<li>${i+1} stars: <span style="color:#888;">${count} tracks</span> <span style="color:#00bfff;">(${percent}%)</span></li>`;
-            });
-            ratingText += '</ul></div>';
-            document.getElementById('rating-bar-chart').innerHTML = ratingText;
-
-            // Top 10 most popular artists
-            const artistCounts = {};
-            allTracks.forEach(t => {
-                if (t.artist) artistCounts[t.artist] = (artistCounts[t.artist] || 0) + 1;
-            });
-            const topArtists = Object.entries(artistCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
-            let artistList = '<div style="margin-top:0;"><b>Top 10 Artists</b><ol style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
-            topArtists.forEach(([artist, count]) => {
-                artistList += `<li>${artist} <span style="color:#888;">(${count} tracks)</span></li>`;
-            });
-            artistList += '</ol></div>';
-            document.getElementById('top-artists').innerHTML = artistList;
-
-            // Extra: Average bitrate
-            const bitrates = allTracks.map(t => t.bitrate).filter(b => typeof b === "number");
-            const avgBitrate = bitrates.length ? (bitrates.reduce((a, b) => a + b, 0) / bitrates.length).toFixed(1) : "N/A";
-            let extraStats = `<div style="margin-top:16px;"><b>Average Bitrate:</b> <span style="color:#00ff00;">${avgBitrate} kbps</span></div>`;
-
-            document.getElementById('extra-stats').innerHTML = extraStats;
         }
 
         function populateAlbums() {

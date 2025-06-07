@@ -6,6 +6,7 @@
 
 body {
     font-family: 'Fira Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    font-weight: 400;
     background: #0a0a0a;
     color: #00ff00;
     overflow-x: hidden;
@@ -34,6 +35,7 @@ html {
 
 .terminal-title {
     color: #00ff00;
+    font-weight: 400;
 }
 
 .timestamp {
@@ -57,7 +59,7 @@ html {
     padding: 10px;
     border-bottom: 1px solid #00ff00;
     color: #00ff00;
-    font-weight: bold;
+    font-weight: 400;
     text-transform: uppercase;
     font-size: 13px; /* increased */
     cursor: pointer;
@@ -97,8 +99,8 @@ html {
     justify-content: center;
     color: #666;
     font-size: 11px;
-    background-image: linear-gradient(45deg, #1a1a1a 25%, transparent 25%), 
-                      linear-gradient(-45deg, #772929 25%, transparent 25%);
+    background-image: linear-gradient(45deg, #1a1a1a 25%, transparent 25%) 
+                      ;
     background-size: 20px 20px;
     border-radius: 6px;
 }
@@ -108,6 +110,7 @@ html {
     font-size: 12px; /* increased */
     margin-bottom: 2px;
     text-align: center;
+    font-weight: 400;
 }
 
 .album-artist {
@@ -141,6 +144,7 @@ html {
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
+    font-weight: 400;
 }
 
 .track-row {
@@ -152,6 +156,7 @@ html {
     font-size: 12px; /* increased */
     color: #ccc;
     cursor: pointer;
+    font-weight: 400;
 }
 
 .track-row:hover {
