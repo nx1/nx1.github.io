@@ -226,20 +226,19 @@ html {
   .album-cover {
     width: 60px;
     height: 60px;
-    font-size: 9px;
   }
   .album-title {
-    font-size: 10px !important;
+    font-size: 7px !important;
     line-height: 1.1;
     max-width: 100%;
   }
   .album-artist {
-    font-size: 9px !important;
+    font-size: 6px !important;
     line-height: 1.1;
     max-width: 100%;
   }
   .album-info {
-    font-size: 8px !important;
+    font-size: 5px !important;
     line-height: 1.1;
     max-width: 100%;
   }
