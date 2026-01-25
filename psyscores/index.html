@@ -8,288 +8,58 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div class="terminal-header">
-        <div class="terminal-title">nx1.info | Psyscores v2</div>
-        <div class="timestamp" id="timestamp"></div>
+<div class="terminal-header">
+    <div class="terminal-title">nx1.info | Psyscores v2</div>
+    <div class="timestamp" id="timestamp"></div>
+</div>
+
+<div class="container">
+    <div class="section">
+        <div class="section-header">Intro</div>
+        <div class="section-content" id="metadata" style="font-size: 12px;">
+        Welcome traveller, you have stumbled upon my collection of psychedelic tunes. </br>
+        If you don't feel like digging, check out some mixes over at: <a href="https://nx1.info/music">nx1.info/music</a></br>
+        If this wasn't enough, be sure to check out: some of my discogs scraping stuff <a href="https://nx1.info/psyscores/psyprog.html">here</a> and <a href="https://nx1.info/psyscores/proghouse.html">here</a><br>
+        This page is a work in progress, so expect more features to be added in the future, save a bookmark or you may never find your way back here... </br></br>
+        Ratings are my own opinion and are subject to change depending on my mood, 1 star tunes are downtemp/ambient </br>
+        Shout-out to all the artists, labels, DJs, collectors and everyone involved in arranging this information.</br></br>
+
+    Special thanks to: nikodim241, miskoala, KosioMagiosnika, Generator, ANNX, Praktik, miskoala, hooker, Austin Powders, atlantisairwaves1, dejanprogtrens, FunKy-NT4 and many others not named here :D<br>
+        </div>
     </div>
-    <div class="container">
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('metadata')">
-                > METADATA ANALYSIS <span class="cursor">_</span>
+    <div class="section">
+        <div class="section-header">Set Explorer</div>
+        <div class="section-content" id="set-explorer" style="display: flex; flex-direction: row; gap: 32px;">
+            <div id="set-explorer-flex" style="display: flex; flex-direction: row; width: 100%;">
+                <div id="categories"></div>
+                <div id="set-aggregations"></div>
             </div>
-            <div class="section-content" id="metadata" style="display: flex; flex-wrap: wrap; gap: 32px;">
-    <div style="flex:1;min-width:220px;">
-        <div id="year-bar-chart"></div>
-        <div id="rating-bar-chart"></div>
+            <div id="member-aggregations-container" style="display: none;">
+              <div id="member-aggregations"></div>
+            </div>
+        </div>
     </div>
-    <div style="flex:1;min-width:220px;">
-        <div id="top-artists"></div>
+    <div class="section">
+        <div class="section-header">TRACK LISTING (Click headers to sort)</div>
+            <div class="track-list">
+                <div class="track-header" id="trackHeader">
+                    <div>#</div>
+                    <div>TITLE</div>
+                    <div>ARTIST</div>
+                    <div>ALBUM</div>
+                    <div>LABEL</div>
+                    <div>CATALOG</div>
+                    <div>YEAR</div>
+                    <div>DURATION</div>
+                    <div>BITRATE</div>
+                    <div>RATING</div>
+                </div>
+                <div class="track-rows"></div>
+            </div>
     </div>
 </div>
-<script>
-function populateMetadata() {
-    // Text: Most popular years
-    const yearCounts = {};
-    allTracks.forEach(t => {
-        if (t.albumYear) yearCounts[t.albumYear] = (yearCounts[t.albumYear] || 0) + 1;
-    });
-    const totalTracks = allTracks.length || 1;
-    const yearsSorted = Object.entries(yearCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10);
-    let yearText = '<div>Most Popular Years:<ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
-    yearsSorted.forEach(([y, count]) => {
-        const percent = ((count / totalTracks) * 100).toFixed(1);
-        yearText += `<li>${y}: <span style="color:#888;">${count} tracks</span> <span style="color:#00bfff;">(${percent}%)</span></li>`;
-    });
-    yearText += '</ul></div>';
-    document.getElementById('year-bar-chart').innerHTML = yearText;
-
-    // Text: Rating distribution
-    const ratingCounts = [0,0,0,0,0];
-    allTracks.forEach(t => {
-        if (typeof t.rating === "number" && t.rating >= 1 && t.rating <= 5) ratingCounts[t.rating-1]++;
-    });
-    let ratingText = '<div style="margin-top:16px;">Rating Distribution:<ul style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
-    const totalRated = ratingCounts.reduce((a, b) => a + b, 0) || 1;
-    ratingCounts.forEach((count, i) => {
-        const percent = ((count / totalRated) * 100).toFixed(1);
-        ratingText += `<li>${i+1} stars: <span style="color:#888;">${count} tracks</span> <span style="color:#00bfff;">(${percent}%)</span></li>`;
-    });
-    ratingText += '</ul></div>';
-    document.getElementById('rating-bar-chart').innerHTML = ratingText;
-
-    // Top 10 most popular artists
-    const artistCounts = {};
-    allTracks.forEach(t => {
-        if (t.artist) artistCounts[t.artist] = (artistCounts[t.artist] || 0) + 1;
-    });
-    const topArtists = Object.entries(artistCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10);
-    let artistList = '<div style="margin-top:0;">Top 10 Artists:<ol style="margin:4px 0 0 18px;padding:0;font-size:12px;color:#00ff00;">';
-    topArtists.forEach(([artist, count]) => {
-        artistList += `<li>${artist} <span style="color:#888;">(${count} tracks)</span></li>`;
-    });
-    artistList += '</ol></div>';
-    document.getElementById('top-artists').innerHTML = artistList;
-
-}
-</script>
-        </div>
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('albums')">
-                > ALBUM COLLECTION <span class="cursor">_</span>
-            </div>
-            <div class="section-content" id="albums">
-                <div class="album-grid">
-                    <!-- Album cards will be populated by JS -->
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-header" onclick="toggleSection('tracks')">
-                > TRACK LISTING <span class="cursor">_</span>
-            </div>
-            <div class="section-content" id="tracks">
-                <div class="track-list">
-                    <div class="track-header" id="trackHeader">
-                        <div data-sort="number">#</div>
-                        <div data-sort="title">TITLE</div>
-                        <div data-sort="artist">ARTIST</div>
-                        <div data-sort="year">YEAR</div>
-                        <div data-sort="duration">DURATION</div>
-                        <div data-sort="bitrate">BITRATE</div>
-                        <div data-sort="rating">RATING</div>
-                    </div>
-                    <!-- Track rows will be populated by JS -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        let musicLibrary = { albums: [] };
-        let allTracks = [];
-        let currentSort = { key: null, asc: true };
-
-        async function loadMusicData() {
-            try {
-                const response = await fetch('ss_songs.json');
-                if (response.ok) {
-                    const songs = await response.json();
-                    const albumsMap = {};
-                    songs.forEach(song => {
-                        const albumKey = (song.album_artist || song.artist || "Unknown") + "||" + (song.album || "Unknown Album");
-                        if (!albumsMap[albumKey]) {
-                            albumsMap[albumKey] = {
-                                title: song.album || "Unknown Album",
-                                artist: song.album_artist || song.artist || "Unknown Artist",
-                                year: song.date || "",
-                                genre: song.genre || "",
-                                cover: song.image_path,
-                                tracks: []
-                            };
-                        }
-                        albumsMap[albumKey].tracks.push({
-                            title: song.title,
-                            duration: song.duration || "",
-                            rating: song.rating,
-                            bitrate: song.bitrate,
-                            artist: song.artist || albumsMap[albumKey].artist,
-                            year: song.date || albumsMap[albumKey].year
-                        });
-                    });
-                    musicLibrary.albums = Object.values(albumsMap);
-
-                    // Flatten all tracks for sorting and stats
-                    allTracks = [];
-                    musicLibrary.albums.forEach(album => {
-                        album.tracks.forEach(track => {
-                            allTracks.push({
-                                ...track,
-                                albumYear: album.year,
-                                albumArtist: album.artist
-                            });
-                        });
-                    });
-
-                    populateLibrary();
-                } else {
-                    console.log('Could not load ss_songs.json');
-                    populateLibrary();
-                }
-            } catch (error) {
-                console.log('Error loading ss_songs.json:', error);
-                populateLibrary();
-            }
-        }
-
-        function populateLibrary() {
-            populateMetadata();
-            populateAlbums();
-            populateTracks();
-        }
-
-        function populateAlbums() {
-            const albumGrid = document.querySelector('.album-grid');
-            albumGrid.innerHTML = '';
-
-            // Calculate average rating for each album and store it
-            musicLibrary.albums.forEach(album => {
-                let avgRating = 0;
-                if (album.tracks && album.tracks.length > 0) {
-                    const rated = album.tracks.filter(t => typeof t.rating === 'number');
-                    if (rated.length > 0) {
-                        avgRating = rated.reduce((sum, t) => sum + t.rating, 0) / rated.length;
-                    }
-                }
-                album._avgRating = avgRating; // Store for sorting
-            });
-
-            // Sort albums by average rating descending
-            const sortedAlbums = [...musicLibrary.albums].sort((a, b) => (b._avgRating || 0) - (a._avgRating || 0));
-
-            sortedAlbums.forEach((album, index) => {
-                const avgRatingRounded = album._avgRating.toFixed(2);
-                const ratingStars = Array.from({length: 5}, (_, i) =>
-                    `<div class="rating-star ${i < Math.round(album._avgRating) ? 'filled' : ''}"></div>`
-                ).join('');
-
-                const albumCard = document.createElement('div');
-                albumCard.className = 'album-card';
-                albumCard.onclick = () => showAlbumDetails(index);
-                albumCard.innerHTML = `
-                    <div class="album-cover" ${album.cover ? `style="background-image: url('${album.cover}'); background-size: cover;"` : ''}>
-                        ${!album.cover ? 'NO_COVER' : ''}
-                    </div>
-                    <div class="album-title">${album.title}</div>
-                    <div class="album-artist">${album.artist}</div>
-                    <div class="album-info">${album.year} • ${album.tracks ? album.tracks.length : 0} tracks</div>
-                    <div class="album-rating-bar" style="display:flex;align-items:center;justify-content:center;margin-top:4px;">
-                        <div class="rating-bar" style="margin-right:6px;">${ratingStars}</div>
-                        <span style="font-size:11px;color:#00ff00;">${avgRatingRounded}</span>
-                    </div>
-                `;
-                albumGrid.appendChild(albumCard);
-            });
-        }
-
-        function populateTracks(tracks = null) {
-            const trackList = document.querySelector('.track-list');
-            const trackContainer = trackList.querySelector('.track-header').parentNode;
-            const existingRows = trackContainer.querySelectorAll('.track-row');
-            existingRows.forEach(row => row.remove());
-            let trackNumber = 1;
-            const data = tracks || allTracks;
-            data.forEach(track => {
-                const trackRow = document.createElement('div');
-                trackRow.className = 'track-row';
-                const ratingStars = Array.from({length: 5}, (_, i) => 
-                    `<div class="rating-star ${i < (track.rating || 0) ? 'filled' : ''}"></div>`
-                ).join('');
-                trackRow.innerHTML = `
-                    <div>${String(trackNumber).padStart(3, '0')}</div>
-                    <div>${track.title || ''}</div>
-                    <div>${track.artist || ''}</div>
-                    <div>${track.albumYear || ''}</div>
-                    <div>${track.duration || ''}</div>
-                    <div>${track.bitrate ? track.bitrate + ' kbps' : ''}</div>
-                    <div><div class="rating-bar">${ratingStars}</div></div>
-                `;
-                trackContainer.appendChild(trackRow);
-                trackNumber++;
-            });
-        }
-
-        // Sorting logic
-        function sortTracksBy(key) {
-            if (currentSort.key === key) {
-                currentSort.asc = !currentSort.asc;
-            } else {
-                currentSort.key = key;
-                currentSort.asc = true;
-            }
-            let sorted = [...allTracks];
-            sorted.sort((a, b) => {
-                let v1 = a[key] ?? '';
-                let v2 = b[key] ?? '';
-                // Numeric sort for year, rating, bitrate, number
-                if (['year', 'albumYear', 'rating', 'bitrate', 'number'].includes(key)) {
-                    v1 = parseInt(v1) || 0;
-                    v2 = parseInt(v2) || 0;
-                } else {
-                    v1 = (v1 + '').toLowerCase();
-                    v2 = (v2 + '').toLowerCase();
-                }
-                if (v1 < v2) return currentSort.asc ? -1 : 1;
-                if (v1 > v2) return currentSort.asc ? 1 : -1;
-                return 0;
-            });
-            populateTracks(sorted);
-        }
-
-        // Add click handlers to track-header columns for sorting
-        document.addEventListener('DOMContentLoaded', function() {
-            loadMusicData();
-            updateTimestamp();
-            setInterval(updateTimestamp, 1000);
-
-            document.getElementById('trackHeader').querySelectorAll('div').forEach((col, idx) => {
-                const sortKey = col.getAttribute('data-sort');
-                if (sortKey) {
-                    col.style.textDecoration = 'underline';
-                    col.style.cursor = 'pointer';
-                    col.addEventListener('click', () => {
-                        // Map sort keys to track object keys
-                        let key = sortKey;
-                        if (key === 'year') key = 'albumYear';
-                        if (key === 'number') key = 'number'; // not used, but kept for completeness
-                        sortTracksBy(key);
-                    });
-                }
-            });
-        });
-
-    </script>
+<script type="module" src="index.js"></script>
+<script type="module" src="dataLoader.js"></script>
+<script type="module" src="setExplorer.js"></script>
 </body>
 </html>

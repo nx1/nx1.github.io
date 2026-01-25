@@ -13,6 +13,82 @@ from pathlib import Path
 psy_path   = Path('/mnt/d/Music/psych')
 #music_path = Path('/mnt/c/Users/norma/Music')
 
+# mp3 ratings are between 1 and 255
+ratings = {1   : 1,
+           64  : 2,
+           128 : 3,
+           196 : 4,
+           255 : 5}
+
+class AudioFile:
+    def __init__(self, path):
+        self.path = Path(path)
+        self.suffix = self.path.suffix
+
+    def get_label(self, tags):
+        for frame in tags.getall("TXXX"):
+            if frame.desc.lower() == "label":
+                return str(frame.text[0])
+
+    def get_catalog(self, tags):
+        for frame in tags.getall("TXXX"):
+            if frame.desc.lower() == "catalog":
+                return str(frame.text[0])
+
+    def info(self):
+        if self.suffix == '.flac':
+            tags    = FLAC(self.path)
+            artist  = str(tags.get('artist')[0])
+            album   = str(tags.get('album')[0])
+            track   = str(tags.get('title')[0])
+            label   = str(tags.get('label')[0])
+            catalog = str(tags.get('catalog')[0])
+            date    = int(tags.get('date')[0])
+            title   = str(tags.get('title')[0])
+            rating  = int(tags.get('rating')[0])
+            bitrate = int(tags.info.bitrate/1000)
+            length  = int(tags.info.length)
+            try:
+                album_artist = str(tags.get('albumartist')[0])
+            except:
+                album_artist = artist
+
+        elif self.suffix == '.mp3':
+            mp3     = MP3(self.path)
+            tags    = ID3(self.path)
+            artist  = str(tags.getall('TPE1')[0].text[0])
+            album   = str(tags.getall('TALB')[0].text[0])
+            label   = self.get_label(tags)
+            catalog = self.get_catalog(tags)
+            date    = int(str(tags.getall('TDRC')[0].text[0]))
+            title   = str(tags.getall('TIT2')[0].text[0])
+            rating  = int(str(tags.getall('POPM')[0].rating))
+            rating  = ratings[int(rating)]
+            bitrate = int(mp3.info.bitrate/1000)
+            length  = int(mp3.info.length)
+            try:
+                album_artist = str(tags.getall('TPE2')[0].text[0])
+            except:
+                album_artist = artist
+
+        d = {'artist'       : artist,
+             'album'        : album,
+             'album_artist' : album_artist,
+             'date'         : date,
+             'title'        : title,
+             'rating'       : rating,
+             'label'        : label,
+             'catalog'      : catalog,
+             'bitrate'      : bitrate, 
+             'length'       : length}
+        return d
+
+    def get_album_art(self):
+        if self.suffix == '.mp3':
+            return get_mp3_album_art(ID3(self.path))
+        elif self.suffix == '.flac':
+            return get_flac_album_art(FLAC(self.path))
+
 def get_mp3_album_art(tags):
     d = tags.getall('APIC')[0].data
     im = Image.open(BytesIO(d))
@@ -27,7 +103,6 @@ def save_image(im, filename):
     im = im.resize((200,200), Image.LANCZOS)
     im.save(filename, format='jpeg', optimize=True, quality=70, progressive=True)
 
-
 def plot_image(im, plot=False):
     if not plot:
         return None
@@ -36,48 +111,20 @@ def plot_image(im, plot=False):
     plt.imshow(im, interpolation='none')
     plt.show()
 
-ratings = {1   : 1,
-           64  : 2,
-           128 : 3,
-           196 : 4,
-           255 : 5}
-
 all_res  = []
 last_dir = None
 img_count = 0
 for i, song_path in enumerate(psy_path.glob('*/*.flac')):
     if '_Singles' in str(song_path):
         continue
-
     print(i, song_path)
-    tags   = FLAC(song_path)
-    artist = str(tags.get('artist')[0])
-    album  = str(tags.get('album')[0])
-    track  = str(tags.get('title')[0])
-    date   = int(tags.get('date')[0])
-    title  = str(tags.get('title')[0])
-    rating = int(tags.get('rating')[0])
-    try:
-        album_artist = str(tags.get('albumartist')[0])
-    except:
-        album_artist = artist
-
-
-    d = {'artist' : artist,
-         'album'  : album,
-         'album_artist' : album_artist,
-         'title'  : title,
-         'date'   : date,
-         'title'  : title,
-         'rating' : rating,
-         'bitrate': int(tags.info.bitrate/1000),
-         }
-
+    a = AudioFile(song_path)
+    d = a.info()
     all_res.append(d)
     print(d)
 
     if last_dir != song_path.parent:
-        im = get_flac_album_art(tags)
+        im = a.get_album_art()
         im_path = f'cover_art/{img_count}.jpg'
         save_image(im, im_path)
         # plot_image(im)
@@ -86,38 +133,19 @@ for i, song_path in enumerate(psy_path.glob('*/*.flac')):
     d['image_path'] = im_path
     d['image'] = im
 
-
 last_dir = None
 for i, song_path in enumerate(psy_path.glob('*/*.mp3')):
     if '_Singles' in str(song_path):
         continue
     print(i, song_path)
-    mp3    = MP3(song_path)
-    tags   = ID3(song_path)
-    artist = str(tags.getall('TPE1')[0].text[0])
-    album  = str(tags.getall('TALB')[0].text[0])
-    date   = int(str(tags.getall('TDRC')[0].text[0]))
-    title  = str(tags.getall('TIT2')[0].text[0])
-    rating = int(str(tags.getall('POPM')[0].rating))
-    rating = ratings[int(rating)]
-    try:
-        album_artist = str(tags.getall('TPE2')[0].text[0])
-    except:
-        album_artist = artist 
-
-    d = {'artist' : artist,
-         'album'  : album,
-         'album_artist': album_artist,
-         'date'   : date,
-         'title'  : title,
-         'rating' : rating,
-         'bitrate': int(mp3.info.bitrate/1000)}
+    a = AudioFile(song_path)
+    d = a.info()
     all_res.append(d)
     print(d)
 
     if last_dir != song_path.parent:
         print(song_path)
-        im = get_mp3_album_art(tags)
+        im = a.get_album_art()
         im_path = f'cover_art/{img_count}.jpg'
         save_image(im, im_path)
         #plot_image(im)
@@ -139,6 +167,8 @@ for d in all_res_json:
 with open('ss_songs.json', 'w+') as f:
     json.dump(all_res_json, f, indent=2)
 
+print(f'info written to ss_songs.json')
+
 print(df)
 
 df = df.sort_values('album').reset_index(drop=True)
@@ -147,7 +177,7 @@ df_sorted = df_grouped.sort_values(by='rating', ascending=False).reset_index()
 df_sorted['rank'] = df_sorted['rating'].rank(method='dense', ascending=False).astype(int)
 
 
-with open('index.html', 'w+') as f:
+with open('v1.html', 'w+') as f:
     f.write("""<html>
 <head>
 <title>nx1.info | Psyscores</title>

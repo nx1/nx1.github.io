@@ -4,13 +4,18 @@
     box-sizing: border-box;
 }
 
+a {
+    color: #00ff00;
+    text-decoration: none;
+}
+
 body {
     font-family: 'Fira Mono', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
     font-weight: 400;
     background: #0a0a0a;
-    color: #00ff00;
+    color: #ffffff;
     overflow-x: hidden;
-    font-size: 14px; /* increased */
+    font-size: 14px;
 }
 
 html {
@@ -26,21 +31,21 @@ html {
 .terminal-header {
     background: #1a1a1a;
     padding: 8px;
-    border-bottom: 1px solid #00ff00;
-    font-size: 16px; /* increased */
+    border-bottom: 1px solid #ffffff;
+    font-size: 16px; 
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .terminal-title {
-    color: #00ff00;
+    color: #ffffff;
     font-weight: 400;
 }
 
 .timestamp {
     color: #888;
-    font-size: 12px; /* increased */
+    font-size: 12px; 
 }
 
 .container {
@@ -57,11 +62,11 @@ html {
 .section-header {
     background: #1a1a1a;
     padding: 10px;
-    border-bottom: 1px solid #00ff00;
-    color: #00ff00;
+    border-bottom: 1px solid #ffffff;
+    color: #ffffff;
     font-weight: 400;
     text-transform: uppercase;
-    font-size: 13px; /* increased */
+    font-size: 13px;
     cursor: pointer;
 }
 
@@ -85,7 +90,7 @@ html {
 }
 
 .album-card:hover {
-    border-color: #00ff00;
+    border-color: #ffffff;
 }
 
 .album-cover {
@@ -99,14 +104,13 @@ html {
     justify-content: center;
     color: #666;
     font-size: 11px;
-    background-image: linear-gradient(45deg, #1a1a1a 25%, transparent 25%) 
-                      ;
+    background-image: linear-gradient(45deg, #1a1a1a 25%, transparent 25%);
     background-size: 20px 20px;
     border-radius: 6px;
 }
 
 .album-title {
-    color: #00ff00;
+    color: #ffffff;
     font-size: 12px; /* increased */
     margin-bottom: 2px;
     text-align: center;
@@ -133,14 +137,12 @@ html {
 }
 
 .track-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     background: #1a1a1a;
     padding: 7px;
-    border-bottom: 1px solid #00ff00;
-    display: grid;
-    grid-template-columns: 34px 1fr 200px 70px 70px 70px 70px;
-    gap: 12px;
-    font-size: 12px; /* increased */
-    color: #00ff00;
+    border-bottom: 1px solid #ffffff;
     text-transform: uppercase;
     cursor: pointer;
     user-select: none;
@@ -148,20 +150,64 @@ html {
 }
 
 .track-row {
-    padding: 5px 7px;
-    border-bottom: 1px solid #222;
-    display: grid;
-    grid-template-columns: 34px 1fr 200px 70px 70px 70px 70px;
-    gap: 12px;
-    font-size: 12px; /* increased */
-    color: #ccc;
+    padding: 0px 0px;
+    border-bottom: 0px solid #222;
     cursor: pointer;
     font-weight: 400;
 }
 
+.track-header,
+.track-row {
+    display: grid;
+    grid-template-columns:
+        25px      /* # */
+        3fr       /* TITLE */
+        2fr       /* ARTIST */
+        3fr       /* ALBUM */
+        2fr       /* LABEL */
+        1fr       /* CATALOG */
+        0.3fr     /* YEAR */
+        0.3fr     /* DURATION */
+        0.3fr     /* BITRATE */
+        0.8fr;    /* RATING */
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: left;
+}
+
 .track-row:hover {
     background: #1a1a1a;
+    color: #ffffff;
+}
+
+.sorted-column {
     color: #00ff00;
+}
+
+[data-sort-key] {
+    position: relative;
+}
+
+[data-sort-key].sort-asc::after,
+[data-sort-key].sort-desc::after {
+    content: '';
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+[data-sort-key].sort-asc::after {
+    border-bottom: 4px solid #00ff00;
+}
+
+[data-sort-key].sort-desc::after {
+    border-top: 4px solid #00ff00;
 }
 
 .rating-bar {
@@ -177,7 +223,7 @@ html {
 }
 
 .rating-star.filled {
-    background: #00ff00;
+    background: #ffffff;
 }
 
 .cursor {
@@ -242,4 +288,115 @@ html {
     line-height: 1.1;
     max-width: 100%;
   }
+}
+#set-explorer {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+#categories{
+  width: 120px;
+  margin-right: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.category-item {
+  padding: 3px 8px;
+  margin-bottom: 0;
+  border: 1px solid #555;
+  border-radius: 0;
+  cursor: pointer;
+  background: #181818;
+  color: #bbb;
+  font-size: 11px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  border-bottom: none;
+}
+
+.category-item:last-child {
+  border-bottom: 1px solid #555;
+}
+
+.category-item:hover {
+  background: #333;
+  color: #fff;
+  border-color: #4a8;
+}
+
+.category-item.selected {
+  background: #4a8;
+  color: #fff;
+  border-color: #4a8;
+}
+
+#aggregations,
+#set-aggregations,
+#member-aggregations {
+  flex: 1;
+  margin-left: 16px;
+}
+
+#aggregations table,
+#set-aggregations table,
+#member-aggregations table {
+  border-collapse: collapse;
+  background: #181818;
+  color: #bbb;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+#aggregations th,
+#aggregations td,
+#set-aggregations th,
+#set-aggregations td,
+#member-aggregations th,
+#member-aggregations td {
+  border: 1px solid #555;
+  padding: 2px 5px;
+  text-align: left;
+}
+
+#aggregations th,
+#set-aggregations th,
+#member-aggregations th {
+  background: #222;
+  color: #bbb;
+  font-weight: 400;
+}
+
+#aggregations tr:hover td,
+#set-aggregations tr:hover td,
+#member-aggregations tr:hover td {
+  background: #333;
+  color: #fff;
+}
+
+#aggregations h2,
+#set-aggregations h2,
+#member-aggregations h2 {
+  color: #bbb;
+  font-size: 12px;
+  font-weight: 400;
+  margin: 10px 0 4px 0;
+}
+
+.category-column {
+    /* background-color: #1a3f6a; Removed for transparent background */
+}
+
+#set-aggregations th.category-column {
+    background-color: #4a8; /* Matches selected category item */
+    color: #fff;
+}
+
+.table-album-art {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 0px;
 }
