@@ -2281,7 +2281,7 @@ When a role needs shared behavior you’re faced with the problem of
 organizing the shared code. Ideally 142 Chapter 7. Sharing Role Behavior with
 Modules this code would be defined in a single place but be usable by any
 object that wished to act as the duck type and play the role. Many
-object-oriented languages provide a way to define a named group of meth- ods
+object-oriented languages provide a way to define a named group of methods
 that are independent of class and can be mixed in to any object. In Ruby, these
 mix-ins are called modules. Methods can be defined in a module and then the
 module can be added to any object. Modules thus provide a perfect way to allow
@@ -2399,9 +2399,30 @@ to predict:
     - The exact search order Python uses (can check using `MyClass.mro()`)
 
 
-
-
 <h2>Organizing Responsibilities</h2>
+With several options at our disposal, noteably:
+    - Modules
+    - Duck typing
+    - Inheritance.
+
+It can be tricky to know what to use when.
+
+Going back to the problem of scheduling a trip, trips occur at specific points
+in time and involve bicycles, mechanics and motor vechicles and potentially
+many other things that exist in the real world.
+
+Some of these objects cannot be in two places at once, such as a the bicycle,
+machnics and vechicles. The program needs a way to arrange all these objects on
+a schedule so that it can determine at any point in time which objects are
+avilable and which are already commited.
+
+
+
+
+
+
+
+
 
 
 
