@@ -1,0 +1,193 @@
+<html>
+<head>
+    <title>nx1.info</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Git</h1>
+
+useful tips & Guides
+https://longair.net/blog/2009/04/16/git-fetch-and-merge/
+<h2>List branches:</h2>
+git branch --list        <--local only
+git branch --list -all   <--remotes too
+
+<h2>Create and switch to new local branch</h2>
+> git checkout -b newbranch
+
+<h2>How to change git credentials:</h2>
+To check git credentials (in repo)
+ > git config user.name
+ > git config user.email
+ > git config --list
+
+option 1:
+    export GIT_AUTHOR_NAME="nk"
+    export GIT_AUTHOR_EMAIL="n@k.com"
+    export GIT_COMMITTER_NAME="nk"
+    export GIT_COMMITTER_EMAIL="n@k.com"
+
+Option 2:
+    to update (global):
+      git config --global user.name "nk"
+      git config --global user.email "n@k.com" 
+    local:
+      git config user.name "nk"
+      git config user.email = "n@k.com"
+
+<h2>How to incorperate changes from master branch into current branch</h2>
+Option 1:
+> git checkout mybranch
+> git merge master_branch
+
+Option 2: 
+> git checkout mybranch
+> git rebase master_branch
+
+
+>option 3:
+git checkout mybranch
+git stash push -m 'wip tree branch before pulling'
+git pull --rebase origin master_branch
+# fix any merge conflicts
+git stash pop
+
+<h2>How to combine changes on a local branch with a remote branch and push them</h2>
+Assuming you already have commited the changes locally.
+
+stash uncommited changes.
+> git stash
+
+fetch and merge changes from remote branch 
+> git fetch origin staging
+> git merge origin/staging
+
+push to local branch as specified remote branch.
+> git push origin sb_tree:staging
+
+unpop changes if needed:
+> git stash pop
+
+<h2>How to make mac remember ssh passphrase.</h2>
+> ssh-add --apple-use-keychain ~/.ssh/id_rsa
+
+and in ~/.ssh/config add the following:
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_rsa
+
+rebash
+
+to view listed keys do:
+> ssh-add -l
+
+<h2>Selective merging.</h2>
+What happened:
+    new branch master was created from tree.
+    too many changes were added to tree, master is still the same.
+
+    we want to selecively merge specific lines from the updated tree branch into master.
+
+1. update origin listing
+> git fetch
+
+> git status:
+On branch tree
+Your branch is behind 'origin/tree' by 6 commits, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   smartbench/debug/send_messages.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+
+1. Switch to the master branch 
+> git checkout master
+
+x1@pc:~/projects/matoha-smartbench$ git log --oneline
+00fa98c (HEAD -> master, origin/master, tree) supress kafka messages to CRITIAL only
+
+We are in the right place on this branch but we want to selectively merge some changes from the new tree
+
+to see the which files are different between the master branch and the updated tree branch use:
+> git diff master origin/tree --name-only
+
+x1@Normans-Mac-mini:~/projects/matoha-smartbench$ git diff master origin/tree --name-only
+.gitlab-ci.yml
+logger.py
+run_smartbench.sh
+smartbench/app_gui/Dockerfile
+smartbench/app_gui/blocks/results_block.py
+smartbench/app_gui/camera_capture/basler_capture.py
+smartbench/app_gui/camera_capture/camera_capture.py
+smartbench/app_gui/camera_capture/camera_manager.py
+smartbench/app_gui/camera_capture/camera_worker_thread.py
+smartbench/app_gui/camera_capture/test_camera_manager.py
+smartbench/app_gui/deepstream_processor.py
+smartbench/app_gui/kafka_handler.py
+smartbench/app_gui/main_gui.py
+smartbench/app_gui/run.sh
+smartbench/app_gui/test_main_gui.py
+smartbench/barcode/barcode_scanner.py
+smartbench/data_manager/api_submitter.py
+smartbench/data_manager/data_manager.py
+smartbench/data_manager/decision_tree/decision_tree.py
+smartbench/data_manager/public_api.py
+smartbench/get_details.py
+smartbench/matoha_kafka/matoha_kafka.py
+smartbench/metal_detection/metal_detection.py
+smartbench/metal_detection/run_metal_detection.py
+smartbench/rfid/rfid.py
+smartbench/weighing_scale/weighing_scale.py
+
+as you can see there are a crapton.
+
+to selectively merge specific bits we can do the following using pycharm.
+
+In settings, do:
+Git --> Branches...
+
+then select remote/origin/tree --> compare with `master'
+
+This will show all the commits that exist in origin/tree but do not exist in master and vice versa.
+
+clicking on a commit will show the files that were changed on the commit.
+
+right clicking on a file and doing show diff will then show the diffs for the specific file.
+
+use compare with local
+
+accept / reject the changes we want.
+
+
+check files using 
+> git diff 
+
+git add files and commit.
+
+
+<h2>Making an existing folder into a git repo and adding a remote.</h2>
+First create a repo on gitlab / github.
+
+locally:
+git init --initial-branch=main --object-format=sha1
+git remote add origin git@gitlab.com:NormanKhan/kafka_tests.git
+git add .
+git commit -m "Initial commit"
+git push --set-upstream origin main
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
