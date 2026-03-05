@@ -13,19 +13,21 @@ Basics:                                     Navigation:
 i   - insert before cursor                  h    - left
 I   - insert at beginning of line           j    - down
 a   - append after cursor                   k    - up
-A   - append at end of line                 l    - right
-ESC - return to normal mode                 w    - next word
-:w  - write/save                            b    - previous word
-:q  - quit                                  0    - beginning of line
-:wq - write and quit                        ^    - first non-blank of line
-:q! - quit without saving                   $    - end of line
-.   - repeat last change                    G    - go to end of file
-                                            gg   - go to beginning of file
-                                            :NUM - go to line NUM
-                                            %    - jump between brackets
+ea  - insert at end of current word         l    - right
+A   - append at end of line                 w    - next word
+O   - appaend above current line            b    - previous word
+o   - append below current line             0    - beginning of line
+                                            ^    - first non-blank of line
+ESC - return to normal mode                 $    - end of line
+:w  - write/save                            G    - go to end of file
+:q  - quit                                  gg   - go to beginning of file
+:wq - write and quit                        :NUM - go to line NUM
+:q! - quit without saving                   %    - jump between brackets
+.   - repeat last change                    
+                                           
 
 Editing:                                    Visual Mode:
-x       - delete character under cursor     v       - visual mode (character-wise)
+x       - aelete character under cursor     v       - visual mode (character-wise)
 dd      - delete line                       V       - visual line mode
 dw      - delete word                       CTRL-v  - visual block mode
 D       - delete to end of line             y       - yank selection
@@ -49,6 +51,14 @@ CTRL-w h/j/k/l    - move to window         gqq  - reformat current line
 :tabnew           - open new tab           gwip - reformat paragraph, preserving cursor
 gt                - next tab               gwap - same as above but with surrounding blank lines
 gT                - previous tab
+
+Macros:                                    Cut & Paste:
+q[leter] - record macro to letter          yy     - copy line 
+qa       - record macro to letter 'a'      2yy    - copy 2 lines
+q        - stop recording macro            yw     - copy word under cursor
+@a       - run macro a                     y$ & Y - 
+@@       - re-run last macro
+
 
 Deleting with motions:                                Jumping to start/end of blocks:
 daw - delete a word (and surrounding whitespace)      [[ - jump to previous function start
