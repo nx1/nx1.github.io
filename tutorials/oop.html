@@ -2416,17 +2416,43 @@ machnics and vechicles. The program needs a way to arrange all these objects on
 a schedule so that it can determine at any point in time which objects are
 avilable and which are already commited.
 
+To illustrate, first imagine a Schedule class exists:
+<code>
+class Schedule:
+    def is_schedulable(target, starting, ending),
+    def add(target, starting, ending) 
+    def remove(target, starting, ending) 
+</code>
 
+Each function takes three arguments: the target object and the start and end dates
+for the period of interest.
 
+The Schedule class is responsible for knowing if a target is already scheduled,
+as well as adding and removing targets from the schedule.
 
+The methods here are fine, however there is a gap in the code.
 
+Knowing if a target object is scheduled in during an interval this is enough to prevent 
+over-scheduling that object. 
 
+Knowing if a target object is not scheduled during an interval however is not enough information
+to know if you can schedule it.
 
+To know if an object can be scheduled, it must take into account the lead time.
 
+A simple solution to this is to simply check all the required values of the
+target in the is_schedulable() function.
 
-
-
-
+for example:
+<code>def is_schedulable(target, starting, ending):
+    if target.class == 'Bicycle':
+        lead_days = 1
+    elif target.class == 'Mechanic':
+        lead_days = 4
+    elif target.class == 'Vechicle':
+        lead_days = 3
+    result = do_some_checks()
+    return result</code>
 
 <h2>Removing Unnecessary Dependencies</h2>
 <h2>Writing the Concrete Code</h2>
