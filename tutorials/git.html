@@ -185,6 +185,55 @@ git add .
 git commit -m "Initial commit"
 git push --set-upstream origin main
 
+
+<h2>Removing old unused Branches.</h2>
+
+First check the branch you are going to delete for diffrences between it and the branch you want to keep (i.e. master)
+
+> git log master..origin/display_collection_name --oneline
+
+If this line returns anything, it means that there are commits that exist on the old branch that do not exist on the
+master branch. (If you want to know the other way, just flip the order of the branches i.e.
+
+git log origin/display_collection_name..master --oneline   <-- This will return much much more haha.
+
+In this case it returned the following:
+
+3215915 (origin/display_collection_name) gui stuff
+
+To see what those changes were explicitly, one can do:
+git show 3215915
+
+Once happy with the state of the code, the branch may be deleted using:
+
+# Delete a local branch
+git branch -d branch_name      # safe - refuses if unmerged
+git branch -D branch_name      # FORCE DELETE REGARDLESS!!!
+
+# Delete from remote (GitLab)
+git push origin --delete branch_name
+
+
+<h3>Renaming old unused branches</h3>
+Sometimes there can be old branches that we do not want to delete, case in point
+we have an old branch called "main" from before we showed up, this guy is still
+cluttering both gitlab and git, We don't want to delete it exactly but we don't
+want it there because it is slightly confusing.
+
+We can rename the brach locally by doing:
+git branch -m main archive/main-old
+
+Then we can push the renamed branch by doing:
+git push origin archive/main-old
+
+Finally, we can delete the old branch meaning it no longer clogs shit up:
+git push origin --delete main
+
+
+
+
+
+
 <hr>
 <div id="clock" onload="currentTime()"></div>
 <script type="text/javascript" src="../clock.js"></script>
