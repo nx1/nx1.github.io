@@ -1,0 +1,51 @@
+<html>
+<head>
+    <title>nx1.info | tmux Cheat Sheet</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<pre>
+<h1>nx1.info | tmux Cheat Sheet</h1>
+See also: <a href="https://www.pluralsight.com/resources/blog/cloud/tmux-cheat-sheet">pluralsight</a>
+
+Session commands:
+:new -s session-name
+
+Ctrl+b : Command Prefix
+
+All the following require the command prefix first:
+
+General:
+? : See all commands
+w : See all panes and windows
+
+Sessions:      Windows:           Panes:
+$ : Rename     C : Create         % : vsplit
+D : Detach     N : Next           " : hsplit
+) : Next       P : Previous       ! : Pane to window
+( : Previous   L : Last           
+               , : Rename
+               . : Change Number
+               F : Search
+
+Movement:
+[ : Enter copy mode
+] : Paste
+
+Copy Mode:
+space : start selection
+enter : copy selection
+esc   : clear selection
+G     : Go to bottom
+g     : Go to top
+/     : search
+
+               
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
