@@ -1,0 +1,108 @@
+<html>
+<head>
+    <title>nx1.info | How Markets Work</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        options: {
+          skipHtmlTags: {'[-]': ['pre']} // Don't skip math inside <pre>
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<pre>
+<h1>nx1.info | How markets work</h1>
+<hr>
+A market is the emergent behavior of a system attempting to resolve a resource imbalance.
+
+To illustrate, imagine two individuals living on an island with an asymmetric
+resource inbalance between them.
+
+Numerically we can denote our island as a closed system $S$, containing a set
+of two people:
+
+$P={P_1, P_2}$
+
+Initially, each person is in posession of some initial endowment $E_1$ and $E_2$.
+These endowments may be represented as multi-dimensional resource vector
+with each value being the amount of a specific resource they possess.
+
+$E_1 = (x_1, y_1) = (45,3)$
+$E_2 = (x_2, y_2) = (0, 200)$
+
+For example $x_1$ could be the number of fish and $y_1$ the amount of water, as
+said earlier there is an asymmetric resource distribution between our two
+stranded individuals.
+
+The two people on the island both decide that together is stronger than alone
+and therefore agree to share resources between each other, this sharing happens
+during the action of a trade, which will redisribute the amount of resources
+while keeping the total number of resources equal. 
+
+<h3>1.2 The Utility Function $U(\mathbf{E})$</h3>
+Our islanders have a pretty good idea of how much resource they have,
+however these dying chimps have no good way of valuing their endowments.
+
+To do this a mechanism is required that converts the resource vector $E$
+into a single number.
+
+We will call this mechanism the Utility function $U(\mathbf{E})$.
+
+$U$ is a scalar mapping $U: \mathbb{R}^n \to \mathbb{R}$ that collapses a
+multi-dimensional resource vector into a single real-number "score."
+
+In the desert island system $S$, the utility function represents the
+probability of survival given a specific bundle of resources. An agent $P_i$
+will always prefer endowment $\mathbf{E}_a$ over $\mathbf{E}_b$ if and only if it has a higher utility score.
+
+$$U(\mathbf{E}_a) > U(\mathbf{E}_b)$$
+<h3>1.3 The Resource Imbalance (Gradient)</h3>
+
+A market is fundamentally driven by Diminishing Marginal Utility. This
+means the value of an additional unit of a resource decreases as the quantity
+of that resource increases:
+
+$$\frac{\partial^2 U}{\partial x^2} < 0$$
+
+If $P_1$ possesses a high quantity of $x$ (fish) but zero $y$ (water),
+their marginal utility for $x$ is near zero, while
+their marginal utility for $y$ is near infinite.
+
+This creates a Utility Gradient between the two people.
+
+<h3>1.4 The Exchange Vector $\Delta \mathbf{E}$</h3>
+
+An exchange (trade) is a displacement vector $\Delta \mathbf{E} = (\Delta x,
+\Delta y)$ that moves resources between agents. Following the laws of a closed
+system, this is a **zero-sum physical transfer**:
+
+$$\mathbf{E}_1^{new} = \mathbf{E}_1 + \Delta \mathbf{E}$$
+$$\mathbf{E}_2^{new} = \mathbf{E}_2 - \Delta \mathbf{E}$$
+
+While the physical resources are conserved ($\sum \mathbf{E}_{initial} = \sum \mathbf{E}_{final}$), the **total system utility** is not.
+
+A market exists when there exists a vector $\Delta \mathbf{E}$ such that:
+
+1.  $U_1(\mathbf{E}_1 + \Delta \mathbf{E}) > U_1(\mathbf{E}_1)$
+2.  $U_2(\mathbf{E}_2 - \Delta \mathbf{E}) > U_2(\mathbf{E}_2)$
+
+The market is the physical manifestation of the system moving toward a state of higher aggregate utility.
+
+
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
