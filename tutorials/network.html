@@ -1,0 +1,163 @@
+<html>
+<head>
+    <title>nx1.info | Network Fix</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Jetson Ethernet Connectivity Fix</h1>
+
+It seems like the Jetson still doesn't want to connect via ethernet for some
+reason, let's look into this.
+
+First we can check the Ethernet interface by doing:
+<pre><code class="language-bash">ip addr show</code></pre>
+
+This will show all the interfaces, look for one that has a name with "eth" in
+it for the ethernet. In our case, we find that there is no "eth", this is
+because Jetson runs modern Ubuntu which uses predictable network interface
+names, this means in our case our "eth" interface has been replaced with the
+following:
+
+<pre><code class="language-bash">3: enP8p1s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 3c:6d:66:b2:8b:ed brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.100/24 brd 192.168.1.255 scope global noprefixroute enP8p1s0
+       valid_lft forever preferred_lft forever</code></pre>
+
+The UP and LOWER_UP flags mean that the connection on the interface is active
+(cable is plugged in and working).
+
+We also see that there is an IP address: 192.168.1.100, however we still can't
+reach the internet...
+
+Running the <pre><code class="language-bash">ip route</code></pre> command <a href="https://man7.org/linux/man-pages/man8/ip-route.8.html">(man page)</a>
+
+Looking at lines that start with "default" we see two:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ ip route
+default via 172.24.187.1 dev wlP1p1s0 proto dhcp metric 600 
+default via 192.168.1.1 dev enP8p1s0 proto static metric 20100</code></pre>
+
+There are two default interfaces, one for the wifi and one for the ethernet.
+Since the ethernet has a higher metric (20100) as compared to the Wifi (600),
+Linux will preferentially use the wifi over the ethernet connection.
+
+The high value for the ethernet was likely set by Ubuntu when it tried to do a
+connectivity check and couldn't reach Google or the Ubuntu server, and so it
+set the metric to a large number so it's only used as a last resort.
+
+Trying to ping the router using:
+<pre><code class="language-bash">ping -c 4 192.168.1.1</code></pre> gives "Destination Host Unreachable"
+
+Which is a bad sign. Also, whenever I connected to the ethernet before I'd
+always get a 172.x.x.x address, not a 192. Again, not a good sign.
+
+To check to see if the Jetson has seen the router's address we can run:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ arp -a | grep enP8p1s0
+? (192.168.1.225) at &lt;incomplete&gt; on enP8p1s0
+_gateway (192.168.1.1) at &lt;incomplete&gt; on enP8p1s0</code></pre>
+
+The &lt;incomplete&gt; flag says that The Jetson sent an ARP request however
+the response was not successful.
+
+Additionally, when doing: <pre><code class="language-bash">ip addr show</code></pre>
+
+<pre><code class="language-bash">3: enP8p1s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 3c:6d:66:b2:8b:ed brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.100/24 brd 192.168.1.255 scope global noprefixroute enP8p1s0
+       valid_lft forever preferred_lft forever
+        ^          ^          ^          ^</code></pre>
+These flags suggest that the IP was manually assigned instead of by the router (DHCP).
+
+To clear this manually assigned DHCP address we can do the following:
+
+First identify the connection profile via nmcli:
+
+<pre><code class="language-bash">nmcli connection show</code></pre>
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ nmcli connection show
+NAME                UUID                                  TYPE      DEVICE          
+PRINTERS            2614d6e9-f567-49d5-a8c6-f12584c90ee4  wifi      wlP1p1s0        
+docker0             12b7e1c0-0cbc-45e5-91a1-4bf8c158b15e  bridge    docker0         
+tailscale0          64f00924-290d-468a-b4a4-1433868a370e  tun       tailscale0      
+br-584ebcbeae87     5d4bf245-f066-4464-9123-5a258391bc93  bridge    br-584ebcbeae87 
+br-6f4dc25096b9     3f650bd2-395b-44e7-ae14-d574243e5c00  bridge    br-6f4dc25096b9 
+br-fe165edaee83     bafba066-7863-4d9a-96dc-3eaa9b5ca95f  bridge    br-fe165edaee83 
+enP8p1s0            88c2087a-418f-47f3-a923-e564630f2626  ethernet  enP8p1s0        
+Wired connection 1  113f322d-2bd2-39de-8fd3-4bc81584c140  ethernet  --</code></pre>
+
+Even more worryingly we seem to have two Ethernet profiles fighting over the same hardware.
+
+enP8p1s0 is the one currently active but still holding onto the dead IP of
+192.168.1.100, while the "Wired connection 1" is likely a default (DHCP)
+profile sitting on the sidelines because the other one is occupying the port.
+
+Since enP8p1s0 has wrong settings, let's start by removing it:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ sudo nmcli connection delete enP8p1s0
+Connection 'enP8p1s0' (88c2087a-418f-47f3-a923-e564630f2626) successfully deleted.</code></pre>
+
+Next we will create a new Ethernet profile that is tied to the hardware:
+<pre><code class="language-bash">matoha@orin-nx-1:~$ sudo nmcli con add type ethernet con-name "Ethernet-Fix" ifname enP8p1s0
+Connection 'Ethernet-Fix' (19cd44ce-9a73-4c6e-9f3f-31796ed57712) successfully added.</code></pre>
+
+Activate the profile via:
+<pre><code class="language-bash">matoha@orin-nx-1:~$ sudo nmcli con up "Ethernet-Fix"
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/10)</code></pre>
+
+Finally, we can check the IP on the newly created profile via:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ ip addr show enP8p1s0
+3: enP8p1s0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 3c:6d:66:b2:8b:ed brd ff:ff:ff:ff:ff:ff
+    inet 172.24.187.182/24 brd 172.24.187.255 scope global dynamic noprefixroute enP8p1s0
+       valid_lft 172788sec preferred_lft 172788sec
+    inet6 fe80::b791:ca83:7e59:fdf9/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever</code></pre>
+
+Hooray! We now have been allocated a new IP (172.24.187.182) by the router's DHCP! We're back.
+
+We can go and check the metric values on the devices again by doing:
+<pre><code class="language-bash">ip route</code></pre>
+<pre><code class="language-bash">default via 172.24.187.1 dev enP8p1s0 proto dhcp metric 100 
+default via 172.24.187.1 dev wlP1p1s0 proto dhcp metric 600</code></pre>
+
+We see that our ethernet connection now has a lower metric than the wifi
+meaning that it will preferentially use it instead. 
+
+Why did the metric change?
+
+NetworkManager typically assigns a lower metric (higher priority) to wired
+connections than to wireless ones by default. Previously, the metric was likely
+inflated (set to 20100) because the connection failed its connectivity check;
+once we re-established a clean profile with working DHCP, the system restored
+the default priority.
+
+Finally we can check to see if our ethernet device can actually reach the
+internet by performing a ping command and explicitly stating the device:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ ping -I enP8p1s0 -c 4 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) from 172.24.187.182 enP8p1s0: 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=119 time=1.34 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=119 time=1.31 ms</code></pre>
+
+we are fucking cooking
+
+To check which device is being used by default, we can run:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ ip route get 8.8.8.8
+8.8.8.8 via 172.24.187.1 dev enP8p1s0 src 172.24.187.182 uid 1000 
+    cache</code></pre>
+
+This tells us that the ping is using the ethernet device enP8p1s0 by default :)
+
+</div>
+</body>
+</html>
