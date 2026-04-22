@@ -1,0 +1,255 @@
+<html>
+<head>
+    <title>nx1.info | How Markets Work</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        options: {
+          skipHtmlTags: {'[-]': ['pre']} // Don't skip math inside <pre>
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<pre>
+<h1>nx1.info | How markets work</h1>
+<hr>
+A market is the emergent behavior of a system attempting to resolve a resource imbalance.
+
+To illustrate, imagine two individuals living on an island with an asymmetric
+resource imbalance between them.
+
+Numerically we can denote our island as a closed system $S$, containing a set
+of two people:
+
+$P={P_1, P_2}$
+
+Initially, each person is in possession of some initial endowment $E_1$ and $E_2$.
+These endowments may be represented as multi-dimensional resource vector
+with each value being the amount of a specific resource they possess.
+
+$E_1 = (x_1, y_1) = (45,3)$
+$E_2 = (x_2, y_2) = (0, 200)$
+
+For example $x_1$ could be the number of fish and $y_1$ the amount of water, as
+said earlier there is an asymmetric resource distribution between our two
+stranded individuals.
+
+The two people on the island both decide that together is stronger than alone
+and therefore agree to share resources between each other, this sharing happens
+during the action of a trade, which will redistribute the amount of resources
+while keeping the total number of resources equal. 
+
+<h3>1.2 The Utility Function $U(\mathbf{E})$</h3>
+Our islanders have a pretty good idea of how much resource they have,
+however these dying chimps have no good way of valuing their endowments.
+
+To do this, a mechanism is required that converts the resource vector $E$
+into a single number.
+
+We will call this mechanism the utility function $U(\mathbf{E})$.
+
+$U$ is a scalar mapping $U: \mathbb{R}^n \to \mathbb{R}$ that collapses a
+multi-dimensional resource vector into a single real-number "score."
+
+In the desert island system $S$, the utility function represents the
+probability of survival given a specific bundle of resources. An islander $P_i$
+will always prefer endowment $\mathbf{E}_a$ over $\mathbf{E}_b$ if and only if it has a higher utility score.
+
+$$U(\mathbf{E}_a) > U(\mathbf{E}_b)$$
+<h3>1.3 The Resource Imbalance (Concavity)</h3>
+
+A market is fundamentally driven by "Diminishing Marginal Utility".
+This is formally represented by the utility function being strictly concave:
+
+$$\frac{\partial^2 U}{\partial x^2} < 0$$
+
+This inequality is the mathematical engine of trade. It signifies that the 
+"Marginal Utility" (the gain from one additional unit, $\frac{\partial U}{\partial x}$) 
+decreases as the total quantity $x$ increases.
+
+For example, if you have zero fish, the first fish increases your survival
+probability significantly ($\frac{\partial U}{\partial x}$ is very large). 
+However, if you already have 100 fish, the 101st fish is almost worthless 
+because you cannot eat it before it rots ($\frac{\partial U}{\partial x}$ is near zero).
+
+A resource imbalance occurs when two islanders $P_1$ and $P_2$ have 
+different marginal utilities for the same resources. 
+
+If $P_1$ has many fish ($x$) but no water ($y$), their state is:
+$\frac{\partial U_1}{\partial x} \approx 0$ and $\frac{\partial U_1}{\partial y} \approx \infty$
+
+If $P_2$ has much water but no fish:
+$\frac{\partial U_2}{\partial x} \approx \infty$ and $\frac{\partial U_2}{\partial y} \approx 0$
+
+This creates a utility gradient between the two islanders. The system is 
+in a high-entropy state of inefficiency because a single unit of $x$ is 
+valued infinitely more by $P_2$ than by its current owner $P_1$.
+
+<h3>1.4 The Exchange Vector $\Delta \mathbf{E}$</h3>
+
+An exchange (trade) may be represented as a <b>displacement vector</b> $\Delta \mathbf{E} = (\Delta x, \Delta y)$.
+
+In this context, "exchange" is the economic event, while "displacement" is
+the mathematical operation of shifting an islander's position in the resource
+space $\mathbb{R}^n$.
+
+Following the laws of a closed system, this is a <b>zero-sum physical transfer</b>:
+
+$$\mathbf{E}_1^{new} = \mathbf{E}_1 + \Delta \mathbf{E}$$
+$$\mathbf{E}_2^{new} = \mathbf{E}_2 - \Delta \mathbf{E}$$
+
+While the physical resources are conserved in a zero-sum system
+($\sum \mathbf{E}_{initial} = \sum \mathbf{E}_{final}$), the <b>total system utility</b> is not.
+The system is physically zero-sum but utility positive-sum.
+
+A market exists when there exists a vector $\Delta \mathbf{E}$ that satisfies the <b>Mutual Benefit Condition</b>:
+
+1.  $U_1(\mathbf{E}_1 + \Delta \mathbf{E}) > U_1(\mathbf{E}_1)$
+2.  $U_2(\mathbf{E}_2 - \Delta \mathbf{E}) > U_2(\mathbf{E}_2)$
+
+<h4>Example: The Survival Profit</h4>
+
+Recall $P_1$ has $(45, 3)$ and $P_2$ has $(0, 200)$. 
+$P_1$ is dying of thirst; $P_2$ is dying of hunger.
+
+If they agree on an exchange vector $\Delta \mathbf{E} = (-5, 10)$:
+- $P_1$ gives 5 fish and receives 10 water.
+- $P_2$ receives 5 fish and gives 10 water.
+
+For $P_1$, the loss of 5 fish (from a surplus of 45) causes a negligible drop
+in utility, but the gain of 10 water (from a near-zero base) causes a massive
+spike in survival probability. 
+
+For $P_2$, the loss of 10 water is negligible, but the gain of the first 5 fish
+is life-saving. Both islanders move to a higher "score" on their utility function.
+The market is the physical mechanism the system uses to navigate the resource
+space toward these mutually beneficial coordinates.
+
+<h3>1.5 The Price Vector $\mathbf{P}$</h3>
+
+In this system, "Price" is not an absolute value (like a dollar amount) but a
+<b>relative ratio</b> of resources. In the exchange $\Delta \mathbf{E} =
+(\Delta x, \Delta y)$, the price of resource $x$ in terms of $y$ is the
+negative slope of the displacement:
+
+$$p_x = -\frac{\Delta y}{\Delta x}$$
+
+If you give up 2 fish ($\Delta x = -2$) to gain 10 water ($\Delta y = 10$), the
+price of a fish is 5 units of water ($p_x = 5$).
+
+<h4>1.5.1 The Marginal Rate of Substitution (MRS)</h4>
+
+To understand why a specific price is accepted, we must look at the <b>Marginal
+Rate of Substitution</b>. This is the amount of resource $y$ an islander is
+willing to give up to obtain one more unit of $x$ while keeping their utility
+constant:
+
+$$MRS = \frac{\partial U / \partial x}{\partial U / \partial y}$$
+
+Geometrically, the MRS is the slope of the islander's <b>Indifference Curve</b> at
+their current endowment coordinates. It represents their internal "valuation
+ratio."
+
+<h4>1.5.2 The Utility Window</h4>
+
+For a trade to be mutually beneficial, the market price $p_x$ must fall between
+the internal valuation ratios of the two islanders. This is the <b>Utility
+Window</b>:
+
+$$MRS_1 > p_x > MRS_2$$
+
+If $P_1$ has an $MRS$ of 10 (willing to pay up to 10 water for 1 fish) and
+$P_2$ has an $MRS$ of 2 (willing to sell 1 fish for as little as 2 water), then
+any price $p_x$ between 2 and 10 allows both islanders to "profit" in utility.
+
+- If the price is 8: $P_1$ is happy because they paid 8 for something they valued at 10.
+- If the price is 8: $P_2$ is happy because they received 8 for something they valued at 2.
+
+The "Market" is simply the process of islanders negotiating a slope $p$ that fits
+within this window. As they trade, their endowments change, their $MRS$ values
+converge, and the window shrinks until it closes at equilibrium.
+
+
+<h3>1.6 Equilibrium (The Stationary State)</h3>
+
+The system continues to evolve (trading continues) as long as a mutually
+beneficial $\Delta \mathbf{E}$ exists. This process terminates at
+<b>Equilibrium</b>, a state where the marginal utilities of all islanders are
+proportional:
+
+$$\frac{\nabla U_1}{\|\nabla U_1\|} = \frac{\nabla U_2}{\|\nabla U_2\|}$$
+
+At this point, the "Utility Gradients" are aligned. There is no displacement
+vector $\Delta \mathbf{E}$ that can increase one islander's utility without
+decreasing another's. This is the <b>Pareto Optimal</b> state of the system—the
+resource imbalance has been resolved, and the market "closes" because the
+potential for survival profit has been exhausted.
+
+<hr>
+<h2>Chapter 2: Systemic Complexity</h2>
+
+While the two-islander model explains the "why" of trade, it doesn't explain how 
+thousands of people agree on a single price for a single fish. To understand 
+this, we must scale the system from a pair to a population.
+
+<h3>2.1 The N-Islander System</h3>
+
+We now define our island system $S$ as containing a set of $N$ islanders:
+$P = \{P_1, P_2, \dots, P_n\}$.
+
+Each islander $P_i$ possesses an initial endowment $\mathbf{E}_i$. The total 
+physical resources of the system are represented by the <b>Aggregate Endowment</b> 
+vector $\mathbf{E}_{total}$:
+
+$$\mathbf{E}_{total} = \sum_{i=1}^{n} \mathbf{E}_i$$
+
+In this larger system, every islander is constantly calculating their $MRS$ 
+(internal valuation) based on their current slice of the total resources.
+
+<h3>2.2 The Law of One Price (Convergence)</h3>
+
+In a two-islander system, the price $p_x$ can be any value within the Utility 
+Window. However, in a population of $N$ islanders, <b>Arbitrage</b> forces 
+this window to collapse into a single point.
+
+If $P_1$ is selling fish for 5 water, but $P_3$ is willing to sell them for 3 
+water, then $P_2$ (the buyer) will always choose the lower price. This 
+competition acts as a "selection pressure" that pulls all individual 
+negotiations toward a single universal ratio.
+
+To model this, we look at the <b>Target Bundle</b> $\mathbf{T}_i(\mathbf{P})$. 
+This is the combination of resources islander $P_i$ *would* choose to hold 
+if they could trade their current endowment at price $\mathbf{P}$ to maximize 
+their utility.
+
+The <b>Aggregate Excess Demand</b> is simply the difference between what 
+everyone *wants* (sum of all target bundles) and what the island actually 
+*has* (the aggregate endowment):
+
+$$\mathbf{Z}(\mathbf{P}) = \sum_{i=1}^{n} \mathbf{T}_i(\mathbf{P}) - \mathbf{E}_{total}$$
+
+- If $\mathbf{Z}(\mathbf{P}) > 0$: There is more demand for a resource than supply. The price will rise.
+- If $\mathbf{Z}(\mathbf{P}) < 0$: There is a surplus. The price will fall.
+
+The market is in <b>Clearance</b> only when $\mathbf{Z}(\mathbf{P}) = 0$. 
+At this specific price, every islander can reach their Target Bundle 
+simultaneously. Price is no longer a personal negotiation; it is the 
+<b>systemic coordinate</b> that balances the desires of the entire population.
+
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
