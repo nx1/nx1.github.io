@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>nx1.info | Docker Ghost Container Fix</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Hunting the "Ghost in the Machine": Unkillable Docker Containers</h1>
+
+If you work with edge AI, you know that managing complex microservices via Docker 
+Compose is usually a smooth experience. But every once in a while, you encounter 
+a "Ghost Container"—a phantom process that crashes your deployment, laughs at 
+your docker rm commands, and survives full system reboots.
+
+We recently encountered exactly this issue while deploying a multi-container 
+machine learning pipeline (Smartbench) on an NVIDIA Jetson Orin NX. Here is the 
+step-by-step breakdown of how we tracked down the issue, the rabbit holes we 
+fell into, and the ultimate (and surprisingly simple) fix.
+
+<h3>The Symptoms: The Infinite Shutdown Loop</h3>
+Our deployment relied on a run_smartbench.sh watchdog script that triggered 
+docker compose up. If any critical container failed, the script would gracefully 
+tear the whole system down to prevent a corrupted state. 
+
+Every time we ran the script, it would immediately execute the shutdown sequence. 
+Checking the Compose output revealed our primary culprit:
+
+<pre><code class="language-bash">Error response from daemon: No such container: 042fd7bc7537...</code></pre>
+
+Compose was trying to manage a specific container ID, but the Docker daemon 
+couldn't find it. 
+
+<h3>Phase 1: Isolation and the "Missing Logger"</h3>
+Before fighting the ghost, we needed to ensure the actual application code wasn't 
+crashing and triggering the script's watchdog. We abandoned docker compose and 
+ran the containers interactively in isolation using standard docker run commands.
+
+We discovered that our GUI and Data Manager containers were crashing on startup. 
+The culprit? A missing dependency. The containers relied on a custom logger.py 
+script injected at runtime, which was missing from our run command.
+
+The Fix: We added a volume mount (-v /path/to/logger.py:/app/logger.py) to 
+explicitly inject the file. The containers booted perfectly. 
+
+However, returning to docker compose up resulted in the exact same 
+"No such container" error. The code was fine; the Docker Engine was broken.
+
+<h3>Phase 2: The Standard "Exorcisms"</h3>
+When Docker Compose and the Docker Daemon get out of sync, standard pruning 
+usually clears the cache. We ran through the classic gauntlet:
+
+<pre><code class="language-bash">docker compose down --remove-orphans
+docker network prune -f
+docker compose up -d --force-recreate</code></pre>
+
+Result: Failure. The daemon still complained about the missing 042fd7bc7537 container.
+
+<h3>Phase 3: Schrödinger's Container</h3>
+We checked the global container list using docker ps -a. Staring right back at 
+us was a 6-week-old container with the ID 042fd7bc7537 showing a status of 
+"Exited (143) 6 weeks ago". 
+
+We had found the ghost. But when we tried to kill it:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ docker rm -f 042fd7bc7537
+Error response from daemon: No such container: 042fd7bc7537</code></pre>
+
+The Paradox: It existed in the ps -a list, but the daemon denied its existence 
+when we tried to delete it.
+
+We suspected a lingering containerd-shim (common on Jetson/NVIDIA runtimes) was 
+holding the state in memory. We executed a full service restart:
+
+<pre><code class="language-bash">sudo systemctl stop docker docker.socket containerd
+sudo pkill -f containerd-shim
+sudo systemctl start containerd
+sudo systemctl start docker</code></pre>
+
+Result: The container *still* appeared in docker ps -a. 
+
+<h3>Phase 4: The Filesystem Deep-Dive</h3>
+When a container survives a full service restart but cannot be removed via the 
+CLI, it means the metadata database is corrupted. The physical folder representing 
+the container exists on the drive, but the JSON state file inside is either 
+missing or unreadable. 
+
+To fix this, you have to manually delete the container's folder from Docker's 
+internal storage. We navigated to the default Docker root:
+
+<pre><code class="language-bash">matoha@orin-nx-1:~$ sudo su
+root@orin-nx-1:/var/lib/docker/containers# ls -l
+total 0</code></pre>
+
+The Plot Twist: The directory was completely empty. Zero files. Zero folders. 
+
+<h3>The Breakthrough: Finding the Real Root</h3>
+How could the folder be empty if docker ps -a was still reading the corrupted 
+metadata from *somewhere*? 
+
+We realized we were making an assumption about the hardware. Jetson Orin NX 
+boards rely heavily on NVMe SSDs because the internal eMMC storage wears out 
+quickly under heavy Docker I/O. 
+
+We checked where Docker was *actually* configured to store its data:
+
+<pre><code class="language-bash">root@orin-nx-1:/var/lib/docker/containers# docker info | grep "Docker Root Dir"
+ Docker Root Dir: /ssd/docker</code></pre>
+
+Bingo. Docker wasn't looking in /var/lib/docker; it was mapped to a custom 
+directory on the NVMe drive. We navigated to /ssd/docker/containers and 
+immediately saw the corrupted 042fd7bc7537... folder sitting there.
+
+<h3>The Final Fix</h3>
+With the true location exposed, the fix was surgical and immediate:
+
+<pre><code class="language-bash"># 1. Stop the Docker service to unlock the filesystem
+root@orin-nx-1:~# systemctl stop docker docker.socket
+
+# 2. Delete the corrupted metadata folder on the SSD
+root@orin-nx-1:~# rm -rf /ssd/docker/containers/042fd7bc753741e23065557633643464bb51c3ebf78baa03b9a8f17ed568ea3a/
+
+# 3. Restart the Docker service
+root@orin-nx-1:~# systemctl start docker</code></pre>
+
+Running docker ps -a returned a beautifully clean, empty list. Running our 
+run_smartbench.sh script (with the logger.py volume mount permanently added to 
+our docker-compose.yml) spun up all 13 containers flawlessly, utilizing the GPU 
+without a single crash.
+
+<h3>Takeaways for Edge Deployments</h3>
+1. Trust `docker run` for Debugging: When Compose fails, isolate the container.
+   It immediately revealed our missing logger.py dependency.
+2. Understand "No Such Container": If rm fails but ps -a shows the container, 
+   you have a metadata corruption issue, not a command syntax issue.
+3. Always Check the Root Directory: On specialized hardware like NVIDIA Jetsons, 
+   never assume Docker is using the default /var/lib/docker path. Always verify 
+   with `docker info`.
+
+</div>
+</body>
+</html>
