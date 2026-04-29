@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>nx1.info | Docker Ghost Container Fix</title>
+    <title>nx1.info | Docker Bullshit</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png">
 	<link rel="stylesheet" type="text/css" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -11,65 +11,109 @@
 
 <body>
 <div style="font-family: monospace; white-space: pre;">
-<h1>nx1.info | An Investigation into Anomalous Container Persistence on Embedded GPU Platforms</h1>
+<h1>nx1.info | Docker Bullshit</h1>
+<h2>aka Why the fuck is this container still here?</h2>
 
-The management of complex microservices via Docker Compose typically provides a deterministic environment for Edge AI deployments. However, edge-case failure modes occasionally manifest as "persistent phantom processes"—containers that resist standard termination signals and survive system reboots. 
+Docker Compose is supposed to make microservices "deterministic" and "easy."
+That’s a goddamn lie. Especially on edge AI gear, Docker occasionally decides
+to lose its mind and birth "phantom processes" - zombie containers that refuse to
+die, survive reboots, and generally exist just to spite you.
 
-In this report, I provide a forensic analysis of a failure mode encountered during the deployment of a multi-container machine learning pipeline (Smartbench) on an NVIDIA Jetson Orin NX. I begin by describing the observed symptoms and the failure of standard diagnostic procedures. I show how a discrepancy between the Docker daemon's state and the physical filesystem led to a paradoxical "No such container" error. The report concludes with a definitive resolution involving the manual reconciliation of the Docker root directory.
+This is a post-mortem of a total state-management meltdown on an NVIDIA Jetson
+Orin NX. I’m going to walk through how the Docker daemon decided to gaslight me
+into thinking a container didn't exist while simultaneously blocking me from
+doing anything because it *did* exist. The "fix" is basically manual brain
+surgery on the filesystem because Docker's own tools are useless when it gets
+into this state.
 
-<h3>I. The Manifestation of Synchronisation Failure</h3>
-The deployment architecture utilized a <code>run_smartbench.sh</code> watchdog script to orchestrate the <code>docker compose up</code> sequence. The design intent of this script was to initiate a graceful shutdown of all services upon the detection of a critical failure in any constituent container.
+<h3>I. Docker is a Pathological Liar</h3>
+I was running a watchdog script (<code>run_smartbench.sh</code>) to manage a 
+<code>docker compose up</code> sequence. The idea was simple: if something 
+breaks, kill it all and start over. 
 
-Initial execution of the deployment script resulted in an immediate transition to the shutdown sequence. Examination of the daemon output revealed a critical exception:
+But Docker had other plans. Every time I tried to start the stack, it would
+immediately shit the bed and cough up this nonsense:
 
 <pre><code class="language-bash">Error response from daemon: No such container: 042fd7bc7537...</code></pre>
 
-This indicated a loss of synchronisation between the Docker Compose state and the underlying Docker Engine, where the former attempted to manage a container ID that the latter could no longer reference.
+Docker Compose thought the container was there. The Docker Engine thought it
+wasn't. They weren't on speaking terms, and I was stuck in the middle of their
+shitty divorce.
 
-<h3>II. Diagnostic Isolation and Dependency Verification</h3>
-Initial efforts focused on the isolation of individual containerized services to verify the integrity of the application layer. By decoupling the services from the Compose orchestration and executing them interactively via <code>docker run</code>, I was able to identify a primary failure mode.
+<h3>II. Chasing My Own Tail (The Logger.py Incident)</h3>
+At first, I thought I was the idiot. I tried to isolate the services and run
+them manually with <code>docker run</code>. Turns out, I *was* an idiot—the 
+<code>GUI</code> and <code>Data Manager</code> were crashing because I forgot 
+a <code>logger.py</code> script. 
 
-The <code>GUI</code> and <code>Data Manager</code> services were found to be terminating prematurely due to a missing runtime dependency—a custom <code>logger.py</code> script. While the provision of a volume mount (<code>-v /path/to/logger.py:/app/logger.py</code>) resolved the application-level instability, the original <code>docker compose up</code> error persisted. This confirmed that the root cause was localized within the Docker Engine's state management rather than the application code.
+I fixed the volume mount (<code>-v /path/to/logger.py:/app/logger.py</code>), 
+thought "hell yeah, we're back in business," and ran <code>docker compose 
+up</code> again. Nope. The original "No such container" error stayed right 
+there, mocking me. This wasn't an application bug; the Docker daemon's internal 
+state was just fundamentally fucked.
 
-<h3>III. Evaluation of Standard Recovery Procedures</h3>
-Standard procedures for reconciling the Docker daemon state typically involve the pruning of orphan resources and force-recreating the stack. The following gauntlet was executed:
+<h3>III. The Prune-and-Pray Methodology</h3>
+I tried the "standard" fixes. You know the drill—prune everything and hope the
+daemon remembers how to do its job.
 
 <pre><code class="language-bash">docker compose down --remove-orphans
 docker network prune -f
 docker compose up -d --force-recreate</code></pre>
 
-Despite these measures, the daemon continued to report the non-existence of container <code>042fd7bc7537</code>. This persistence across multiple <code>prune</code> operations suggested a more profound corruption of the metadata.
+Zero effect. The daemon kept insisting <code>042fd7bc7537</code> didn't 
+exist, while also refusing to let go of whatever ghost it was haunted by.
 
 <h3>IV. The Paradox of the "Ghost" Container</h3>
-A global audit of the container list via <code>docker ps -a</code> revealed the existence of the problematic container ID, showing a status of <code>Exited (143) 6 weeks ago</code>. However, attempting to remove the container directly yielded a paradoxical result:
+
+I ran <code>docker ps -a</code> and, surprise! there it was:
+<pre><code>Exited (143) 6 weeks ago</code></pre>
+Just sitting there. Mocking me. So I tried to kill it with fire:
 
 <pre><code class="language-bash">matoha@orin-nx-1:~$ docker rm -f 042fd7bc7537
 Error response from daemon: No such container: 042fd7bc7537</code></pre>
 
-The container was simultaneously present in the process list and absent from the daemon's internal registry. Further attempts to flush the state by restarting the <code>containerd</code> and <code>docker</code> services proved unsuccessful, even after the termination of any lingering <code>containerd-shim</code> processes.
+Look at that shit. "No such container" while it's literally listed in the
+output of the previous command. I restarted <code>docker</code>, restarted 
+<code>containerd</code>, killed every <code>containerd-shim</code>,
+I restarted the whole computer and every process I could find. Nothing worked.
+The ghost container was immortal.
 
-<h3>V. Forensic Analysis of the Filesystem</h3>
-When a container survives a full service restart but cannot be removed via the CLI, it implies that the metadata database is corrupted. The physical folder representing the container exists on the drive, but the JSON state file inside is either missing or unreadable. 
+<h3>V. Finding Where Docker Hid the Bodies</h3>
 
-To resolve this, I navigated to the default Docker root (<code>/var/lib/docker/containers</code>). Surprisingly, the directory appeared to be empty:
+When the CLI is lying to you and the daemon is broken, you have to go into the
+basement with a flashlight. Usually, Docker keeps its metadata in 
+<code>/var/lib/docker/containers</code>. I went there and... it was empty. 
 
 <pre><code class="language-bash">root@orin-nx-1:/var/lib/docker/containers# ls -l
 total 0</code></pre>
 
-This discrepancy led to the realization that the storage configuration had been modified. On specialized hardware like the Jetson Orin NX, NVMe SSDs are often utilized to mitigate the wear of internal eMMC storage. An audit of the system configuration confirmed this hypothesis:
+For a second, I thought I was hallucinating. Then I remembered this is a Jetson
+Orin NX. We don't use the shitty internal eMMC; we use an NVMe SSD because we
+actually want things to work. I checked the config:
 
 <pre><code class="language-bash">root@orin-nx-1:/var/lib/docker/containers# docker info | grep "Docker Root Dir"
  Docker Root Dir: /ssd/docker</code></pre>
 
-<h3>VI. Conclusion and Resolution</h3>
-By identifying the true location of the Docker root, the resolution became surgical. The process involved the following steps:
+Bingo. Docker was keeping its shitty, corrupted secrets on the SSD.
 
-1. Termination of the Docker service to unlock the filesystem.
-2. Removal of the corrupted metadata folder on the SSD:
-   <code>rm -rf /ssd/docker/containers/042fd7bc753741e23065557633643464bb51c3ebf78baa03b9a8f17ed568ea3a/</code>
-3. Restoration of the Docker service.
+<h3>VI. The Final Kill Command</h3>
 
-Following the manual deletion of the corrupted folder, <code>docker ps -a</code> returned a clean state. The <code>run_smartbench.sh</code> script subsequently initialized all 13 containers flawlessly. This investigation highlights the importance of verifying the underlying storage architecture on non-standard platforms and the utility of manual metadata reconciliation when the Docker daemon becomes decoupled from the filesystem state.
+Once I found the actual root directory, the fix was simple: stop the service
+and manually delete the folder that Docker was too stupid to handle.
+
+1. Stop the Docker service before it realizes what's happening.
+2. Nuke the corrupted metadata folder on the SSD:
+   <pre><code>rm -rf /ssd/docker/containers/042fd7bc753741e23065557633643464bb51c3ebf78baa03b9a8f17ed568ea3a/</code></pre>
+3. Turn Docker back on and tell it to behave.
+
+After I manually deleted that folder, <code>docker ps -a</code> was finally
+clean. No more ghosts. The <code>run_smartbench.sh</code> script fired up all
+13 containers without a single complaint. 
+
+The moral of the story? Don't trust the Docker CLI when it says a container
+doesn't exist. If you're on a non-standard platform like a Jetson, check where
+your root dir actually is and be prepared to manually delete the garbage that
+Docker leaves behind when its metadata database shits itself.
 
 </div>
 </body>
