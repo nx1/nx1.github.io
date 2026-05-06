@@ -1,0 +1,1854 @@
+[
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1981",
+    "title": "Introduction to Electrodynamics",
+    "status": "completed",
+    "author": "David J. Griffiths",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1985",
+    "title": "Accretion Power in Astrophysics",
+    "author": "Juhan Frank, King, Raine",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2002 - Accretion Power in Astrophysics - Frank, King, Raine.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1988",
+    "title": "A Brief History of Time",
+    "author": "Stephen Hawking",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1995",
+    "title": "Introduction to Quantum Mechanics",
+    "author": "David J. Griffiths",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1990",
+    "title": "Introductory Solid State Physics",
+    "author": "H. P. Myers",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2004",
+    "title": "The Road to Reality",
+    "author": "Roger Penrose",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2005",
+    "title": "Fourier Transformation for Pedestrians",
+    "author": "T. Butz",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2005 - Fourier Transformation for Pedestrians - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2014",
+    "title": "Statistics, Data Mining, and Machine Learning in Astronomy",
+    "author": "\u017deljko Ivezi\u0107",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2014 - Statistics, Data Mining, and Machine Learning in Astronomy - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2015",
+    "title": "Statistical Rethinking",
+    "author": "Richard McElreath",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2016 - Statistical Rethinking - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2018",
+    "title": "Accretion Flows in Astrophysics",
+    "author": "Nikolay Shakura",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2018 - Accretion Flows in Astrophysics - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2021",
+    "title": "Introduction to Modern Statistics",
+    "author": "Mine \u00c7etinkaya-Rundel",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2021 - Introduction to Modern Statistics - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2022",
+    "title": "Bayesian Data Analysis",
+    "author": "Andrew Gelman",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "1978",
+    "title": "The C Programming Language",
+    "author": "Brian W. Kernighan",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "1985",
+    "title": "Structure and Interpretation of Computer Programs",
+    "author": "Harold Abelson, Gerald Jay Sussman",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "1993",
+    "title": "Strange Attractors Creating Patterns in Chaos",
+    "author": "Julien C. Sprott",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/1993 - Strange Attractors Creating Patterns in Chaos - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "1999",
+    "title": "The Pragmatic Programmer",
+    "author": "Andy Hunt",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2019 - The Pragmatic Programmer - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2003",
+    "title": "Computer Systems",
+    "author": "Sotirios G. Ziavras",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2003 - Computer Systems - Sotirios G. Ziavras.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2007",
+    "title": "Numerical Recipes 3rd Edition The Art of Scientific Computing",
+    "author": "William H. Press",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2007",
+    "title": "What Every Programmer Should Know About Memory",
+    "author": "Ulrich Drepper",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2007 - What Every Programmer Should Know About Memory - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2008",
+    "title": "Clean Code",
+    "status": "started",
+    "author": "Robert C. Martin",
+    "notes_url": null,
+    "file_path": "Computer Science/2008 - Clean Code - Robert C. Martin.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2009",
+    "title": "Time Series Analysis",
+    "author": "Jonathan D. Cryer",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2009 - Time Series Analysis - Jonathan D. Cryer.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2011",
+    "title": "Mathematics for 3D Game Programming and Computer Graphics",
+    "author": "Eric Lengyel",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2012",
+    "title": "Practical Vim: Edit Text at the Speed of Thought",
+    "author": "Drew Neil",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2015",
+    "title": "Fluent Python",
+    "author": "Luciano Ramalho",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2015",
+    "title": "Practical Vim, Second Edition",
+    "author": "Drew Neil",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2015 - Practical Vim, Second Edition - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2016",
+    "title": "Python Data Science Handbook",
+    "author": "Jacob T. Vanderplas",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2016 - Python Data Science Handbook - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2017",
+    "title": "Computational Physics Simulation of Classical and Quantum Systems",
+    "author": "Philipp O.J. Scherer",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2017 - Computational Physics Simulation of Classical and Quantum Systems - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2017",
+    "title": "Hands-On Machine Learning with Scikit-Learn",
+    "author": "Aur\u00e9lien G\u00e9ron",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2018",
+    "title": "Refactoring Improving the Design of Existing Code",
+    "notes_url": "https://nx1.info/notes/refactoring",
+    "status": "completed",
+    "author": "Martin Fowler",
+    "file_path": "Computer Science/2018 - Refactoring Improving the Design of Existing Code - Unknown.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Music",
+    "year": "2008",
+    "title": "Music Theory for Computer Musicians",
+    "author": "Michael Hewitt",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Music",
+    "year": "2015",
+    "title": "Making Music: 74 Creative Strategies for Electronic Music Producers",
+    "author": "Dennis DeSantis",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Music",
+    "year": "2024",
+    "title": "Dance Music manual: Fifth Edition",
+    "author": "Rick Snoman",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Drawing",
+    "year": "1939",
+    "title": "Perspective Made Easy",
+    "author": "Ernest Ralph Norling",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "1921",
+    "title": "Psychological Types",
+    "author": "C. G Jung",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1921 - Psychological Types - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2007",
+    "title": "The Denial of Death",
+    "author": "Ernest Becker",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2007 - The Denial of Death - Ernest Becker.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2007",
+    "title": "The Brain That Changes Itself",
+    "author": "Norman Doidge",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2010",
+    "title": "The Mind's eye",
+    "author": "Oliver Sacks",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2018",
+    "title": "How to change your mind",
+    "author": "Michael Pollan",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2015",
+    "title": "Brain: The Story of You",
+    "author": "David Eagleman",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2015 - Brain: The Story of You - David Eagleman.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2020",
+    "title": "The Psychology of Money: Timeless Lessons on Wealth, Greed",
+    "author": "Morgan Housel",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2023",
+    "title": "Ten Trips: The New Reality of Psychedelics",
+    "author": "Andy Mitchell",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2023 - Ten Trips: The New Reality of Psychedelics - Andy Mitchell.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Neuroscience & Psychology",
+    "year": "2023",
+    "title": "Determined: A Science of Life Without Free Will",
+    "author": "Robert M. Sapolsky",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Sports",
+    "subcategory": null,
+    "year": "2005",
+    "title": "Starting Strength",
+    "author": "Mark Rippetoe",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Sports",
+    "subcategory": null,
+    "year": "2006",
+    "title": "Practical Programming for Strength Training",
+    "author": "Mark Rippetoe",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Sports",
+    "subcategory": null,
+    "year": "2011",
+    "title": "The Art of Running Faster",
+    "author": "Don Melvin",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "History & Philosophy",
+    "subcategory": null,
+    "year": "1946",
+    "title": "Man's Search for Meaning",
+    "author": "Viktor Frankl",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "History & Philosophy",
+    "subcategory": null,
+    "year": "1978",
+    "title": "A Distant Mirror: The Calamitous 14th Century",
+    "author": "Barbara Tuchman",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "History & Philosophy",
+    "subcategory": null,
+    "year": "2011",
+    "title": "The Crusades: The Authoritative History",
+    "author": "Thomas Asbridge",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "History & Philosophy",
+    "subcategory": null,
+    "year": "2015",
+    "title": "Sapiens: A Brief History of Humankind",
+    "author": "Yuval Noah Harari",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "1937",
+    "title": "The Road to Wigan Pier",
+    "author": "George Orwell",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "1954",
+    "title": "The Doors of Perception",
+    "author": "Aldous Huxley",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "1960",
+    "title": "Endurance: Shackleton's Incredible Voyage",
+    "author": "Alfred Lansing",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "1968",
+    "title": "The Double Helix: A Personal Account of the Discovery of the Structure of DNA",
+    "author": "James D. Watson",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/1968 - The Double Helix: A Personal Account of the Discovery of the Structure of DNA - James D. Watson.epub"
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "2016",
+    "title": "Disrupted: My Misadventure in the Start-Up Bubble",
+    "author": "Dan Lyons",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "2023",
+    "title": "The Internet Con: How to Seize the Means of Computation",
+    "author": "Cory Doctorow",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Biographical",
+    "subcategory": null,
+    "year": "2021",
+    "title": "The Man From the Future: The Visionary Life of John Von Neumann",
+    "author": "Ananyo Bhattacharya",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Self-Help",
+    "subcategory": null,
+    "year": "1970",
+    "title": "What Color is Your Parachute?",
+    "author": "Richard N. Bolles",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Self-Help",
+    "subcategory": null,
+    "year": "2001",
+    "title": "Getting Things Done",
+    "author": "David Allen",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1866",
+    "title": "The Gambler",
+    "author": "Fyodor Dostoevsky",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1984",
+    "title": "Wuthering Heights",
+    "author": "Emily Bront\u00eb",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1886",
+    "title": "Strange Case of Dr Jekyll and Mr Hyde",
+    "author": "Robert Louis Stevenson",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1926",
+    "title": "The Call of Cthulhu",
+    "author": "H. P. Lovecraft",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1925",
+    "title": "The Trial",
+    "author": "Franz Kafka",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1944",
+    "title": "Brave New World",
+    "author": "Aldous Huxley",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1944",
+    "title": "Fictions",
+    "author": "Jorge Luis Borges",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1949",
+    "title": "Nineteen Eighty-Four",
+    "author": "George Orwell",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1953",
+    "title": "Fahrenheit 451",
+    "author": "Ray Bradbury",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1954",
+    "title": "Lord of the Flies",
+    "author": "William Golding",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "1996",
+    "title": "A Game of Thrones",
+    "author": "George R. R. Martin",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "2018",
+    "title": "The Outsider",
+    "author": "Stephen King",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "2020",
+    "title": "The Invisible Life of Addie LaRue",
+    "author": "V. E. Schwab",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "MATH1006",
+    "title": "Intro to Mathematical Methods",
+    "author": "Nils Andersen",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "MATH1007",
+    "title": "Mathematical Methods for Physical Scientists",
+    "author": "Ian Jones",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1005",
+    "title": "Intro to Astronomy & Space Science",
+    "author": "Malcolm Coe",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "MATH1048",
+    "title": "Linear Algebra I",
+    "author": "Ashot Minasyan",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1011",
+    "title": "Wave, Light and Quanta",
+    "author": "Jonathan Flynn",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1013",
+    "title": "Energy and Matter",
+    "author": "Michael Childress",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1015",
+    "title": "Motion and Relativity",
+    "author": "James Drummond",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1017",
+    "title": "Physics Skills 1",
+    "author": "Sanja Barkovic",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1019",
+    "title": "Physics Skills 2",
+    "author": "Sanja Barkovic",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS1022",
+    "title": "Electricity and Magnetism",
+    "author": "Nicholas Evans",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2001",
+    "title": "Electromagnetism",
+    "author": "Luca Sapienza",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2003",
+    "title": "Quantum Physics",
+    "author": "Chris Sachrajda",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2006",
+    "title": "Classical Mechanics",
+    "author": "Tim Freegarde",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2013",
+    "title": "Galaxies",
+    "author": "Francesco Shankar",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2015",
+    "title": "Intro to Energy in the Enviroment",
+    "author": "Elinor Irish",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2022",
+    "title": "Physics from Evidence I",
+    "author": "Daniel Whiter",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2023",
+    "title": "Wave Physics",
+    "author": "Tim Freegarde",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS2024",
+    "title": "Quantum Physics of Matter",
+    "author": "Andrew Akeroyd",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3002",
+    "title": "Nuclei & Particles",
+    "author": "Elena Accomando",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3004",
+    "title": "Crystalline Solids",
+    "author": "Marcus Newton",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3007",
+    "title": "Theories of Matter, Space & Time",
+    "author": "Stephen F. King",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3008",
+    "title": "Atomic Physics",
+    "author": "Alexander Belyaev",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3010",
+    "title": "Stellar Evolution",
+    "author": "Michael Childress",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3011",
+    "title": "Photons in Astrophysics",
+    "author": "Michael Childress",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6009",
+    "title": "Dissertation",
+    "author": null,
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6017",
+    "title": "Computer Techniques in Physics",
+    "author": "Marcus Newton",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3003",
+    "title": "Light & Matter",
+    "author": "Vasileios Apostolopoulos",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS3009",
+    "title": "Applied Nuclear Physics",
+    "author": "Matt Himsworth",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6003",
+    "title": "Advanced Quantum Physics",
+    "author": "Andrew Akeroyd",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6004",
+    "title": "Space Plasma Physics",
+    "author": "Daniel Whiter",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6005",
+    "title": "Cosmology & the Early Universe",
+    "author": "Francesco Shankar & Alexander Belyaev",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6006",
+    "title": "MPhys Project",
+    "author": "M. Middleton & C. Knigge",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "University Courses",
+    "year": "PHYS6015",
+    "title": "MPhys Final Year Synoptic Exam",
+    "author": "Andy O'bannon",
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "Childrens Novels",
+    "year": "Series",
+    "title": "Skullduggery Pleasant",
+    "author": null,
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "Childrens Novels",
+    "year": "Series",
+    "title": "Artemis Fowl",
+    "author": null,
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "Childrens Novels",
+    "year": "Series",
+    "title": "Harry Potter",
+    "author": null,
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "Childrens Novels",
+    "year": "Series",
+    "title": "A Series of Unfortunate Events",
+    "author": null,
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Fiction",
+    "subcategory": "Childrens Novels",
+    "year": "Series",
+    "title": "Cherub",
+    "author": null,
+    "status": "unread",
+    "notes_url": null
+  },
+  {
+    "category": "Business & Economics",
+    "subcategory": null,
+    "year": "2014",
+    "title": "Investment Science Luenberger, David G",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Business & Economics/2014 - Investment Science Luenberger, David G - Unknown.pdf"
+  },
+  {
+    "category": "Business & Economics",
+    "subcategory": null,
+    "year": "Unknown",
+    "title": "Intro to Stock and Options",
+    "author": null,
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Business & Economics/Intro to Stock and Options.pdf"
+  },
+  {
+    "category": "Business & Economics",
+    "subcategory": null,
+    "year": "2015",
+    "title": "The Lean Product Playbook  How to Innovate with Minimum",
+    "author": "Dan Olsen",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Business & Economics/2015 - The Lean Product Playbook  How to Innovate with Minimum - Dan Olsen.epub"
+  },
+  {
+    "category": "Business & Economics",
+    "subcategory": null,
+    "year": "2015",
+    "title": "The lean product playbook",
+    "author": "Dan Olsen",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Business & Economics/2015 - The lean product playbook - Dan Olsen.pdf"
+  },
+  {
+    "category": "Business & Economics",
+    "subcategory": null,
+    "year": "2011",
+    "title": "The Lean Startup  How Today's Entrepreneurs Use Continuous",
+    "author": "Eric Ries",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Business & Economics/2011 - The Lean Startup  How Today's Entrepreneurs Use Continuous - Eric Ries.mobi"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2020",
+    "title": "Hands",
+    "author": "On Mathematics for Deep Learning - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2019 - Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2016",
+    "title": "Basic Concepts in Computational Physics",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2016 - Basic Concepts in Computational Physics - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2022",
+    "title": "Kafka The Definitive Guide Real",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2022 - Kafka The Definitive Guide Real-Time Data and Stream Processing at Scale, Second Edition - Gwen Shapira, Todd Palino, Rajini Sivaram.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2020",
+    "title": "Computer Networking A Top",
+    "author": "Down Approach, 8th Edition - James F. Kurose, Keith W. Ross",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2020 - Computer Networking A Top-Down Approach, 8th Edition - James F. Kurose, Keith W. Ross.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2019",
+    "title": "Daily Coding Problem",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2019 - Daily Coding Problem - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2015",
+    "title": "Automate the Boring Stuff with Python",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2015 - Automate the Boring Stuff with Python - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2007",
+    "title": "Numerical Recipes  The Art of Scientific Computing",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2007 - Numerical Recipes  The Art of Scientific Computing - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2021",
+    "title": "Practical machine learning for computer vision Valliappa Lakshmanan",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2021 - Practical machine learning for computer vision Valliappa Lakshmanan - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2018",
+    "title": "Refactoring: Improving the Design of Existing Code",
+    "author": "Kent Beck Martin Fowler",
+    "status": "completed",
+    "notes_url": "https://nx1.info/notes/refactoring",
+    "file_path": "Computer Science/2018 - Refactoring: Improving the Design of Existing Code - Kent Beck Martin Fowler.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2021",
+    "title": "Think Bayes",
+    "author": "Bayesian Statistics in Python",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2021 - Think Bayes - Bayesian Statistics in Python.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2017",
+    "title": "I Heart Logs",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2017 - I Heart Logs - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2022",
+    "title": "Computer Vision Algorithms and Applications",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2022 - Computer Vision Algorithms and Applications - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2013",
+    "title": "Practical Object",
+    "author": "Oriented Design in Ruby - Sandi Metz",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2013 - Practical Object-Oriented Design in Ruby - Sandi Metz.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2021",
+    "title": "Practical machine learning for computer vision",
+    "author": "Valliappa Lakshmanan",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2021 - Practical machine learning for computer vision - Valliappa Lakshmanan.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2016",
+    "title": "A Primer on Scientific Programming with Python",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2016 - A Primer on Scientific Programming with Python - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2018",
+    "title": "A Philosophy of Software Design",
+    "author": "John Ousterhout",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2018 - A Philosophy of Software Design - John Ousterhout.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2002",
+    "title": "Debugging",
+    "author": "The 9 Indispensable Rules ... - David J. Agans",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2002 - Debugging - The 9 Indispensable Rules ... - David J. Agans.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2021",
+    "title": "Create GUI Applications with Python & Qt6",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2021 - Create GUI Applications with Python & Qt6 - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2019",
+    "title": "The hundred",
+    "author": "page machine learning book - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2019 - The hundred-page machine learning book - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2004",
+    "title": "Working Effectively with Legacy Code",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2004 - Working Effectively with Legacy Code - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2015",
+    "title": "Data Structures and Algorithms with Python",
+    "author": "Kent D. Lee",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2015 - Data Structures and Algorithms with Python - Kent D. Lee.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2011",
+    "title": "Mathematics for 3D Game Programming and Computer Graphics, Third Edition",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2011 - Mathematics for 3D Game Programming and Computer Graphics, Third Edition - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2005",
+    "title": "Linux Network Administrators Guide 3rd Edition",
+    "author": null,
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2005 - Linux Network Administrators Guide 3rd Edition.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Computing & Programming",
+    "year": "2010",
+    "title": "Growing Object Oriented Software Guided by Tests",
+    "author": "Steve Freeman",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Computer Science/2010 - Growing Object Oriented Software Guided by Tests - Steve Freeman.pdf"
+  },
+  {
+    "category": "Fiction",
+    "subcategory": null,
+    "year": "2004",
+    "title": "A Confederacy of Dunces  A Novel",
+    "author": "John Kennedy Toole",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Fiction/2004 - A Confederacy of Dunces  A Novel - John Kennedy Toole.epub"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2015",
+    "title": "Making Music, 74 Creative Strategies for Electronic Music Producers",
+    "author": "Dennis DeSantis",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2015 - Making Music, 74 Creative Strategies for Electronic Music Producers - Dennis DeSantis.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2024",
+    "title": "Dance Music Manual; Fifth Edition",
+    "author": "Rick Snoman",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2024 - Dance Music Manual; Fifth Edition - Rick Snoman.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2000",
+    "title": "The Chord Wheel The Ultimate Tool for All Musicians",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2000 - The Chord Wheel The Ultimate Tool for All Musicians - Unknown.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "1994",
+    "title": "Alfred's Basic Adult All",
+    "author": "In-One Piano Course - Willard A_ Palmer",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/1994 - Alfred's Basic Adult All-In-One Piano Course - Willard A_ Palmer.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2021",
+    "title": "Music Theory For Dummies,",
+    "author": "Michael Pilhofer & MM & Holly Day",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2021 - Music Theory For Dummies, - Michael Pilhofer & MM & Holly Day.mobi"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "1993",
+    "title": "The AB Guide to Music Theory, Part 1 (Pt  1)",
+    "author": "Eric Robert Taylor; Associated Board of the Royal Schools of",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/1993 - The AB Guide to Music Theory, Part 1 (Pt  1) - Eric Robert Taylor; Associated Board of the Royal Schools of.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2018",
+    "title": "Music Theory for Electronic Music",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2018 - Music Theory for Electronic Music - Unknown.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2018",
+    "title": "Music Theory for Electronic Music Producers",
+    "author": "J. Anthony Allen",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2018 - Music Theory for Electronic Music Producers - J. Anthony Allen.pdf"
+  },
+  {
+    "category": "Music",
+    "subcategory": null,
+    "year": "2008",
+    "title": "Music theory for computer musicians",
+    "author": "Michael Hewitt - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Music/2008 - Music theory for computer musicians- Michael Hewitt - Unknown.pdf"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2000",
+    "title": "A Room of One's Own",
+    "author": "Virginia Woolf",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2000 - A Room of One's Own - Virginia Woolf.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2012",
+    "title": "Up From Slavery",
+    "author": "Booker T. Washington",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2012 - Up From Slavery - Booker T. Washington.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2025",
+    "title": "Careless People",
+    "author": "Sarah Wynn-Williams",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2025 - Careless People - Sarah Wynn-Williams.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2000",
+    "title": "The Education of Henry Adams",
+    "author": "Henry Adams",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2000 - The Education of Henry Adams - Henry Adams.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "1937",
+    "title": "George Orwell",
+    "author": "The Road to Wigan Pier",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/1937 - George Orwell - The Road to Wigan Pier.mobi"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "1951",
+    "title": "Speak, Memory: An Autobiography Revisited",
+    "author": "Vladimir Nabokov",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/1951 - Speak, Memory: An Autobiography Revisited - Vladimir Nabokov.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2014",
+    "title": "Investment Science 2nd Ed",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2014 - Investment Science 2nd Ed - Unknown.pdf"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "1960",
+    "title": "Endurance Shackleton's Incredible Voyage",
+    "author": "Alfred Lansing",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/1960 - Endurance Shackleton's Incredible Voyage - Alfred Lansing.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2011",
+    "title": "How to Draw What You See",
+    "author": "Rudy De Reyna",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2011 - How to Draw What You See - Rudy De Reyna.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2009",
+    "title": "The Varieties of Religious Experience",
+    "author": "William James",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2009 - The Varieties of Religious Experience - William James.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2006",
+    "title": "Man\u2019s Search for Meaning",
+    "author": "Viktor Emil Frankl",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2006 - Man\u2019s Search for Meaning - Viktor Emil Frankl.epub"
+  },
+  {
+    "category": "Non-Fiction",
+    "subcategory": null,
+    "year": "2021",
+    "title": "The Man from the Future: The Visionary Life of John von Neumann",
+    "author": "Ananyo Bhattacharya",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Non-Fiction/2021 - The Man from the Future: The Visionary Life of John von Neumann - Ananyo Bhattacharya.epub"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2016",
+    "title": "Algorithms to Live By",
+    "author": "Brian Christian",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2016 - Algorithms to Live By - Brian Christian.epub"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2015",
+    "title": "The Crossroads of Should and Must Find and Follow Your Passion",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2015 - The Crossroads of Should and Must Find and Follow Your Passion - Unknown.pdf"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2023",
+    "title": "Determined a science of life without free will",
+    "author": "Sapolsky",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2023 - Determined a science of life without free will - Sapolsky.epub"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2002",
+    "title": "Getting Things Done The Art of Stress",
+    "author": "Free Productivity - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2002 - Getting Things Done The Art of Stress-Free Productivity - Unknown.pdf"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2008",
+    "title": "Flow, The Psychology of Optimal Experience",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2008 - Flow, The Psychology of Optimal Experience - Unknown.pdf"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2015",
+    "title": "Getting Things Done  The Art of Stress",
+    "author": "Free Productivity - David Allen",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2015 - Getting Things Done  The Art of Stress-Free Productivity - David Allen.epub"
+  },
+  {
+    "category": "Neuroscience & Psychology",
+    "subcategory": null,
+    "year": "2020",
+    "title": "The Psychology of Money: Timeless Lessons on Wealth, Greed, and Happiness",
+    "author": "Morgan Housel",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Psychology & Self-Help/2020 - The Psychology of Money: Timeless Lessons on Wealth, Greed, and Happiness - Morgan Housel.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1992",
+    "title": "MICROECONOMICS SECOND EDITION",
+    "author": "Pindyck, Robert S, Rubinfeld, Daniel L",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1992 - MICROECONOMICS SECOND EDITION - Pindyck, Robert S, Rubinfeld, Daniel L.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1995",
+    "title": "Probability Theory The Logic of Science",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1995 - Probability Theory The Logic of Science - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2018",
+    "title": "Identification Fabric by Vibration Spectrum Analysis",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2018 - Identification Fabric by Vibration Spectrum Analysis - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2020",
+    "title": "Entangled Life",
+    "author": "How Fungi Make Our Worlds Change Our Minds And Shape Our Futures",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2020 - Entangled Life - How Fungi Make Our Worlds Change Our Minds And Shape Our Futures.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2005",
+    "title": "Organic Chemistry as a Second Language David M. Klein",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2005 - Organic Chemistry as a Second Language David M. Klein - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2006",
+    "title": "Data Analysis A Bayesian Tutorial",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2006 - Data Analysis A Bayesian Tutorial - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2022",
+    "title": "2D FFT peak detection accuracy",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2022 - 2D FFT peak detection accuracy - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2023",
+    "title": "FabricNET",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2023 - FabricNET - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2020",
+    "title": "The Psychology of Money Timeless Lessons on Wealth, Greed",
+    "author": "Morgan Housel",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2020 - The Psychology of Money Timeless Lessons on Wealth, Greed - Morgan Housel.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2005",
+    "title": "Physical Foundations of Cosmology",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2005 - Physical Foundations of Cosmology - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2023",
+    "title": "Determined A Science of Life Without Free Will",
+    "author": "Robert M. Sapolsky",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2023 - Determined A Science of Life Without Free Will - Robert M. Sapolsky.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2021",
+    "title": "The Man From the Future The Visionary Life of John Von Neumann",
+    "author": "Ananyo Bhattacharya",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2021 - The Man From the Future The Visionary Life of John Von Neumann - Ananyo Bhattacharya.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2024",
+    "title": "Introduction to Texture Analysis  Macrotexture",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2024 - Introduction to Texture Analysis  Macrotexture - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2025",
+    "title": "DCFE YOLO fabric detection",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2025 - DCFE YOLO fabric detection - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2024",
+    "title": "Handbook of Texture Analysis",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2024 - Handbook of Texture Analysis - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1983",
+    "title": "Black Holes, NS",
+    "author": "Shapiro",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1983 - Black Holes, NS - Shapiro.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2004",
+    "title": "Handbook of pulsar astronomy",
+    "author": "M.Kramer D.R.Lorimer",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2004 - Handbook of pulsar astronomy - M.Kramer D.R.Lorimer.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2006",
+    "title": "Pattern",
+    "author": "Recognition-and-Machine-Learning, Bishop - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2006 - Pattern-Recognition-and-Machine-Learning, Bishop - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2025",
+    "title": "Hydrogen Adsorption",
+    "author": "Alex Cellens",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2025 - Hydrogen Adsorption - Alex Cellens.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2024",
+    "title": "Intermediate Microeconomics with Calculus  A Modern",
+    "author": "Marc J_ Melitz Hal R_ Varian",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2024 - Intermediate Microeconomics with Calculus  A Modern - Marc J_ Melitz Hal R_ Varian.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1988",
+    "title": "Signal Detection in Non",
+    "author": "Guassian Noise - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1988 - Signal Detection in Non-Guassian Noise - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1991",
+    "title": "Astronomical Algorithms",
+    "author": "Jean Meeus",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1991 - Astronomical Algorithms - Jean Meeus.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "1991",
+    "title": "PiHKAL",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/1991 - PiHKAL - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2015",
+    "title": "Brain The Story of You",
+    "author": "David Eagleman",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2015 - Brain The Story of You - David Eagleman.epub"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2019",
+    "title": "Image Texture Analysis   Foundations, Models and Algorithms, Chih",
+    "author": "Cheng Hung - Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2019 - Image Texture Analysis   Foundations, Models and Algorithms, Chih-Cheng Hung - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2022",
+    "title": "Baysian Data Analysis",
+    "author": "Unknown",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2022 - Baysian Data Analysis - Unknown.pdf"
+  },
+  {
+    "category": "Science",
+    "subcategory": "Physics, Astronomy & Mathematics",
+    "year": "2023",
+    "title": "Ten Trips The New Reality of Psychedelics",
+    "author": "Andy Mitchell",
+    "status": "unread",
+    "notes_url": null,
+    "file_path": "Science & Maths/2023 - Ten Trips The New Reality of Psychedelics - Andy Mitchell.epub"
+  }
+]
