@@ -22,9 +22,11 @@ class Discogs:
             "page"      : kwargs.get("page") ,
             "per_page"  : kwargs.get("per_page"),
         }
-        self.response = requests.get(self.base_url,
-                                     headers=self.headers,
-                                     params=params)
+        resp = requests.get(self.base_url,
+                            headers=self.headers,
+                            params=params)
+        self.response = resp
+        return resp
 
     @property
     def json(self):
