@@ -40,7 +40,6 @@ class AudioFile:
             tags    = FLAC(self.path)
             artist  = str(tags.get('artist')[0])
             album   = str(tags.get('album')[0])
-            track   = str(tags.get('title')[0])
             label   = str(tags.get('label')[0])
             catalog = str(tags.get('catalog')[0])
             date    = int(tags.get('date')[0])
