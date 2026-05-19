@@ -99,12 +99,12 @@ if __name__ == "__main__":
 
     scrape(discogs=d,
            style="Psy-Trance,Progressive Trance",
-           format="CD",
+           format="album",
            year="2000-2009",
            sort="have",
            sort_order="desc",
            per_page=200,
-           filename='psyprog_all.csv')
+           filename='psyprog_albums.csv')
 
 
     #scrape(discogs=d,
