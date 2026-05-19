@@ -96,23 +96,38 @@ if __name__ == "__main__":
     DISCOGS_TOKEN = "lJDcuYISVbWSuzzUScAcGJbUxpmhPbqshwQrnuPv"
     d = Discogs(token=DISCOGS_TOKEN)
 
+
     scrape(discogs=d,
            style="Psy-Trance,Progressive Trance",
-           format="Compilation",
+           format="CD",
            year="2000-2009",
            sort="have",
            sort_order="desc",
            per_page=200,
-           filename='psyprog.csv')
+           filename='psyprog_all.csv')
 
-    print("Waiting 10s between scrape jobs to respect rate limits...")
-    time.sleep(10)
 
-    scrape(discogs=d,
-           style="Progressive House",
-           format="Vinyl",
-           year="2000-2009",
-           sort="have",
-           sort_order="desc",
-           per_page=200,
-           filename='proghouse.csv')
+    #scrape(discogs=d,
+    #       style="Psy-Trance,Progressive Trance",
+    #       format="Compilation",
+    #       year="2000-2009",
+    #       sort="have",
+    #       sort_order="desc",
+    #       per_page=200,
+    #       filename='psyprog.csv')
+
+    #print("Waiting 10s between scrape jobs to respect rate limits...")
+    #time.sleep(10)
+
+    #scrape(discogs=d,
+    #       style="Progressive House",
+    #       format="Vinyl",
+    #       year="2000-2009",
+    #       sort="have",
+    #       sort_order="desc",
+    #       per_page=200,
+    #       filename='proghouse.csv')
+
+
+
+    
