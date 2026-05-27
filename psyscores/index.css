@@ -400,3 +400,32 @@ html {
     object-fit: cover;
     border-radius: 0px;
 }
+
+/* Stats Box in Intro */
+.stats-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-top: 12px;
+    border-top: 1px dashed #333;
+}
+
+.stat-item {
+    background: #111;
+    border: 1px solid #333;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-family: 'Fira Mono', monospace;
+    font-size: 11px;
+}
+
+.stat-label {
+    color: #888;
+}
+
+.stat-value {
+    color: #4a8; /* Matches theme green */
+    font-weight: bold;
+}

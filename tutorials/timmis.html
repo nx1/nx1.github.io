@@ -1,0 +1,107 @@
+<html>
+<head>
+    <title>nx1.info | Relativistic Plasma Harmonics</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Relativistic Plasma Harmonics</h1>
+
+Efficiency Optimized relativistic plasma harmonics for extreme fields.
+----------------------------------------------------------------------
+Paper: <a href="https://doi.org/10.1038/s41586-026-10400-2">https://doi.org/10.1038/s41586-026-10400-2</a>
+
+Plasma is a state of matter in which a significant fraction of the particles
+are ionized. A relativistic plasma is a plasma that is sufficiently energetic
+that relativistic effects must be taken into account when describing its
+behaviour.
+
+Relativistic plasma harmonics are frequencies that occur at whole-number
+multiples of a plasma’s natural oscillation frequency. In other words, a plasma
+with a fundamental frequency of \(f_p\) will exhibit harmonics at frequencies of \(nf_p\).
+
+If the electrons within a plasma are disturbed such that a localized charge
+imbalance develops, electric restoring forces act to rebalance the instability.
+Because the electrons possess inertia, they overshoot their equilibrium
+positions, producing collective electron oscillations throughout the plasma.
+
+<h2>Abstract</h2>
+
+- radiation from laser plasmas can create strong electromagnetic fields.
+
+- Plasmas when exposed to laser emission can display compression and result in
+  the release of compressed intensities that may exceed the intensity provided
+  by the incident radiation.
+
+- This paper finds that by adjusting the incident radiation on sub-picosecond
+  timescales, the plasma may display energies of >9mJ existing between the 12th
+  and 47th harmonic.
+
+- This result opens studies on optical studies of the quantum vacuum and
+  frontiers of attosecond science on relativistic plasma harmonics. 
+
+
+<h2>Introduction</h2>
+
+By subjecting plasma to concentrated emission from a high powered laser, the
+incident light may be focused into shorter wavelengths and be focused into
+smaller areas than light normally permits.
+
+The light waves may then be combined to produce incredibly short pulses lasting
+attoseconds. This process requires that the light waves remain strong simultaneously
+such that they can be combined into a single strong burst.
+
+This process is tricky for several reasons: the first is that the plasma moves
+so fast that the focus target can change and move during duration of the exposure,
+meaning that the high efficiency emission process may only last for a short
+moment before the target changes its structure and configuration making the
+emission no longer possible. The second is that laser pulses used are too short
+meaning that the plasma does not have time to form the perfect shape required 
+for the desired focusing effects.
+
+To fix these issues, a double plasma mirror system is used to create a 
+short picosecond bursts that can provide the right amount incident energy
+over the right amount of time to allow the plasma to oscillate in the required
+way to to produce the focused intensity.
+
+
+<h2>How tf do you even do this?</h2> 
+
+Initial attempts used a laser that took 711fs reach peak intensity, this was too long.
+
+The laser took too long to power up, meaning that plasma target expanded and by the 
+end it was too large to display the desired intensity emission increase, the output signal
+was weak and shit :( Increasing the laser power did nothing either :,(
+
+By using something called a double mirror system (don't ask me what it is) the laser
+could now reach peak intensity in 351fs (roughly half the speed), this resulted in a 
+huge increase in the efficiency and the output signal was strong at 9.5mJ :) This
+energy corresponded to 12-47th harmonics of the plasma.
+
+Another observation was that if the intensity was too low the efficiency of the
+process would drop off, but another hack was to shoot a 50fs pre-pulse at a
+very specific time to pre-shape the plasma before the main laser is blasted could
+sort of rescue this lost efficiency.
+
+
+<h2>tldr</h2>
+
+Shooting high powered lasers at plasma can ruin the target because the laser
+takes too long to do its thing. You can use a double plasma mirror to speed up
+the laser and hit the plasma just right and make the plasma create a super
+compressed burst of energy.
+
+This is useful as we could use these lasers to do some crazy stuff on particles
+and pull particles out of the quantum vacuum.
+
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
