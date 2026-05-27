@@ -91,9 +91,32 @@ function makeTrackHeaderSortable(tracks) {
     });
 }
 
+function populateStats(tracks) {
+    const totalTracks = tracks.length;
+    
+    // Unique albums (filtering out blank/null/undefined names)
+    const uniqueAlbums = new Set(tracks.map(t => t.album).filter(Boolean)).size;
+    
+    // Unique artists (filtering out blank/null/undefined names)
+    const uniqueArtists = new Set(tracks.map(t => t.artist).filter(Boolean)).size;
+    
+    // Total duration in hours and minutes
+    const totalSeconds = tracks.reduce((sum, t) => sum + (t.length || 0), 0);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const formattedTime = `${hours.toLocaleString()}h ${minutes}m`;
+    
+    // Update the DOM elements
+    document.getElementById('stat-tracks').textContent = totalTracks.toLocaleString();
+    document.getElementById('stat-albums').textContent = uniqueAlbums.toLocaleString();
+    document.getElementById('stat-artists').textContent = uniqueArtists.toLocaleString();
+    document.getElementById('stat-time').textContent = formattedTime;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const tracks = await loadMusicData();
     populateTrackList(tracks);
+    populateStats(tracks);
     makeTrackHeaderSortable(tracks);
     initSetExplorer(tracks);
 });
