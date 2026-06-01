@@ -233,6 +233,39 @@ Finally, we can delete the old branch meaning it no longer clogs shit up:
 git push origin --delete main
 
 
+<h2>Cherry pick merge request</h2>
+
+Problem: we add something to merge staging but we don't want to merge in everything, only that specific change we've made.
+
+1. find the commit hash of the commit on staging
+> git log
+copy the hash, e.g: 832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0 
+
+2. change to the branch you want to create the merge request into and pull latest changes:
+> git checkout master
+> git pull origin master
+
+3. Create a new branch off the master branch for the merge request.
+> git checkout -b update-docker-compose
+
+4. Cherry pick the commit we want
+> git cherry-pick 832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0
+
+x1@Normans-Mac-mini:~/projects/matoha-smartbench$ git cherry-pick 832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0
+Auto-merging docker-compose.yml
+[update-docker-compose 89a2144] Removed deploy policy from docker compose to prevent container restarts on unclean shutdowns
+ Date: Mon Jun 1 09:39:57 2026 +0100
+ 1 file changed, 13 insertions(+), 48 deletions(-)
+
+
+5. Push the new branch to the master.
+git push origin update-docker-compose
+
+
+6. Create the merge request on github/gitlab
+
+
+
 
 
 
