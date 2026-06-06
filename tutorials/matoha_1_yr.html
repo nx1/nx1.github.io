@@ -1,0 +1,156 @@
+<html>
+<head>
+    <title>nx1.info - Matoha 1 Year Summary</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 800px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 500px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        .month-block {
+            margin: 0;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+<pre>
+<h1>nx1.info</h1>
+<h3>Matoha 1 Year Summary</h3>
+</pre>
+
+<div class="grid-container">
+<pre class="month-block">May 2025 Summary
+----------------
+- Admin &amp; IT Setup</pre>
+
+<pre class="month-block">June 2025 Summary
+-----------------
+- Benchmark openCV vs PIL
+- Setup Docker and Kafka
+- Onnx build from source
+- CUDA versioning issues
+- Kafka Configuration / Docker Networking Bridges
+- Refactored smartbench code, fixed all tests
+- Live monitors to debug / set metal detector thresholds
+- Made smartbench video with Tianqi
+- Made active labelling tool / integration with GCS
+- Allowed Amie to help us label lots of data
+- Started work on fabric analysis</pre>
+
+<pre class="month-block">July 2025 Summary
+-----------------
+- Color Model
+- Segmentation Model
+- Began work into fabric construction model
+- Refactor camera block (remove photo mode &amp; pause logic)
+- Potential investor meeting (Kettering)</pre>
+
+<pre class="month-block">August 2025 Summary
+-------------------
+- Refactored all kafka to be json
+- Get bench from Allison and Christine and get feedback from them
+- Google cloud model weights storage
+- Data manager refactoring
+- Fix image capture loop
+- Touchscreen rotation fix
+- Fix ross bench
+- First iteration of setup script
+- More work on fourier transform fabric model
+- Nearly died 🧠</pre>
+
+<pre class="month-block">September 2025 Summary
+----------------------
+💀</pre>
+
+<pre class="month-block">October 2025 Summary
+--------------------
+- Began working again from hospital
+- Benchmarking segmentation model
+- Kafka investigations (meeting with Jeremy)
+- Make background model run on cuda (speed)
+- Garment override on gui
+- Touchup of gui elements</pre>
+
+<pre class="month-block">November 2025 Summary
+---------------------
+- How to effectively propagate secrets to the bench
+- Disk encryption
+- Disruptor gui integration</pre>
+
+<pre class="month-block">December 2025 Summary
+---------------------
+- Breakout board code RFID / weighing scale / barcode
+- Decision tree logic
+- udev mappings for consistent device naming across benches
+- vnc/rdp investigation so we can get remote desktop</pre>
+
+<pre class="month-block">January 2026 Summary
+--------------------
+- First iteration of logo model
+- First iteration of Live logo demo
+- Bricked jetson
+- Fixed jetson
+- Touchscreen fix v3
+- Chat with goodwill
+- ufw config
+- Initial deepstream investigations</pre>
+
+<pre class="month-block">February 2026 Summary
+---------------------
+- API changes to allow decision tree / logo / modules settings
+- Quality of life additions to bench
+- Decision tree integration
+- Work with Yusuf to get decision tree on webapp
+- Breakout board in production
+- Synthetic logo creation</pre>
+
+<pre class="month-block">March 2026 Summary
+------------------
+- Decision tree upstream + downstream
+- Logo model fine tuning / conversion to TensorRT 
+- Lazydocker
+- Convert all setup to Ansible including key generation and other manual tasks
+- Detailed audit of file permissions / settings / security not locking ourselves out of the jetson</pre>
+
+<pre class="month-block">April 2026 Summary
+------------------
+- Helped write smartbench booklet
+- More ansible conversions
+- Testing devices
+- Helped Hans and Logan sort out the bench in the US
+- Smartbench user guide
+- Data manager refactor, fix issues with submissions / non-blocking submission 
+- In office testing</pre>
+
+<pre class="month-block">May 2026 Summary
+----------------
+- Fix network issues on jetson
+- Fix docker issues on jetson
+- Ansible camera settings
+- New logo model</pre>
+</div>
+
+<pre>
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</pre>
+</body>
+</html>
