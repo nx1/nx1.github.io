@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>nx1.info | Psyscores v2</title>
+    <title>nx1.info | Psyscores v3</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
 <div class="terminal-header">
-    <div class="terminal-title">nx1.info | Psyscores v2</div>
+    <div class="terminal-title">nx1.info | Psyscores v3</div>
     <div class="timestamp" id="timestamp"></div>
 </div>
 
@@ -18,12 +18,24 @@
         <div class="section-header">Intro</div>
         <div class="section-content" id="metadata" style="font-size: 12px;">
         Welcome traveller, you have stumbled upon my collection of psychedelic tunes. </br>
-        If you don't feel like digging, check out some mixes over at: <a href="https://nx1.info/music">nx1.info/music</a></br>
-        If this wasn't enough, be sure to check out: some of my discogs scraping stuff <a href="https://nx1.info/psyscores/psyprog.html">here</a> and <a href="https://nx1.info/psyscores/proghouse.html">here</a><br>
-        This page is a work in progress, so expect more features to be added in the future, save a bookmark or you may never find your way back here... </br></br>
-        Ratings are my own opinion and are subject to change depending on my mood, 1 star tunes are downtemp/ambient </br>
-        Shout-out to all the artists, labels, DJs, collectors and everyone involved in arranging this information.</br></br>
-    Special thanks to: nikodim241, miskoala, KosioMagiosnika, Generator, ANNX, Praktik, miskoala, hooker, Austin Powders, atlantisairwaves1, dejanprogtrens, FunKy-NT4 and many others not named here :D<br>
+        If you don't feel like digging, go check out my diy soundcloud at: <a href="https://server.nx1.info/mixes">server.nx1.info/mixes</a></br>
+
+	If somehow this page wasn't enough, be sure to check out: some of my discogs scraping stuff <a href="https://nx1.info/psyscores/psyprog.html">here</a>, <a href="https://nx1.info/psyscores/proghouse.html">here</a> and <a href="https://nx1.info/psyscores/psyprog_albums.html">here.</a><br><br>
+        
+	This page is a work in progress, so expect more features to be added in the future,</br>save a bookmark or you may never find your way back here... </br></br>
+
+	Every track in the collection has been listened to atleast once and rated.</br>
+	Ratings are my own opinion and are subject to change depending on my mood.</br></br>
+
+	Ratings reference:</br>
+		5★ : Certified Banger</br>
+		4★ : Pretty Good</br>
+		3★ : Mid</br>
+		2★ : u good unc?</br>
+		1★ : Ambient / Downtempo</br></br>
+
+        Shout-out to all the friends, artists, labels, DJs, collectors and everyone involved in arranging this information.</br></br>
+	Special thanks to: nikodim241, miskoala, KosioMagiosnika, Generator, ANNX, Praktik, Wednesday, miskoala, hooker,<br>Austin Powders, tekh, atlantisairwaves1, dejanprogtrens, FunKy-NT4, Horseshit70, overgrow, keeno,Mortadela, <br>Methmouth and many others not named here :D<br>
         </div>
     </div>
     <div class="section">
@@ -44,16 +56,21 @@
     </div>
     <div class="section">
         <div class="section-header">Set Explorer</div>
-        <div class="section-content collapsed" id="set-explorer" style="display: flex; flex-direction: row; gap: 32px;">
-            <div id="set-explorer-flex" style="display: flex; flex-direction: row; width: 100%;">
-                <div id="categories-column">
-                    <div id="categories"></div>
-                    <div class="categories-help">^ Select one or more categories above and tracks will be grouped together across them, columns can be sorted by clicking the headers.</div>
-                </div>
-                <div id="set-aggregations"></div>
+        <div class="section-content collapsed" id="set-explorer" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="font-size: 11px; color: #ffffff; font-family: 'Fira Mono', monospace; line-height: 1.4; max-width: 750px;">
+                Slice and dice the collection to find out where the true bangers are hiding.
             </div>
-            <div id="member-aggregations-container" style="display: none;">
-              <div id="member-aggregations"></div>
+            <div style="display: flex; flex-direction: row; gap: 32px; width: 100%;">
+                <div id="set-explorer-flex" style="display: flex; flex-direction: row; width: 100%;">
+                    <div id="categories-column">
+                        <div id="categories"></div>
+                        <div class="categories-help">^ Select one or more categories above and tracks will be grouped together across them, columns can be sorted by clicking the headers.</div>
+                    </div>
+                    <div id="set-aggregations"></div>
+                </div>
+                <div id="member-aggregations-container" style="display: none;">
+                  <div id="member-aggregations"></div>
+                </div>
             </div>
         </div>
     </div>
