@@ -24,19 +24,32 @@
         Ratings are my own opinion and are subject to change depending on my mood, 1 star tunes are downtemp/ambient </br>
         Shout-out to all the artists, labels, DJs, collectors and everyone involved in arranging this information.</br></br>
     Special thanks to: nikodim241, miskoala, KosioMagiosnika, Generator, ANNX, Praktik, miskoala, hooker, Austin Powders, atlantisairwaves1, dejanprogtrens, FunKy-NT4 and many others not named here :D<br>
-        <div class="stats-box">
-            <div class="stat-item"><span class="stat-label">Tracks:</span> <span id="stat-tracks" class="stat-value">-</span></div>
-            <div class="stat-item"><span class="stat-label">Albums:</span> <span id="stat-albums" class="stat-value">-</span></div>
-            <div class="stat-item"><span class="stat-label">Artists:</span> <span id="stat-artists" class="stat-value">-</span></div>
-            <div class="stat-item"><span class="stat-label">Total Time:</span> <span id="stat-time" class="stat-value">-</span></div>
         </div>
+    </div>
+    <div class="section">
+        <div class="section-header">Stats for Nerds</div>
+        <div class="section-content collapsed" style="font-size: 12px;">
+            <div class="stats-summary-title">Collection Summary</div>
+            <div class="stats-box" style="margin-top: 0; padding-top: 0; border-top: none;">
+                <div class="stat-item"><span class="stat-label">Tracks:</span> <span id="stat-tracks" class="stat-value">-</span></div>
+                <div class="stat-item"><span class="stat-label">Albums:</span> <span id="stat-albums" class="stat-value">-</span></div>
+                <div class="stat-item"><span class="stat-label">Artists:</span> <span id="stat-artists" class="stat-value">-</span></div>
+                <div class="stat-item"><span class="stat-label">Labels:</span> <span id="stat-labels" class="stat-value">-</span></div>
+                <div class="stat-item"><span class="stat-label">Total Time:</span> <span id="stat-time" class="stat-value">-</span></div>
+            </div>
+            <div id="quality-stats-container"></div>
+            <div id="year-stats-container"></div>
+            <div id="rating-stats-container"></div>
         </div>
     </div>
     <div class="section">
         <div class="section-header">Set Explorer</div>
-        <div class="section-content" id="set-explorer" style="display: flex; flex-direction: row; gap: 32px;">
+        <div class="section-content collapsed" id="set-explorer" style="display: flex; flex-direction: row; gap: 32px;">
             <div id="set-explorer-flex" style="display: flex; flex-direction: row; width: 100%;">
-                <div id="categories"></div>
+                <div id="categories-column">
+                    <div id="categories"></div>
+                    <div class="categories-help">^ Select one or more categories above and tracks will be grouped together across them, columns can be sorted by clicking the headers.</div>
+                </div>
                 <div id="set-aggregations"></div>
             </div>
             <div id="member-aggregations-container" style="display: none;">
@@ -46,7 +59,7 @@
     </div>
     <div class="section">
         <div class="section-header">TRACK LISTING (Click headers to sort)</div>
-            <div class="track-list">
+            <div class="track-list collapsed">
                 <div class="track-header" id="trackHeader">
                     <div>#</div>
                     <div>TITLE</div>
