@@ -1,5 +1,5 @@
 const state = {
-    selectedCategories: new Set(['album']),
+    selectedCategories: new Set(['album_artist', 'album']),
     tracks: [],
     aggregatedData: [],
     aggregationSortState: { key: null, asc: true },
@@ -29,7 +29,11 @@ function calculateAggregations(group) {
 
 function groupBy(data, keys) {
     return data.reduce((acc, item) => {
-        const key = keys.map(k => item[k]).join(' | ');
+        const keyParts = keys.map(k => item[k]);
+        if (keys.includes('album') && !keys.includes('album_artist')) {
+            keyParts.push(item.album_artist || item.artist);
+        }
+        const key = keyParts.join(' | ');
         (acc[key] = acc[key] || []).push(item);
         return acc;
     }, {});
