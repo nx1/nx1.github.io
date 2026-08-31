@@ -1,0 +1,264 @@
+<html>
+<head>
+    <title>nx1.info | nx1 vs dell</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | nx1 vs dell</h1>
+
+In 2019 I was gifted a Dell Precision 7740, a top of the line workstation
+laptop but it has been nothing but pain since I got it.
+
+Fat, sluggish, loud and prone to overheating, it shared more in common with
+your mum than a supposed marvel of modern technology.
+
+Admittedly I've put up with it longer than anyone should, but shit is computers
+are expensive rn
+
+
+<h3>I. stfu</h3>
+Playing Rocket league, all I hear: BRRRRRRRRRRRRRRRRRRRRR
+Playing Runescape: BRRRRRRRRRRRRRRRR
+Watching youtube: BRRRRRRRRRRRRRRRR
+Watching my desktop wallpapers: BRRRRRRRRRRRRRR    (POWER OFF DUE TO OVERHEAT)
+Booting up: BR BRRR BRR CLACK-CLACK-CLACK BRRRRRRR
+
+After getting tinitus from listening to my 100db computer for 8 hours a day for
+the last 7 years, and having it power-off because it got too hot from watching 
+a 50m bald and bankrupt video, I started to wonder if there was anything I could do
+about it...
+
+I start with the most obvious thing, I download the latest updates dell
+website, GPU, BIOS, Dell crapware, the whole shabingus.
+
+After three cosmological epochs the updates are complete and I reboot the computer
+to finalize the changes :)
+
+after rebooting 3 times the computer eventually starts up, except... this isn't the windows
+login screen... all i see is a completly black screen with a single word:
+<pre><code class="language-bash">grub>
+</code></pre>Great, I've bricked the fucking thing and now it's asking for food.
+
+What actually happened is that flashing the BIOS reset all the configuration on the
+motherboard including the default boot configuration and so it fell back to booting into
+the <a href="https://en.wikipedia.org/wiki/GNU_GRUB">GNU GRand Unified Bootloader</a>.
+
+anyway, we force it to boot into windows: 
+<pre><code class="language-bash">grub> ls
+(Hd0) (hd0,gpt2) (hd1) (hd1,gpt4), (hd1,gpt3), (hd1,gpt2) (hd1,gpt1)
+grub> ls (hd1,gpt1)
+EFI/
+system volume information/
+grub> ls (hd1,gpt1)/EFI/
+Microsoft/
+grub> set root=(hd1,gpt1)
+grub> chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+grub> boot
+</code></pre>
+Once in windows, we make the computer remember to boot into the right place:
+
+Admin Powershell:
+<pre><code class="language-bash"># View current UEFI boot entries
+PS C:\WINDOWS\system32> bcdedit /enum firmware
+
+Firmware Boot Manager
+---------------------
+identifier              {fwbootmgr}
+displayorder            {bootmgr}
+                        {cc3559c0-a57a-11f1-8b15-806e6f6e6963}
+                        {a2cf39de-bf75-11e9-89d9-806e6f6e6963}
+                        {a2cf39df-bf75-11e9-89d9-806e6f6e6963}
+                        {a2cf39e0-bf75-11e9-89d9-806e6f6e6963}
+timeout                 0
+
+Windows Boot Manager
+--------------------
+identifier              {bootmgr}
+device                  partition=\Device\HarddiskVolume3
+path                    \EFI\Microsoft\Boot\bootmgfw.efi
+description             Windows Boot Manager
+locale                  en-US
+inherit                 {globalsettings}
+default                 {current}
+resumeobject            {d862b070-dc4c-11ef-bc87-8f441e60c84d}
+displayorder            {current}
+toolsdisplayorder       {memdiag}
+timeout                 30
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {a2cf39de-bf75-11e9-89d9-806e6f6e6963}
+device                  partition=\Device\HarddiskVolume3
+path                    \EFI\Boot\BootX64.efi
+description             UEFI: KXG60ZNV512G NVMe TOSHIBA 512GB, Partition 1
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {a2cf39df-bf75-11e9-89d9-806e6f6e6963}
+description             Onboard NIC(IPV4)
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {a2cf39e0-bf75-11e9-89d9-806e6f6e6963}
+description             Onboard NIC(IPV6)
+
+Firmware Application (101fffff)
+-------------------------------
+identifier              {cc3559c0-a57a-11f1-8b15-806e6f6e6963}
+device                  partition=\Device\HarddiskVolume3
+path                    \EFI\ubuntu\shimx64.efi
+description             ubuntu
+
+# Put Windows Boot Manager first
+bcdedit /set {fwbootmgr} displayorder {bootmgr} /addfirst
+
+# Remove Ubuntu entry replace GUID with the one shown for "ubuntu"
+bcdedit /delete "{UBUNTU-GUID}"
+
+# Verify with
+bcdedit /enum firmware
+
+# Reboot
+shutdown /r /t 0
+</code></pre>
+
+<h3>II. Dell bloatware Exorcism</h3>
+
+Dell has a variety of background services that monitor system usage in order to 
+slow your pc down and probably spy on you aswell.
+
+delet them:
+<pre><code class="language-bash">
+$badDell = "Dell.CommandPowerManager.Service", "poaService", "PoaSMSrv", "poaTaServ", "SupportAssistAgent", "DDVRulesProcessor", "DellTechHub", "DDVDataCollector", "DDVCollectorSvcApi", "dcpm-notify", "DpoMonitorSvc", "dpoTelemetrySvc"
+
+foreach ($service in $badDell) {
+    Stop-Service -Name $service -Force -ErrorAction SilentlyContinue
+    Set-Service -Name $service -StartupType Disabled -ErrorAction SilentlyContinue
+}
+</code></pre>
+
+Also, open Task Manager --> Startup apps and disable DellPoaEvents so it
+doesn't throw background errors trying to talk to services that no longer
+exist.
+
+<h2>III. The Motherboard Has A Stroke (The Nuclear RTC Reset)</h2>
+
+With the services dead, I installed <a href="https://www.hwinfo.com/">HWiNFO64</a>, opened the fan
+control panel, dragged the sliders down, and for the first time in years, my
+room was dead silent.
+
+I cried.
+
+Two reboots later, the fans stopped responding completely. Moving the sliders
+did nothing.
+
+Dell's Embedded Controller (EC) had had an existential crisis and had reclaimed
+the hardware registers, and locked HWiNFO out in the cold.
+
+Why? Because Windows "Fast Startup" doesn't actually shut down your PC, instead
+puts the kernel into hibernation so it boots slightly faster. This means the
+motherboard never truly power-cycles and the EC stays permanently locked in a
+paranoid state.
+
+A normal restart doesn't fix it.
+Unplugging it and holding the power button doesn't either.
+
+We have to trigger Dell's built-in Real-Time Clock (RTC) purge, to do this:
+
+- Turn the laptop completely off.
+- Plug the AC charger in. (Counterintuitive, but mandatory for this reset).
+- Press and hold the physical power button down for 30 to 35 seconds.
+- Watch the front battery/status LED blinks 2-3 times.
+- Release the power button.
+
+The laptop will power-cycle twice and eventually stop on a warning screen:
+
+<pre><code>Time-of-day not set - please run SETUP program.</code></pre>
+Music to my ears. That screen confirms the motherboard's volatile memory and
+the EC's hardware lock have been wiped completely clean. Hit F2, set the clock,
+and boot into Windows (see part I)
+
+<h2>IV. The Missing BIOS Menu & Ghost Profile Injection</h2>
+
+Once back in Windows, I launched HWiNFO, set the fans to manual, and was
+immediately greeted by a familar torture:
+<pre><code>BRRRRR... (silence)... BRRRRR... (silence)... BRRRRR...</code></pre>
+At this point I'm googling "Dell HQ Location" and "how to buy a nuke".
+
+The fans were pulsing on and off single second gurgling like someone choking on
+their own blood.
+
+Because the RTC reset wiped the motherboard memory, the EC defaulted back to a
+hyper-aggressive factory thermal profile. Normally, you'd just enter the BIOS
+setup and switch the profile to "Optimized" or "Quiet".
+
+Except you can't. In their infinite corporate wisdom, Dell completely removed
+the Thermal Management menu from the Precision 7740 BIOS. The menu simply does
+not exist in firmware. The hardware is designed to take its orders exclusively
+from Dell's Windows software.
+
+So we perform some black magic fuckery: wake the Dell Power Manager service
+from the dead for sixty seconds, use it to flash a relaxed profile into the
+motherboard's silicon, and then assassinate it again.
+<pre><code># 1. Resurrect the beast
+Set-Service -Name "Dell.CommandPowerManager.Service" -StartupType Automatic
+Start-Service -Name "Dell.CommandPowerManager.Service"
+
+# 2. Open the "Dell Power Manager" app 
+# Go to Thermal Management -> Select "Quiet")
+# The moment you select it, the profile is written directly into the EC hardware.
+
+# 3. Put the beast back into the dirt permanently
+Stop-Service -Name "Dell.CommandPowerManager.Service" -Force
+Set-Service -Name "Dell.CommandPowerManager.Service" -StartupType Disabled</code></pre>
+<h2>V. The HWiNFO Voodoo Dance (Final Boss)</h2>
+
+Now that the Dell services are destroyed and the EC is reset  the motherboard
+has been tricked into a calm thermal baseline, all that remains is configuring
+HWiNFO so it doesn't enter a feedback loop with the BIOS.
+
+
+If you don't execute these steps in the exact correct sequence, the one-second fan pulse will return:
+
+- Launch HWiNFO in Sensors-only mode. When prompted with the yellow warning
+  regarding DELL EC: DELL Precision 7740, check "Don't show this warning again"
+  and click Continue.
+
+- In the main sensor readout, ensure the DELL EC header is Enabled (monitoring
+  must be active for HWiNFO to inject hardware overrides).
+
+- Click the Fan icon at the bottom of the sensors window to open Fan Control.
+
+- Check the box for Use System Auto Control Method 1. (This hook tells the Dell
+  BIOS to suspend its internal thermal loop).
+
+- Check Respin period and set it to 2500 ms (giving the EC breathing room so it doesn't freak out).
+
+- The Sacred Order of Operations:
+  - Click System Auto on both Fan 1 and Fan 2 first.
+  - Wait 3 to 5 seconds for the BIOS hook to latch on.
+  - Drag the sliders to your desired RPM (or 0 for silence).
+  - Click Set Manual.
+
+
+<h2>VI. Peace at Last</h2>
+
+No thermal throttling.
+
+No 100 dB jet engine screaming while opening a text file.
+
+No mysterious background daemons reporting my RuneScape tick rate back to
+Dell telemetry servers.
+
+Just a quiet, four-kilo slab of aluminium finally doing what it was told.
+
+</div>
+</body>
+</html>
