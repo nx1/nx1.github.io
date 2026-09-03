@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nx1.info | Psychedelic Album Art Mosaic Lab</title>
+    <link rel="icon" type="image/x-icon" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mosaic.css">
+</head>
+<body>
+
+    <!-- Top Terminal Header -->
+    <header class="terminal-header">
+        <div class="terminal-title-group">
+            <a href="../index.html" class="nav-back">← Psyscores Collection</a>
+            <div class="terminal-title">nx1.info | PSYCHEDELIC MOSAIC LAB</div>
+            <span class="badge-tag">v1.0 • 841 Albums</span>
+        </div>
+        <div class="system-status">
+            <span><span class="status-dot"></span>Client-Side GPU Canvas</span>
+            <span>CIELAB ΔE Matching</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-container">
+
+        <!-- Left Controls Sidebar -->
+        <aside class="controls-sidebar">
+            
+            <!-- Source Image Section -->
+            <section class="sidebar-section">
+                <div class="section-title">
+                    <span>1. Source Image</span>
+                    <span class="section-badge">Drop / Paste / Pick</span>
+                </div>
+
+                <div class="dropzone" id="dropzone" title="Click or drag an image here, or press Ctrl+V">
+                    <div class="dropzone-icon">⚡</div>
+                    <div class="dropzone-text">Drop image or click to upload</div>
+                    <div class="dropzone-subtext">JPG, PNG, WebP • or Paste (Ctrl+V)</div>
+                </div>
+                <input type="file" id="file-input" accept="image/*" style="display: none;">
+
+                <div class="samples-label">Or choose a featured collection album:</div>
+                <div class="samples-row">
+                    <img class="sample-thumb" src="samples/cover_32_buzzmonx.jpg" data-src="samples/cover_32_buzzmonx.jpg" data-key="32" data-name="Buzzmonx - Toms'n Jerry" alt="Buzzmonx" title="Buzzmonx - Toms'n Jerry (2004)">
+                    <img class="sample-thumb" src="samples/cover_44_dimo.jpg" data-src="samples/cover_44_dimo.jpg" data-key="44" data-name="D.I.M.O. - DIMO" alt="D.I.M.O." title="D.I.M.O. - DIMO (2000)">
+                    <img class="sample-thumb" src="samples/cover_124_magnetrixx.jpg" data-src="samples/cover_124_magnetrixx.jpg" data-key="124" data-name="Magnetrixx - Wired" alt="Magnetrixx" title="Magnetrixx - Wired (2005)">
+                    <img class="sample-thumb" src="samples/cover_148_ololiuqui.jpg" data-src="samples/cover_148_ololiuqui.jpg" data-key="148" data-name="Ololiuqui - Reverse Engineering" alt="Ololiuqui" title="Ololiuqui - Reverse Engineering (2002)">
+                    <img class="sample-thumb" src="samples/cover_361_sun_project.jpg" data-src="samples/cover_361_sun_project.jpg" data-key="361" data-name="S.U.N. Project - Guitars on Mushroom Vol. 1" alt="S.U.N. Project" title="S.U.N. Project - Guitars on Mushroom Vol. 1 (2000)">
+                </div>
+
+                <div class="source-preview-bar" id="source-preview-bar">
+                    <img class="source-preview-thumb" id="source-preview-thumb" src="" alt="Source preview">
+                    <div class="source-preview-info">
+                        <div class="source-name" id="source-name">Image Name</div>
+                        <div class="source-meta" id="source-meta">0 × 0 px</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mosaic Resolution & Aspect -->
+            <section class="sidebar-section">
+                <div class="section-title">
+                    <span>2. Grid Resolution</span>
+                    <span class="section-badge" id="grid-val-text">50 × 50 (2,500 tiles)</span>
+                </div>
+
+                <div class="control-group">
+                    <input type="range" class="slider-range" id="grid-slider" min="15" max="120" value="50" step="1">
+                    <div class="preset-buttons-row">
+                        <button class="btn-preset" data-val="30">Coarse (30)</button>
+                        <button class="btn-preset active" data-val="50">Medium (50)</button>
+                        <button class="btn-preset" data-val="75">Fine (75)</button>
+                        <button class="btn-preset" data-val="100">Ultra (100)</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-name">Aspect Ratio:</span>
+                    </div>
+                    <select class="select-input" id="aspect-select">
+                        <option value="source" selected>Match Source Image Aspect</option>
+                        <option value="square">Force Square (1:1)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Matching Algorithm & Filters -->
+            <section class="sidebar-section">
+                <div class="section-title">
+                    <span>3. Algorithmic Tuning</span>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-name">Color Matching Metric:</span>
+                    </div>
+                    <select class="select-input" id="match-mode-select">
+                        <option value="quad" selected>4-Quadrant Detail (Sub-block matching)</option>
+                        <option value="avg">CIELAB Average Color (Fast)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-name">Tile Diversity / Variety:</span>
+                    </div>
+                    <select class="select-input" id="diversity-select">
+                        <option value="medium" selected>Balanced Variety (Avoid neighbor duplicates)</option>
+                        <option value="high">High Diversity (Maximize unique covers)</option>
+                        <option value="none">Unlimited (Strict minimum color error)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-name">Collection Rating Filter:</span>
+                    </div>
+                    <select class="select-input" id="rating-select">
+                        <option value="1" selected>All Albums (841 covers)</option>
+                        <option value="4">★ 4 & 5 Stars Only (813 covers)</option>
+                        <option value="5">★ 5 Certified Bangers Only (533 covers)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Color Blend / Tint Overlay -->
+            <section class="sidebar-section">
+                <div class="section-title">
+                    <span>4. Image Blend / Tint</span>
+                    <span class="section-badge" id="blend-val-text">15%</span>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-name">Overlay Opacity (Real-Time):</span>
+                    </div>
+                    <input type="range" class="slider-range" id="blend-slider" min="0" max="100" value="15" step="1">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label-row">
+                        <span class="control-name">Blend Mode:</span>
+                    </div>
+                    <select class="select-input" id="blend-mode-select">
+                        <option value="normal" selected>Normal (Subtle Tint)</option>
+                        <option value="soft-light">Soft Light (Vibrant)</option>
+                        <option value="overlay">Overlay (High Contrast)</option>
+                        <option value="color">Color Only (Chrominance)</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Action & Export Section -->
+            <section class="action-buttons-group">
+                <button class="btn-primary" id="btn-generate">
+                    <span>⚡ Generate Mosaic</span>
+                </button>
+
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progress-status">Ready</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                </div>
+
+                <div class="export-grid">
+                    <button class="btn-secondary" id="btn-download-png" disabled title="Download canvas as PNG">
+                        ⬇ PNG
+                    </button>
+                    <button class="btn-secondary" id="btn-download-jpg" disabled title="Download canvas as JPEG">
+                        ⬇ JPEG
+                    </button>
+                    <button class="btn-secondary" id="btn-copy-clipboard" disabled title="Copy mosaic to clipboard">
+                        📋 Copy
+                    </button>
+                    <button class="btn-secondary" id="btn-export-hd" disabled title="Generate 4K ultra-high resolution poster with lossless 200px tiles">
+                        ✨ HD Poster
+                    </button>
+                </div>
+            </section>
+
+        </aside>
+
+        <!-- Main Viewport Workspace -->
+        <div class="workspace-container">
+            
+            <!-- Toolbar -->
+            <div class="workspace-toolbar">
+                <div class="toolbar-group">
+                    <div class="view-mode-toggle">
+                        <button class="btn-view-mode active" data-mode="mosaic">Mosaic</button>
+                        <button class="btn-view-mode" data-mode="original" title="Press Spacebar to toggle">Original (Space)</button>
+                    </div>
+                    <button class="btn-secondary" id="btn-reset-view" style="padding: 2px 8px; font-size: 10px;">Reset View</button>
+                </div>
+
+                <div class="toolbar-group">
+                    <div class="zoom-controls">
+                        <button class="btn-zoom" id="btn-zoom-out" title="Zoom Out">-</button>
+                        <span class="zoom-level-text" id="zoom-level-text">100%</span>
+                        <button class="btn-zoom" id="btn-zoom-in" title="Zoom In">+</button>
+                        <button class="btn-zoom" id="btn-zoom-fit" title="Fit to Screen" style="width: auto; padding: 0 6px;">Fit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas Viewport -->
+            <div class="canvas-viewport" id="canvas-viewport">
+                
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-icon">🌀</div>
+                    <div class="empty-title">Psychedelic Album Art Mosaic Generator</div>
+                    <div class="empty-desc">
+                        Select a sample image from the left panel, upload a custom picture, or drag and drop any image to transform it into a tapestry of 841 psychedelic albums.
+                    </div>
+                </div>
+
+                <div class="canvas-stage" id="canvas-stage">
+                    <canvas id="mosaic-canvas" style="display: none;"></canvas>
+                    <div class="tile-highlighter" id="tile-highlighter"></div>
+                </div>
+
+                <!-- Floating Inspector HUD -->
+                <div class="tile-inspector-hud" id="tile-inspector-hud">
+                    <div class="inspector-header">
+                        <span class="inspector-tag">Album Inspector</span>
+                        <span class="inspector-coords" id="inspector-coords">Tile (0, 0)</span>
+                    </div>
+                    <div class="inspector-body">
+                        <img class="inspector-cover" id="inspector-cover" src="" alt="Album Cover">
+                        <div class="inspector-details">
+                            <div class="inspector-title" id="inspector-title">Album Name</div>
+                            <div class="inspector-artist" id="inspector-artist">Artist</div>
+                            <div class="inspector-meta-row" id="inspector-meta">Year • Label</div>
+                            <div class="inspector-rating" id="inspector-rating">★★★★★</div>
+                            <div style="margin-top: 4px;">
+                                <a id="inspector-discogs-link" href="#" target="_blank" rel="noopener noreferrer" style="font-size: 10px;">Search on Discogs ↗</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Stats Drawer -->
+            <footer class="mosaic-stats-bar">
+                <div class="stats-items">
+                    <div class="stat-metric">
+                        <span class="stat-name">Compute Time:</span>
+                        <span class="stat-value highlight" id="stat-gen-time">-</span>
+                    </div>
+                    <div class="stat-metric">
+                        <span class="stat-name">Unique Albums:</span>
+                        <span class="stat-value highlight" id="stat-unique-count">-</span>
+                    </div>
+                    <div class="stat-metric">
+                        <span class="stat-name">Grid:</span>
+                        <span class="stat-value" id="stat-grid-dim">-</span>
+                    </div>
+                    <div class="stat-metric">
+                        <span class="stat-name">Most Frequent:</span>
+                        <span class="stat-value" id="stat-top-album">-</span>
+                    </div>
+                </div>
+                <div style="font-size: 10px; color: #555566;">
+                    Interactive: Scroll to Zoom • Drag to Pan • Hover to Inspect
+                </div>
+            </footer>
+
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast-notice" id="toast-notice">Notice</div>
+
+    <!-- Embedded Data for 100% Offline & file:// Compatibility -->
+    <script src="covers_data.js"></script>
+    <script src="atlas_data.js"></script>
+    <script src="samples_data.js"></script>
+    <script src="mosaic.js"></script>
+</body>
+</html>
