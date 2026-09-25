@@ -97,14 +97,14 @@ if __name__ == "__main__":
     d = Discogs(token=DISCOGS_TOKEN)
 
 
-    scrape(discogs=d,
-           style="Psy-Trance,Progressive Trance",
-           format="album",
-           year="2000-2009",
-           sort="have",
-           sort_order="desc",
-           per_page=200,
-           filename='psyprog_albums.csv')
+    #scrape(discogs=d,
+    #       style="Psy-Trance,Progressive Trance",
+    #       format="album",
+    #       year="2000-2009",
+    #       sort="have",
+    #       sort_order="desc",
+    #       per_page=200,
+    #       filename='psyprog_albums.csv')
 
 
     #scrape(discogs=d,
@@ -128,6 +128,14 @@ if __name__ == "__main__":
     #       per_page=200,
     #       filename='proghouse.csv')
 
+    scrape(discogs=d,
+           style="Breakbeat",
+           format="album",
+           year="1993-2015",
+           sort="have",
+           sort_order="desc",
+           per_page=200,
+           filename='breakbeat_album.csv')
 
 
     
