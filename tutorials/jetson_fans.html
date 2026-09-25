@@ -1,0 +1,145 @@
+<html>
+<head>
+    <title>nx1.info | Adjusting NVIDIA Jetson Fan settings</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+	<link rel="stylesheet" type="text/css" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>hljs.highlightAll();</script>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Adjusting NVIDIA Jetson Fan settings</h1>
+
+The fan configuration file on the NVIDIA Jetson Orin NX is stored in the file: /etc/nvfancontrol.conf
+
+By default, this file contains the following:
+<pre><code class="language-bash">matoha@orin-nx-1:~$ cat /etc/nvfancontrol.conf
+#
+# Copyright (c) 2022, NVIDIA CORPORATION.  All rights reserved.
+#
+# NVIDIA CORPORATION and its licensors retain all intellectual property
+# and proprietary rights in and to this software, related documentation
+# and any modifications thereto.  Any use, reproduction, disclosure or
+# distribution of this software and related documentation without an express
+# license agreement from NVIDIA CORPORATION is strictly prohibited.
+#
+
+POLLING_INTERVAL 2
+
+&lt;FAN 1&gt;
+        TMARGIN ENABLED
+        FAN_GOVERNOR cont {
+                STEP_SIZE 10
+        }
+        FAN_CONTROL close_loop {
+                RPM_TOLERANCE 100
+        }
+        FAN_PROFILE quiet {
+                #TEMP   HYST    PWM     RPM
+                0       0       255     6000
+                10      0       255     6000
+                11      0       187     4000
+                31      0       187     4000
+                70      0       0       0
+                105     0       0       0
+        }
+        FAN_PROFILE cool {
+                #TEMP   HYST    PWM     RPM
+                0       0       255     6000
+                35      0       255     6000
+                70      0       0       0
+                105     0       0       0
+        }
+        THERMAL_GROUP 0 {
+                GROUP_MAX_TEMP 105
+                #Thermal-Zone Coeffs Max-Temp
+                CPU-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+                GPU-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+                SOC0-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+                SOC1-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+                SOC2-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+        }
+        FAN_DEFAULT_CONTROL close_loop
+        FAN_DEFAULT_PROFILE quiet 
+        FAN_DEFAULT_GOVERNOR cont
+        KICKSTART_PWM 64</code></pre>
+There are two fan profiles defined, "quiet" (which is set as the default in the line):
+<pre><code class="language-bash">FAN_DEFAULT_PROFILE quiet</code></pre>and a "cool" profile, which may be set as the default by modifying the above line.
+
+<h2>How fan profiles work</h2>
+The way that these profiles work is not exactly intuitive so read carefully:
+
+The line TMARGIN ENABLED means that the profiles use thermal margins in their definitions,
+The thermal margin is defined as the difference between the maximum temperature and the current temperature:
+$$T_{\text{margin}} = T_{\text{max}} - T_{\text{current}}$$
+where the maximum temperature is defined in the line:
+<pre><code class="language-bash">GROUP_MAX_TEMP 105</code></pre>
+What this means is that the first line in both the fan profiles: 
+<pre><code class="language-bash">#TEMP   HYST    PWM     RPM
+0       0       255     6000</code></pre>Will set the fan speed to 6000 RPM when the thermal margin is 0,
+(which corresponds to a current temperature of 105c)
+
+Notice that the second line in the cool profile
+<pre><code class="language-bash">35      0       255     6000</code></pre>Sets a fan speed of 6000 when there is a thermal margin of 35 or less
+which corresponds to any temperature at or above 70c (105-35=70).
+
+We could in theory just force the fans to always run at full speed by creating and activating the following profile:
+<pre><code class="language-bash">FAN_PROFILE full_speed {
+        #TEMP   HYST    PWM     RPM
+        0       0       255     6000
+        105     0       255     6000
+}</code></pre>But this is probably not the best idea as it could wear out the fan faster. 
+
+<h2>How to change the fan profile</h2>
+Changing the default fan profile requires editing the line containing FAN_DEFAULT_PROFILE
+in /etc/nvfancontrol.conf using sudo via one's editor of choice: vi, vim, nano, etc...
+
+To change the fan settings and apply the changes, the following sequence of commands should be executed:
+<pre><code class="language-bash"># 1. Stop the service
+sudo systemctl stop nvfancontrol
+
+# 2. (Edit /etc/nvfancontrol.conf here using sudo)
+sudo vim /etc/nvfancontrol.conf
+
+# 3. Delete the cached status file
+sudo rm -f /var/lib/nvfancontrol/status
+
+# 4. Start the service
+sudo systemctl start nvfancontrol
+
+# 5. Verify the active profile
+sudo nvfancontrol -q</code></pre>
+<h2>Extra details</h2>
+<h3>PWM column</h3>
+In the control file, there is a PWM column (Pulse Width Modulation)
+this is an alternative means of defining the fan speed and specifies
+the speed as a percentage (0-100%) but is defined using an 8 bit integer (0-255).
+
+However since FAN_CONTROL close_loop is enabled, nvfancontrol will preferentially use
+the RPM column. (if open_loop mode was enabled then the PWM column would be used)
+
+<h3>Which temperature is the fan control using?</h3>
+Multiple temperature sensors exist in the Jetson's hardware:
+CPU-therm, GPU-therm, SOC0-therm, SOC1-therm, SOC2-therm
+Since all these sensors have been defined in the THERMAL_GROUP 0 using the same
+parameters nvfancontrol will simply govern the fan control based on whichever sensor
+is running the hottest (has the lowest margin).
+<pre><code class="language-bash">THERMAL_GROUP 0 {
+        GROUP_MAX_TEMP 105
+        #Thermal-Zone Coeffs Max-Temp
+        CPU-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+        GPU-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+        SOC0-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+        SOC1-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+        SOC2-therm 20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 0
+}</code></pre>
+<h3>How to temporarily force max fan speed</h3>
+<pre><code class="language-bash">sudo jetson_clocks --fan</code></pre>To restore run:
+<pre><code class="language-bash">sudo jetson_clocks --restore</code></pre>
+</div>
+</body>
+</html>

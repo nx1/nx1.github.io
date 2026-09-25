@@ -265,9 +265,65 @@ git push origin update-docker-compose
 6. Create the merge request on github/gitlab
 
 
+<h2>Sync local commits with remote when remote has moved ahead (Conflict-Safe)</h2>
+Problem: You have local commits on your branch. Meanwhile, commits have landed on the
+remote branch. You need to combine both without getting trapped in merge conflict hell.
 
+Rule 1: Never do a blind "git pull". Always fetch and inspect first.
 
+1. Stash any uncommitted dirty files:
+> git stash
 
+2. Create a safety backup branch of your exact current state:
+> git branch backup-wip
+(Zero-cost safety net. If anything goes sideways, your work is 100% recoverable.)
+
+3. Fetch remote updates without touching your working tree:
+> git fetch origin <branch_name>
+
+4. Inspect the divergence:
+# See what they added that you don't have:
+> git log --oneline HEAD..origin/<branch_name>
+
+# See what you added that they don't have:
+> git log --oneline origin/<branch_name>..HEAD
+
+# Check which files both sides touched (potential conflict zones):
+> git diff --stat HEAD...origin/<branch_name>
+
+5. Combine the changes:
+
+Option A: Standard Merge (Recommended when you have multiple local commits)
+Resolves all conflicts in ONE single pass rather than repeating for each commit:
+> git merge origin/<branch_name>
+
+If conflicts occur:
+- Run "git status" to see conflicted files ("both modified").
+- Open files, search for "<<<<<<<", resolve the logic.
+- If it's a huge mess and you want to bail out cleanly:
+  > git merge --abort
+  (Instantly resets your branch to before the merge started).
+
+Option B: Rebase (Cleaner history, best for 1-2 small local commits)
+> git rebase origin/<branch_name>
+
+If conflicts occur during rebase:
+- Fix conflict in the file.
+- git add <file>
+- git rebase --continue
+- To bail out completely:
+  > git rebase --abort
+
+6. Verify tests and build before pushing:
+> pytest
+> git status
+
+7. Push to remote:
+> git push origin <branch_name>
+
+8. Clean up:
+> git stash pop             # restore uncommitted edits if stashed in step 1
+> git branch -D backup-wip   # delete temporary safety branch once verified
 
 
 <hr>
