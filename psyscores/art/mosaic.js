@@ -241,8 +241,16 @@ async function initApp() {
     // 2. Wait for atlas sprite sheet
     await atlasPromise;
 
-    // 3. Load initial sample image (Buzzmonx - Toms'n Jerry)
-    loadSampleImage('samples/cover_buzzmonx.jpg', "Buzzmonx - Toms'n Jerry", 'buzzmonx');
+    // 3. Render dynamic featured collection albums
+    renderFeaturedAlbums();
+
+    // 4. Load initial sample image from featured set
+    const initial = (window.FEATURED_ALBUMS && window.FEATURED_ALBUMS[0]) || {
+        src: 'samples/cover_buzzmonx.jpg',
+        title: "Buzzmonx - Toms'n Jerry",
+        key: 'buzzmonx'
+    };
+    loadSampleImage(initial.src, initial.title || `${initial.artist} - ${initial.album}`, initial.key);
 }
 
 function updateCollectionCountUI(count) {
@@ -260,6 +268,86 @@ function updateCollectionCountUI(count) {
         const opt5 = document.getElementById('opt-rating-5');
         if (opt5) opt5.textContent = `★ 5 Certified Bangers Only (${count5} covers)`;
     }
+}
+
+// ==========================================================================
+// Dynamic Featured Albums & Discovery
+// ==========================================================================
+function renderFeaturedAlbums() {
+    const container = document.getElementById('samples-container');
+    if (!container) return;
+
+    let albums = window.FEATURED_ALBUMS;
+    if (!albums || albums.length === 0) {
+        if (state.covers && state.covers.length > 0) {
+            albums = state.covers.filter(c => c.rating >= 5).slice(0, 5).map(c => ({
+                id: c.id,
+                key: String(c.id),
+                artist: c.artist,
+                album: c.album,
+                year: c.year,
+                rating: c.rating,
+                src: `samples/${c.filename || `cover_${c.id}.jpg`}`,
+                title: `${c.artist} - ${c.album}${c.year ? ` (${c.year})` : ''}`
+            }));
+        }
+    }
+
+    if (albums && albums.length > 0) {
+        container.innerHTML = '';
+        albums.forEach(a => {
+            const img = document.createElement('img');
+            img.className = 'sample-thumb';
+            img.src = a.src || `samples/${a.filename}`;
+            img.alt = a.artist || 'Featured Album';
+            img.title = a.title || `${a.artist} - ${a.album}${a.year ? ` (${a.year})` : ''}`;
+            img.setAttribute('data-src', a.src || `samples/${a.filename}`);
+            img.setAttribute('data-key', a.key || String(a.id));
+            img.setAttribute('data-name', a.title || `${a.artist} - ${a.album}`);
+
+            img.addEventListener('click', () => {
+                loadSampleImage(
+                    a.src || `samples/${a.filename}`,
+                    a.title || `${a.artist} - ${a.album}`,
+                    a.key || String(a.id)
+                );
+            });
+
+            container.appendChild(img);
+        });
+    }
+
+    // Setup Random 5-star album discovery button
+    const btnRandom = document.getElementById('btn-random-sample');
+    if (btnRandom && !btnRandom.dataset.bound) {
+        btnRandom.dataset.bound = 'true';
+        btnRandom.addEventListener('click', () => {
+            pickRandomFiveStarAlbum();
+        });
+    }
+}
+
+function pickRandomFiveStarAlbum() {
+    if (!state.covers || state.covers.length === 0) {
+        showToast('Album metadata is still loading...');
+        return;
+    }
+
+    const fiveStars = state.covers.filter(c => c.rating >= 5);
+    const pool = fiveStars.length > 0 ? fiveStars : state.covers;
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+
+    const title = `${picked.artist} - ${picked.album}${picked.year ? ` (${picked.year})` : ''}`;
+    const sampleKey = String(picked.id);
+
+    // If pre-bundled data URI exists in SAMPLES_DATA, use it; otherwise load from cover_art path
+    let sampleSrc = `../cover_art/${picked.id}.jpg`;
+    if (window.SAMPLES_DATA && window.SAMPLES_DATA[sampleKey]) {
+        sampleSrc = window.SAMPLES_DATA[sampleKey];
+    }
+
+    showToast(`Loaded Random 5★: ${title}`);
+    loadSampleImage(sampleSrc, title, sampleKey);
 }
 
 // ==========================================================================
@@ -312,9 +400,10 @@ function setSourceImage(img, name) {
     DOM.sourceMetaText.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
 
     // Highlight sample thumb if applicable
-    DOM.sampleThumbs.forEach(st => {
+    document.querySelectorAll('.sample-thumb').forEach(st => {
         const src = st.getAttribute('data-src');
-        if (img.src.includes(src)) {
+        const key = st.getAttribute('data-key');
+        if ((src && img.src.includes(src)) || (key && img.src.includes(key))) {
             st.classList.add('active');
         } else {
             st.classList.remove('active');
@@ -1038,7 +1127,7 @@ function setupEventListeners() {
     });
 
     // Sample Image buttons
-    DOM.sampleThumbs.forEach(st => {
+    document.querySelectorAll('.sample-thumb').forEach(st => {
         st.addEventListener('click', () => {
             const src = st.getAttribute('data-src');
             const name = st.getAttribute('data-name');

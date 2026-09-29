@@ -229,12 +229,36 @@ a:hover {
 .samples-label {
     font-size: 11px;
     color: var(--text-muted);
+}
+
+.samples-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin: 10px 0 6px 0;
+}
+
+.btn-random-sample {
+    background: rgba(0, 229, 255, 0.08);
+    border: 1px solid rgba(0, 229, 255, 0.4);
+    color: var(--accent-cyan);
+    font-family: inherit;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-random-sample:hover {
+    background: var(--accent-cyan);
+    color: #0b0c10;
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
 }
 
 .samples-row {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
     gap: 6px;
 }
 

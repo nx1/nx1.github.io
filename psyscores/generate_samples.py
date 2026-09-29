@@ -116,6 +116,7 @@ def main():
             print(f"Warning: Could not load {SONGS_JSON}: {e}")
 
     samples_b64 = {}
+    featured_albums = []
 
     for item in CURATED_ALBUMS:
         img_id = resolve_album_id(item, covers_list, tracks_list)
@@ -149,16 +150,34 @@ def main():
             samples_b64[item['filename']] = data_uri
             samples_b64[item['stable_filename']] = data_uri
 
-        print(f"Exported #{img_id}: {item['artist']} - {item['album']} -> {dst_path.name}, {stable_dst_path.name}")
+        # Collect metadata for client-side dynamic rendering
+        meta = next((c for c in covers_list if c['id'] == img_id), {})
+        artist = meta.get('artist') or item['artist']
+        album = meta.get('album') or item['album']
+        year = meta.get('year')
+        featured_albums.append({
+            'id': img_id,
+            'key': item['key'],
+            'artist': artist,
+            'album': album,
+            'year': year,
+            'rating': meta.get('rating', 5),
+            'filename': item['stable_filename'],
+            'src': f"samples/{item['stable_filename']}",
+            'title': f"{artist} - {album}{f' ({year})' if year else ''}"
+        })
 
-    # Write samples_data.js
+        print(f"Exported #{img_id}: {artist} - {album} -> {dst_path.name}, {stable_dst_path.name}")
+
+    # Write samples_data.js with both structured metadata and base64 URI dictionary
     samples_js_path = SAMPLES_DIR.parent / 'samples_data.js'
     print(f"Writing {samples_js_path}...")
     with open(samples_js_path, 'w', encoding='utf-8') as f:
+        f.write(f"window.FEATURED_ALBUMS = {json.dumps(featured_albums, indent=2)};\n")
         f.write(f"window.SAMPLES_DATA = {json.dumps(samples_b64)};\n")
 
     print(f"samples_data.js size: {samples_js_path.stat().st_size / 1024:.1f} KB")
-    print("All curated sample albums ready!")
+    print(f"All {len(featured_albums)} curated sample albums ready!")
 
 
 if __name__ == '__main__':
