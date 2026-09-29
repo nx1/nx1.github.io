@@ -71,6 +71,11 @@ class TestMosaicAssets(unittest.TestCase):
     def test_sample_images(self):
         """Verify all curated sample images exist and have non-zero dimensions."""
         expected_samples = [
+            'cover_buzzmonx.jpg',
+            'cover_dimo.jpg',
+            'cover_magnetrixx.jpg',
+            'cover_ololiuqui.jpg',
+            'cover_sun_project.jpg',
             'cover_32_buzzmonx.jpg',
             'cover_44_dimo.jpg',
             'cover_124_magnetrixx.jpg',

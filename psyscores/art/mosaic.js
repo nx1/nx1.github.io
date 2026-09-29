@@ -241,8 +241,8 @@ async function initApp() {
     // 2. Wait for atlas sprite sheet
     await atlasPromise;
 
-    // 3. Load initial sample image (Album #32: Buzzmonx - Toms'n Jerry)
-    loadSampleImage('samples/cover_32_buzzmonx.jpg', "Buzzmonx - Toms'n Jerry", '32');
+    // 3. Load initial sample image (Buzzmonx - Toms'n Jerry)
+    loadSampleImage('samples/cover_buzzmonx.jpg', "Buzzmonx - Toms'n Jerry", 'buzzmonx');
 }
 
 function updateCollectionCountUI(count) {
