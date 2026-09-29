@@ -45,6 +45,8 @@ class AudioFile:
             date    = int(tags.get('date')[0])
             title   = str(tags.get('title')[0])
             rating  = int(tags.get('rating')[0])
+            key     = str(tags.get('initialkey')[0])
+            bpm     = int(tags.get('bpm')[0])
             bitrate = int(tags.info.bitrate/1000)
             length  = int(tags.info.length)
             try:
@@ -65,6 +67,8 @@ class AudioFile:
             rating  = ratings[int(rating)]
             bitrate = int(mp3.info.bitrate/1000)
             length  = int(mp3.info.length)
+            key     = str(tags.getall('TKEY')[0].text[0])
+            bpm     = int(tags.getall('TBPM')[0].text[0])
             try:
                 album_artist = str(tags.getall('TPE2')[0].text[0])
             except:
@@ -79,7 +83,9 @@ class AudioFile:
              'label'        : label,
              'catalog'      : catalog,
              'bitrate'      : bitrate, 
-             'length'       : length}
+             'length'       : length,
+             'key'          : key,
+             'bpm'          : bpm}
         return d
 
     def get_album_art(self):
