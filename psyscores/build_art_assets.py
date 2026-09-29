@@ -11,14 +11,15 @@ from pathlib import Path
 from PIL import Image
 import numpy as np
 
-BASE_DIR = Path('/home/x1/nx1.github.io/psyscores')
+import math
+
+BASE_DIR = Path(__file__).resolve().parent
 ART_DIR = BASE_DIR / 'art'
 COVER_ART_DIR = BASE_DIR / 'cover_art'
 SONGS_JSON = BASE_DIR / 'ss_songs.json'
 
-GRID_DIM = 29  # 29 x 29 = 841 tiles
 TILE_SIZE = 60  # 60x60 px per thumbnail in atlas
-ATLAS_SIZE = GRID_DIM * TILE_SIZE  # 1740 x 1740 px
+
 
 
 def srgb_to_linear(c):
@@ -88,18 +89,31 @@ def main():
             if t.get('rating', 0) > album_metadata[img_id]['rating']:
                 album_metadata[img_id]['rating'] = t.get('rating', 0)
 
+    # Discover all available cover images
+    cover_files = sorted([int(f.stem) for f in COVER_ART_DIR.glob('*.jpg') if f.stem.isdigit()])
+    if not cover_files:
+        print(f"No cover art found in {COVER_ART_DIR}")
+        return
+
+    max_id = max(cover_files)
+    total_covers = max(len(cover_files), max_id + 1)
+    grid_dim = math.ceil(math.sqrt(total_covers))
+    atlas_size = grid_dim * TILE_SIZE
+
     print(f"Total unique albums indexed: {len(album_metadata)}")
+    print(f"Total cover images found: {len(cover_files)} (max ID: {max_id})")
+    print(f"Atlas grid dimension: {grid_dim}x{grid_dim} tiles ({atlas_size}x{atlas_size} px)")
 
     # Prepare atlas image
-    atlas = Image.new('RGB', (ATLAS_SIZE, ATLAS_SIZE))
+    atlas = Image.new('RGB', (atlas_size, atlas_size))
 
     covers_data = []
 
-    print("Processing 841 cover art images and building sprite atlas...")
-    for img_id in range(GRID_DIM * GRID_DIM):
+    print(f"Processing {total_covers} cover art images and building sprite atlas...")
+    for img_id in range(total_covers):
         im_path = COVER_ART_DIR / f"{img_id}.jpg"
         if not im_path.exists():
-            raise FileNotFoundError(f"Missing image {im_path}")
+            continue
 
         meta = album_metadata.get(img_id, {
             'id': img_id,
@@ -143,8 +157,8 @@ def main():
 
             # Paste into atlas
             thumb = im_rgb.resize((TILE_SIZE, TILE_SIZE), Image.Resampling.LANCZOS)
-            row = img_id // GRID_DIM
-            col = img_id % GRID_DIM
+            row = img_id // grid_dim
+            col = img_id % grid_dim
             atlas.paste(thumb, (col * TILE_SIZE, row * TILE_SIZE))
 
             covers_data.append({
@@ -170,6 +184,8 @@ def main():
     with open(output_json, 'w', encoding='utf-8') as f:
         f.write(json_str)
     with open(output_js, 'w', encoding='utf-8') as f:
+        f.write(f"window.ATLAS_GRID_DIM = {grid_dim};\n")
+        f.write(f"window.COVERS_COUNT = {len(covers_data)};\n")
         f.write(f"window.COVERS_DATA = {json_str};\n")
 
     print(f"covers_data.json size: {output_json.stat().st_size / 1024:.1f} KB")
@@ -188,6 +204,7 @@ def main():
         atlas_b64 = base64.b64encode(f.read()).decode('ascii')
     atlas_js_path = ART_DIR / 'atlas_data.js'
     with open(atlas_js_path, 'w', encoding='utf-8') as f:
+        f.write(f'window.ATLAS_GRID_DIM = {grid_dim};\n')
         f.write(f'window.ATLAS_DATA_URI = "data:image/webp;base64,{atlas_b64}";\n')
     print(f"atlas_data.js size: {atlas_js_path.stat().st_size / 1024:.1f} KB")
 
@@ -195,7 +212,15 @@ def main():
     atlas.save(jpg_path, 'JPEG', quality=82, optimize=True)
     print(f"JPEG atlas size: {jpg_path.stat().st_size / 1024:.1f} KB")
 
-    print("Atlas and metadata generation complete!")
+    # Synchronize curated sample images if available
+    try:
+        import generate_samples
+        print("Synchronizing curated sample images...")
+        generate_samples.main()
+    except Exception as e:
+        print(f"Curated sample synchronization skipped: {e}")
+
+    print(f"Atlas and metadata generation complete ({len(covers_data)} covers, {grid_dim}x{grid_dim} grid)!")
 
 
 if __name__ == '__main__':

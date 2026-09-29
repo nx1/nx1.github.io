@@ -17,7 +17,7 @@
         <div class="terminal-title-group">
             <a href="../index.html" class="nav-back">← Psyscores Collection</a>
             <div class="terminal-title">nx1.info | PSYCHEDELIC MOSAIC LAB</div>
-            <span class="badge-tag">v1.0 • 841 Albums</span>
+            <span class="badge-tag" id="badge-albums-count">v1.0 • Psyscores Collection</span>
         </div>
         <div class="system-status">
             <span><span class="status-dot"></span>Client-Side GPU Canvas</span>
@@ -123,9 +123,9 @@
                         <span class="control-name">Collection Rating Filter:</span>
                     </div>
                     <select class="select-input" id="rating-select">
-                        <option value="1" selected>All Albums (841 covers)</option>
-                        <option value="4">★ 4 & 5 Stars Only (813 covers)</option>
-                        <option value="5">★ 5 Certified Bangers Only (533 covers)</option>
+                        <option value="1" id="opt-all-albums" selected>All Albums</option>
+                        <option value="4" id="opt-rating-4">★ 4 & 5 Stars Only</option>
+                        <option value="5" id="opt-rating-5">★ 5 Certified Bangers Only</option>
                     </select>
                 </div>
             </section>
@@ -221,7 +221,7 @@
                     <div class="empty-icon">🌀</div>
                     <div class="empty-title">Psychedelic Album Art Mosaic Generator</div>
                     <div class="empty-desc">
-                        Select a sample image from the left panel, upload a custom picture, or drag and drop any image to transform it into a tapestry of 841 psychedelic albums.
+                        Select a sample image from the left panel, upload a custom picture, or drag and drop any image to transform it into a tapestry of psychedelic albums.
                     </div>
                 </div>
 

@@ -9,7 +9,7 @@ const assert = require('assert');
 // 1. Check data loading
 const dataPath = path.join(__dirname, 'art', 'covers_data.json');
 const covers = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-assert.strictEqual(covers.length, 841, 'Must have 841 covers');
+assert(covers.length >= 800, `Must have album covers, found ${covers.length}`);
 
 // 2. Test Color Conversion
 function srgbToLinear(c) {
@@ -72,5 +72,5 @@ for (let i = 0; i < total; i++) {
     dummyGrid[i] = bestId;
 }
 
-assert(dummyGrid[0] >= 0 && dummyGrid[0] < 841, 'Matched ID within range');
+assert(dummyGrid[0] >= 0 && dummyGrid[0] < covers.length, 'Matched ID within range');
 console.log('JavaScript Engine Tests Passed Successfully!');

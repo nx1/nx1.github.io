@@ -272,3 +272,12 @@ with open('v1.html', 'w+') as f:
 </pre>
 </body>
 </html>""")
+
+# Automatically update mosaic maker assets in art/
+try:
+    import build_art_assets
+    print("\nUpdating mosaic maker assets in art/...")
+    build_art_assets.main()
+except Exception as e:
+    print(f"Warning: Failed to update mosaic maker assets: {e}")
+

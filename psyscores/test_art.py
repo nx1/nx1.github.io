@@ -18,12 +18,13 @@ class TestMosaicAssets(unittest.TestCase):
     """Test verification suite for mosaic metadata, atlases, and color conversions."""
 
     def test_covers_metadata_structure(self):
-        """Verify covers_data.json has 841 albums and all required schema fields."""
+        """Verify covers_data.json has valid structure, continuous IDs, and schema fields."""
         self.assertTrue(COVERS_JSON.exists(), f"Missing {COVERS_JSON}")
         with open(COVERS_JSON, 'r', encoding='utf-8') as f:
             covers = json.load(f)
 
-        self.assertEqual(len(covers), 841, "Must contain exactly 841 unique album covers")
+        total_covers = len(covers)
+        self.assertGreaterEqual(total_covers, 800, "Must contain album covers")
 
         ids_seen = set()
         for c in covers:
@@ -36,7 +37,7 @@ class TestMosaicAssets(unittest.TestCase):
 
             # Validate ID range
             cid = c['id']
-            self.assertTrue(0 <= cid < 841)
+            self.assertTrue(0 <= cid < total_covers)
             ids_seen.add(cid)
 
             # Validate LAB ranges
@@ -48,18 +49,24 @@ class TestMosaicAssets(unittest.TestCase):
             # Validate 4 quadrants
             self.assertEqual(len(c['quad_lab']), 4)
 
-        self.assertEqual(len(ids_seen), 841, "All 841 IDs must be unique and continuous")
+        self.assertEqual(len(ids_seen), total_covers, f"All {total_covers} IDs must be unique and continuous")
 
     def test_atlas_images(self):
-        """Verify sprite atlases exist, have valid dimensions (1740x1740), and are non-empty."""
+        """Verify sprite atlases exist, have valid grid dimensions, and are non-empty."""
         self.assertTrue(ATLAS_WEBP.exists())
         self.assertTrue(ATLAS_JPG.exists())
 
+        with open(COVERS_JSON, 'r', encoding='utf-8') as f:
+            total_covers = len(json.load(f))
+        import math
+        expected_grid_dim = math.ceil(math.sqrt(total_covers))
+        expected_size = (expected_grid_dim * 60, expected_grid_dim * 60)
+
         with Image.open(ATLAS_WEBP) as im:
-            self.assertEqual(im.size, (1740, 1740))
+            self.assertEqual(im.size, expected_size)
 
         with Image.open(ATLAS_JPG) as im:
-            self.assertEqual(im.size, (1740, 1740))
+            self.assertEqual(im.size, expected_size)
 
     def test_sample_images(self):
         """Verify all curated sample images exist and have non-zero dimensions."""

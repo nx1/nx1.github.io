@@ -6,9 +6,16 @@
 // ==========================================================================
 // Constants & Configuration
 // ==========================================================================
-const ATLAS_GRID_DIM = 29;     // 29 x 29 = 841 tiles in atlas
 const ATLAS_TILE_SIZE = 60;    // 60x60 px per thumbnail in atlas
 const DEFAULT_GRID_WIDTH = 50; // default 50 tiles horizontally
+
+function getAtlasGridDim() {
+    if (window.ATLAS_GRID_DIM) return window.ATLAS_GRID_DIM;
+    if (state.atlasImg && state.atlasImg.width > 0) {
+        return Math.round(state.atlasImg.width / ATLAS_TILE_SIZE);
+    }
+    return Math.ceil(Math.sqrt(state.covers.length || 841));
+}
 
 // Promises for asset loading synchronization
 let coversResolve, atlasResolve;
@@ -229,11 +236,30 @@ async function initApp() {
         coversResolve(state.covers);
     }
 
+    updateCollectionCountUI(state.covers.length);
+
     // 2. Wait for atlas sprite sheet
     await atlasPromise;
 
     // 3. Load initial sample image (Album #32: Buzzmonx - Toms'n Jerry)
     loadSampleImage('samples/cover_32_buzzmonx.jpg', "Buzzmonx - Toms'n Jerry", '32');
+}
+
+function updateCollectionCountUI(count) {
+    if (!count) return;
+    const badge = document.getElementById('badge-albums-count');
+    if (badge) badge.textContent = `v1.0 • ${count} Albums`;
+    const opt = document.getElementById('opt-all-albums');
+    if (opt) opt.textContent = `All Albums (${count} covers)`;
+
+    if (Array.isArray(state.covers)) {
+        const count4 = state.covers.filter(c => c.rating >= 4).length;
+        const count5 = state.covers.filter(c => c.rating >= 5).length;
+        const opt4 = document.getElementById('opt-rating-4');
+        if (opt4) opt4.textContent = `★ 4 & 5 Stars Only (${count4} covers)`;
+        const opt5 = document.getElementById('opt-rating-5');
+        if (opt5) opt5.textContent = `★ 5 Certified Bangers Only (${count5} covers)`;
+    }
 }
 
 // ==========================================================================
@@ -333,7 +359,7 @@ async function generateMosaic() {
 
     // Wait for covers if not ready
     if (!state.covers || state.covers.length === 0) {
-        showToast('Loading 841 album covers data...');
+        showToast('Loading album covers data...');
         await coversPromise;
         if (!state.covers || state.covers.length === 0) {
             showToast('Could not load album metadata. Please reload the page.');
@@ -432,7 +458,7 @@ async function generateMosaic() {
         // Diversity penalty parameters
         const useDiversity = state.diversityMode !== 'none';
         const penaltyWeight = state.diversityMode === 'high' ? 1.5 : 0.6;
-        const recentUsage = new Int16Array(841);
+        const recentUsage = new Int16Array(state.covers.length || 1000);
 
         // 5. Chunked processing by rows for non-blocking UI
         const rowsPerChunk = Math.max(1, Math.floor(gh / 20));
@@ -595,11 +621,12 @@ function finishGeneration() {
     const ts = state.tilePixelSize;
 
     // Draw all tiles from atlas onto cached offscreen canvas
+    const atlasDim = getAtlasGridDim();
     for (let y = 0; y < gh; y++) {
         for (let x = 0; x < gw; x++) {
             const albumId = state.mosaicGrid[y * gw + x];
-            const col = albumId % ATLAS_GRID_DIM;
-            const row = Math.floor(albumId / ATLAS_GRID_DIM);
+            const col = albumId % atlasDim;
+            const row = Math.floor(albumId / atlasDim);
             const sx = col * ATLAS_TILE_SIZE;
             const sy = row * ATLAS_TILE_SIZE;
             const dx = x * ts;
@@ -687,8 +714,9 @@ function updateStatistics() {
     }
 
     const uniqueCount = Object.keys(freq).length;
-    const uniquePct = ((uniqueCount / 841) * 100).toFixed(1);
-    DOM.statUniqueCount.textContent = `${uniqueCount} / 841 (${uniquePct}%)`;
+    const totalCovers = state.covers.length || 1;
+    const uniquePct = ((uniqueCount / totalCovers) * 100).toFixed(1);
+    DOM.statUniqueCount.textContent = `${uniqueCount} / ${totalCovers} (${uniquePct}%)`;
 
     const topCover = state.covers[topId];
     if (topCover) {
@@ -913,8 +941,9 @@ async function exportUltraHd() {
                 hdCtx.drawImage(srcImg, dx, dy, hdTileSize, hdTileSize);
             } else {
                 // Fallback to atlas
-                const col = albumId % ATLAS_GRID_DIM;
-                const row = Math.floor(albumId / ATLAS_GRID_DIM);
+                const atlasDim = getAtlasGridDim();
+                const col = albumId % atlasDim;
+                const row = Math.floor(albumId / atlasDim);
                 hdCtx.drawImage(
                     state.atlasImg,
                     col * ATLAS_TILE_SIZE, row * ATLAS_TILE_SIZE, ATLAS_TILE_SIZE, ATLAS_TILE_SIZE,
