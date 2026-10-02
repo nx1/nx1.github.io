@@ -1,0 +1,161 @@
+Fixes to try first:
+
+
+Virtual Terminal
+----------------
+On the blank boot screen try and press:
+Ctrl  +  Alt  +  F3
+
+or try F2 F4 & F5
+
+This is a shortcut to access the linux terminal that doesn't require a gui
+running or screen, it might work.
+
+
+
+USB-Cable Debugging
+-------------------
+See https://wiki.seeedstudio.com/jetson_debug_guide/ for more information
+
+It is possible to plug in a USB cable to the jetson and turn-on the debug switch
+and access the terminal bypassing the operating system completely.
+
+
+1. Connect the host computer to the jetson via the Debug USB-C Port.
+
+2. On the host computer run:
+	ls /dev/ttyACM* /dev/ttyUSB*
+
+	The Jetson is usually displayed as /dev/ttyACM0 or /dev/ttyUSB0. 
+
+3. Connect to the jetson using:
+	sudo screen /dev/ttyACM0 115200
+
+This should drop you into the linux command line
+
+
+
+
+
+Re-Flashing
+-----------
+
+
+FLASHING USING CLI 
+
+    Hardware Requirements: 
+
+        Jetson PC (Orin NX) unit that needs to be set up 
+
+        Jetson PC power supply 
+
+        A USB type-A to USB-C cable (for Jeston PC to host) 
+
+        Display with HDMI cable (for Jetson PC) 
+
+        USB dongle and mouse and keyboard (for Jetson PC) 
+
+        Wifi Adaptor (there is no wifi adaptor present in nx module) -> make sure its intel wifi chip only. 
+
+        Extendable antennas connectivity for wifi adaptor 
+
+ 
+
+Use host computer to flash Jetson Linux Image (Firmware update, Ubuntu 22.04, Jetpack 6.0) 
+
+    Connections to be made 
+
+        Connect Display  ->>>> port 6 to Monitor 
+
+        Connect  USB dongle ->>>>> port 7 for keyboard and mouse 
+
+        Power supply cable ->>>>> port 5  to power adaptor 
+
+        USB-C >>>>>> port 9 to host computer type A 
+
+ 
+
+    Start up the host Ubuntu PC. Make sure its Ubuntu 22.04. 
+
+    Then you need to go on this link and it will download the image for you. Mind its 16 GB image so it will take time. 
+
+    For simplification please open this documentation on Ubuntu Host PC and then click on this link. 
+
+    download flashing image 
+
+    Now, switch the switch to the RESET mode. 
+        Switch to the RESET mode reComputer Super ACT SIM O PWR USB 3.2 USB 3.2 USB 3.2 Power In Display USB 3.2 ETH 1 ETH O DC 12 - 19V OFF ON REC Debug/ Device Connect USB Type-C for Flash 
+
+ 
+
+    Turn on the power of recomputer Super by connecting the power cable. 
+
+    Connect the Jetson to Host Computer using typeA cable to ubuntu side and type C cable on jetson as shown in above figure. 
+
+    On the Linux Host PC, open a Terminal window and type in following command 
+
+    Lsusb 
+
+     
+
+( base ) seeed@seeed-MS-7C94 : ~ $ lsusb Bus 006 Device 001: ID 1d6b: 0003 Linux Foundation 3.0 root hub Bus 005 Device 001: ID 1d6b: 0002 Linux Foundation 2.0 root hub Bus 004 Device 001: ID 1d6b: 0003 Linux Foundation 3.0 root hub Bus 003 Device 001: ID 1d6b: 0002 Linux Foundation 2.0 root hub Bus 002 Device 001: ID 1d6b: 0003 Linux Foundation 3.0 root hub Bus 001 Device 003: ID 1462:7c94 Micro Star International MYSTIC LIGHT Bus 001 Device 002: ID 05e3:0608 Genesys Logic. Inc. Hub Bus 001 Device 018: ID 0955:7523 NVIDIA Corp. APX Bus 001 Device 001: ID 1d6b: 0002 Linux Foundation 2.0 root hub
+
+ 
+
+If you see output like this then your jetson is in force recovery mode. 
+
+ 
+
+    The 16GB image must have been downloaded by now. 
+
+    On the terminal. You need to go to the folder where that image is. Mostly it will be in Downloads folder. 
+
+    cd  Downloads/ 
+
+    sudo  tar xpf <image_name> 
+
+    For example: sudo tar xpf mfi_recomputer-super-orin-nx-16g-j401-6.2-36.4.3-2025-05-22.tar.gz 
+
+    cd <image_name> 
+
+    Once you are inside the image folder. You need to run the following command and it will flash the whole jetson. 
+
+sudo ./tools/kernel_flash/l4t_initrd_flash.sh --flash-only --massflash 1 --network usb0 --showlogs 
+
+ 
+
+ 
+
+This whole thing will take upto 10 mins. If you see output like this then its done mostly. 
+[ 307]: 14t_flash_from kernel: Successfully flash the qspi
+[ 307]: 14t_flash_from_kernel: Flashing success
+[ 307]: 14t_flash_from_kernel: The device size indicated in the partition layout xml is smaller than the actual size. This utility will try to fix the GPT.
+Flash is successful 
+Reboot device 
+Cleaning up .. .
+
+ 
+
+    Now you can connect the monitor using an HDMI cable and then complete the initialization configuration of Jetson. 
+
+    And turn the toggle off which you switched on in step 6. 
+
+    Disconnect the power plug of jetson and connect it again. 
+
+    Please follow the "Jetson screen" section please and then you will be able to complete it. 
+
+    Now on the jetson Ope a terminal. Type in the following command to check whether  jetpack is installed or not correctly. 
+
+    apt show nvidia-jetpack 
+    itt with/ avg/ Max/ mdev = 0. 293/0. 311/0 . 338/0. 010 MS matoha@orin-nx-1 :~ $ ping -c 4 8.8.8.8 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data. 64 bytes from 8.8.8.8: icmp_seq=1 ttl=117 time=5.38 ms 64 bytes from 8.8.8.8: icmp_seq=2 ttl=117 time=5.47 ms AC --- 8.8.8.8 ping statistics --- 2 packets transmitted, 2 received, 0% packet loss, time 1001ms rtt min/avg/max/mdev = 5.381/5.427/5.474/0.046 ms matoha@orin-nx-1 :~ $ hostname -I 192.168.1.100 172.17.0.1 matoha@orin-nx-1 :~ $ nvcc -- version bash: nvcc: command not found matoha@orin-nx-1 :~ $ apt show nvidia-jetpack Package: nvidia-jetpack Version: 6.2.1+b38 Priority: standard Section: metapackages Source: nvidia-jetpack (6.2.1) Maintainer: NVIDIA Corporation Installed-Size: 199 KB Depends: nvidia-jetpack-runtime (= 6.2.1+b38), nvidia-jetpack-dev (= 6.2.1+b38) Homepage: http://developer.nvidia.com/jetson Download-Size: 29.3 KB APT-Sources: https://repo.download.nvidia.com/jetson/common r36.4/main arm64 Packages Description: NVIDIA Jetpack Meta Package N: There are 2 additional records. Please use the '-a' switch to see them. matoha@orin-nx-1 :~ $ matoha@orin-nx-1 :~ $ matohadorin-nx-1 :- $ history Bend
+
+     
+
+     
+
+    If you get output like this. Congratulations you are successful in flashing the entire Jetson with New Jetpack. 
+
+ 
+
+
+
