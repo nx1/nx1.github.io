@@ -1,10 +1,67 @@
 <html>
 <head>
-    <title>nx1.info</title>
+    <title>nx1.info | Git</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png">
-	<link rel="stylesheet" type="text/css" href="../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        pre.term {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-left: 3px solid #58a6ff;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: inherit;
+        }
+        pre.term code {
+            font-family: inherit;
+            color: #c9d1d9;
+        }
+        .prompt { color: #58a6ff; }
+        .cmd { color: #79c0ff; font-weight: bold; }
+        .sub { color: #ffa657; }
+        .flag { color: #d2a8ff; }
+        .arg { color: #e6edf3; }
+        .str { color: #a5d6ff; }
+        .comment { color: #8b949e; }
+        .hash { color: #f2cc60; font-weight: bold; }
+        .branch { color: #7ee787; font-weight: bold; }
+        .remote { color: #ff7b72; }
+        .head { color: #79c0ff; }
+        .add { color: #7ee787; }
+        .del { color: #ff7b72; }
+        .path { color: #a5d6ff; text-decoration: underline; }
+        .toc-box {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin: 14px 0 20px 0;
+            display: inline-block;
+        }
+        .toc-header {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        .toc-cat {
+            color: #7ee787;
+            font-weight: bold;
+        }
+        .top-link {
+            font-size: 0.75em;
+            color: #8b949e;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .top-link:hover {
+            color: #58a6ff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
@@ -13,84 +70,118 @@
 
 useful tips & Guides
 https://longair.net/blog/2009/04/16/git-fetch-and-merge/
-<h2>List branches:</h2>
-git branch --list        <--local only
-git branch --list -all   <--remotes too
 
-<h2>Create and switch to new local branch</h2>
-> git checkout -b newbranch
+<div id="toc" class="toc-box">
+<span class="toc-header">Table of Contents:</span>
+------------------
+<span class="toc-cat">Branches:</span>
+    <a href="#list-branches">list branches</a>
+    <a href="#create-branch">create branch</a>
+    <a href="#switch-branch">switch to branch</a>
+    <a href="#push-branch">push new branch to remote</a>
+    <a href="#remove-branches">remove old unused branches</a>
+    <a href="#rename-branches">rename old unused branches</a>
+    <a href="#temp-sync">temporarily sync branch</a>
 
-<h2>Push new branch to remote</h2>
-> git push -u origin newbranch
+<span class="toc-cat">Account / Credentials:</span>
+    <a href="#git-credentials">change git credentials</a>
+    <a href="#ssh-keychain">make mac remember ssh passphrase</a>
 
-<h2>How to change git credentials:</h2>
+<span class="toc-cat">Merging & Remote Syncing:</span>
+    <a href="#incorporate-changes">incorporate changes from master</a>
+    <a href="#combine-local-remote">combine local & remote branch</a>
+    <a href="#selective-merging">selective merging</a>
+    <a href="#cherry-pick">cherry pick merge request</a>
+    <a href="#conflict-safe-sync">sync local commits when remote moved ahead (conflict-safe)</a>
+
+<span class="toc-cat">Repository Setup:</span>
+    <a href="#init-repo">make existing folder into git repo & add remote</a>
+</div>
+
+<h2 id="list-branches">List branches: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">--list</span>        <span class="comment"># local only</span>
+<span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">--list</span> <span class="flag">-all</span>   <span class="comment"># remotes too</span></code></pre>
+
+<h2 id="create-branch">Create new local branch <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="flag">-b</span> <span class="arg">newbranch</span>
+<span class="comment"># or with git switch:</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">switch</span> <span class="flag">-c</span> <span class="arg">newbranch</span></code></pre>
+
+<h2 id="switch-branch">Switch to existing branch <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">branch_name</span>
+<span class="comment"># or with git switch:</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">switch</span> <span class="arg">branch_name</span></code></pre>
+
+<h2 id="push-branch">Push new branch to remote <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">push</span> <span class="flag">-u</span> <span class="arg">origin</span> <span class="arg">newbranch</span></code></pre>
+
+<h2 id="git-credentials">How to change git credentials: <a href="#toc" class="top-link">[^]</a></h2>
 To check git credentials (in repo)
- > git config user.name
- > git config user.email
- > git config --list
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">config</span> <span class="arg">user.name</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">config</span> <span class="arg">user.email</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">config</span> <span class="flag">--list</span></code></pre>
 
 option 1:
-    export GIT_AUTHOR_NAME="nk"
-    export GIT_AUTHOR_EMAIL="n@k.com"
-    export GIT_COMMITTER_NAME="nk"
-    export GIT_COMMITTER_EMAIL="n@k.com"
+<pre class="term"><code><span class="sub">export</span> <span class="arg">GIT_AUTHOR_NAME</span>=<span class="str">"nk"</span>
+<span class="sub">export</span> <span class="arg">GIT_AUTHOR_EMAIL</span>=<span class="str">"n@k.com"</span>
+<span class="sub">export</span> <span class="arg">GIT_COMMITTER_NAME</span>=<span class="str">"nk"</span>
+<span class="sub">export</span> <span class="arg">GIT_COMMITTER_EMAIL</span>=<span class="str">"n@k.com"</span></code></pre>
 
 Option 2:
     to update (global):
-      git config --global user.name "nk"
-      git config --global user.email "n@k.com" 
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">config</span> <span class="flag">--global</span> <span class="arg">user.name</span> <span class="str">"nk"</span>
+<span class="cmd">git</span> <span class="sub">config</span> <span class="flag">--global</span> <span class="arg">user.email</span> <span class="str">"n@k.com"</span></code></pre>
     local:
-      git config user.name "nk"
-      git config user.email = "n@k.com"
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">config</span> <span class="arg">user.name</span> <span class="str">"nk"</span>
+<span class="cmd">git</span> <span class="sub">config</span> <span class="arg">user.email</span> <span class="str">"n@k.com"</span></code></pre>
 
-<h2>How to incorperate changes from master branch into current branch</h2>
+<h2 id="incorporate-changes">How to incorporate changes from master branch into current branch <a href="#toc" class="top-link">[^]</a></h2>
 Option 1:
-> git checkout mybranch
-> git merge master_branch
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">mybranch</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">merge</span> <span class="arg">master_branch</span></code></pre>
 
 Option 2: 
-> git checkout mybranch
-> git rebase master_branch
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">mybranch</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">rebase</span> <span class="arg">master_branch</span></code></pre>
 
+Option 3:
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">mybranch</span>
+<span class="cmd">git</span> <span class="sub">stash</span> <span class="sub">push</span> <span class="flag">-m</span> <span class="str">'wip tree branch before pulling'</span>
+<span class="cmd">git</span> <span class="sub">pull</span> <span class="flag">--rebase</span> <span class="arg">origin</span> <span class="arg">master_branch</span>
+<span class="comment"># fix any merge conflicts</span>
+<span class="cmd">git</span> <span class="sub">stash</span> <span class="sub">pop</span></code></pre>
 
->option 3:
-git checkout mybranch
-git stash push -m 'wip tree branch before pulling'
-git pull --rebase origin master_branch
-# fix any merge conflicts
-git stash pop
-
-<h2>How to combine changes on a local branch with a remote branch and push them</h2>
+<h2 id="combine-local-remote">How to combine changes on a local branch with a remote branch and push them <a href="#toc" class="top-link">[^]</a></h2>
 Assuming you already have commited the changes locally.
 
 stash uncommited changes.
-> git stash
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">stash</span></code></pre>
 
 fetch and merge changes from remote branch 
-> git fetch origin staging
-> git merge origin/staging
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">fetch</span> <span class="arg">origin</span> <span class="arg">staging</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">merge</span> <span class="arg">origin/staging</span></code></pre>
 
 push to local branch as specified remote branch.
-> git push origin sb_tree:staging
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="arg">sb_tree:staging</span></code></pre>
 
 unpop changes if needed:
-> git stash pop
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">stash</span> <span class="sub">pop</span></code></pre>
 
-<h2>How to make mac remember ssh passphrase.</h2>
-> ssh-add --apple-use-keychain ~/.ssh/id_rsa
+<h2 id="ssh-keychain">How to make mac remember ssh passphrase. <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">ssh-add</span> <span class="flag">--apple-use-keychain</span> <span class="arg">~/.ssh/id_rsa</span></code></pre>
 
-and in ~/.ssh/config add the following:
-Host *
-  AddKeysToAgent yes
-  UseKeychain yes
-  IdentityFile ~/.ssh/id_rsa
+and in <span class="path">~/.ssh/config</span> add the following:
+<pre class="term"><code><span class="sub">Host</span> *
+  <span class="flag">AddKeysToAgent</span> yes
+  <span class="flag">UseKeychain</span> yes
+  <span class="flag">IdentityFile</span> ~/.ssh/id_rsa</code></pre>
 
 rebash
 
 to view listed keys do:
-> ssh-add -l
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">ssh-add</span> <span class="flag">-l</span></code></pre>
 
-<h2>Selective merging.</h2>
+<h2 id="selective-merging">Selective merging. <a href="#toc" class="top-link">[^]</a></h2>
 What happened:
     new branch master was created from tree.
     too many changes were added to tree, master is still the same.
@@ -98,33 +189,33 @@ What happened:
     we want to selecively merge specific lines from the updated tree branch into master.
 
 1. update origin listing
-> git fetch
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">fetch</span></code></pre>
 
-> git status:
-On branch tree
-Your branch is behind 'origin/tree' by 6 commits, and can be fast-forwarded.
+<pre class="term"><code><span class="prompt">> git status:</span>
+On branch <span class="branch">tree</span>
+Your branch is behind '<span class="remote">origin/tree</span>' by 6 commits, and can be fast-forwarded.
   (use "git pull" to update your local branch)
 
 Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git restore <file>..." to discard changes in working directory)
-	modified:   smartbench/debug/send_messages.py
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git restore &lt;file&gt;..." to discard changes in working directory)
+	<span class="del">modified:   smartbench/debug/send_messages.py</span>
 
-no changes added to commit (use "git add" and/or "git commit -a")
+no changes added to commit (use "git add" and/or "git commit -a")</code></pre>
 
 
-1. Switch to the master branch 
-> git checkout master
+2. Switch to the master branch 
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">master</span></code></pre>
 
-x1@pc:~/projects/matoha-smartbench$ git log --oneline
-00fa98c (HEAD -> master, origin/master, tree) supress kafka messages to CRITIAL only
+<pre class="term"><code><span class="prompt">x1@pc:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">--oneline</span>
+<span class="hash">00fa98c</span> (<span class="head">HEAD -&gt; </span><span class="branch">master</span>, <span class="remote">origin/master</span>, <span class="branch">tree</span>) supress kafka messages to CRITIAL only</code></pre>
 
 We are in the right place on this branch but we want to selectively merge some changes from the new tree
 
 to see the which files are different between the master branch and the updated tree branch use:
-> git diff master origin/tree --name-only
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">diff</span> <span class="arg">master</span> <span class="arg">origin/tree</span> <span class="flag">--name-only</span></code></pre>
 
-x1@Normans-Mac-mini:~/projects/matoha-smartbench$ git diff master origin/tree --name-only
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">diff</span> <span class="arg">master</span> <span class="arg">origin/tree</span> <span class="flag">--name-only</span>
 .gitlab-ci.yml
 logger.py
 run_smartbench.sh
@@ -150,7 +241,7 @@ smartbench/matoha_kafka/matoha_kafka.py
 smartbench/metal_detection/metal_detection.py
 smartbench/metal_detection/run_metal_detection.py
 smartbench/rfid/rfid.py
-smartbench/weighing_scale/weighing_scale.py
+smartbench/weighing_scale/weighing_scale.py</code></pre>
 
 as you can see there are a crapton.
 
@@ -173,157 +264,228 @@ accept / reject the changes we want.
 
 
 check files using 
-> git diff 
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">diff</span></code></pre>
 
 git add files and commit.
 
 
-<h2>Making an existing folder into a git repo and adding a remote.</h2>
+<h2 id="init-repo">Making an existing folder into a git repo and adding a remote. <a href="#toc" class="top-link">[^]</a></h2>
 First create a repo on gitlab / github.
 
 locally:
-git init --initial-branch=main --object-format=sha1
-git remote add origin git@gitlab.com:NormanKhan/kafka_tests.git
-git add .
-git commit -m "Initial commit"
-git push --set-upstream origin main
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">init</span> <span class="flag">--initial-branch=main</span> <span class="flag">--object-format=sha1</span>
+<span class="cmd">git</span> <span class="sub">remote</span> <span class="sub">add</span> <span class="arg">origin</span> <span class="arg">git@gitlab.com:NormanKhan/kafka_tests.git</span>
+<span class="cmd">git</span> <span class="sub">add</span> .
+<span class="cmd">git</span> <span class="sub">commit</span> <span class="flag">-m</span> <span class="str">"Initial commit"</span>
+<span class="cmd">git</span> <span class="sub">push</span> <span class="flag">--set-upstream</span> <span class="arg">origin</span> <span class="arg">main</span></code></pre>
 
 
-<h2>Removing old unused Branches.</h2>
+<h2 id="remove-branches">Removing old unused Branches. <a href="#toc" class="top-link">[^]</a></h2>
 
 First check the branch you are going to delete for diffrences between it and the branch you want to keep (i.e. master)
 
-> git log master..origin/display_collection_name --oneline
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="arg">master..origin/display_collection_name</span> <span class="flag">--oneline</span></code></pre>
 
 If this line returns anything, it means that there are commits that exist on the old branch that do not exist on the
 master branch. (If you want to know the other way, just flip the order of the branches i.e.
 
-git log origin/display_collection_name..master --oneline   <-- This will return much much more haha.
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">log</span> <span class="arg">origin/display_collection_name..master</span> <span class="flag">--oneline</span>   <span class="comment"># This will return much much more haha.</span></code></pre>
 
 In this case it returned the following:
 
-3215915 (origin/display_collection_name) gui stuff
+<pre class="term"><code><span class="hash">3215915</span> (<span class="remote">origin/display_collection_name</span>) gui stuff</code></pre>
 
 To see what those changes were explicitly, one can do:
-git show 3215915
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">show</span> <span class="hash">3215915</span></code></pre>
 
 Once happy with the state of the code, the branch may be deleted using:
 
-# Delete a local branch
-git branch -d branch_name      # safe - refuses if unmerged
-git branch -D branch_name      # FORCE DELETE REGARDLESS!!!
+<pre class="term"><code><span class="comment"># Delete a local branch</span>
+<span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">-d</span> <span class="arg">branch_name</span>      <span class="comment"># safe - refuses if unmerged</span>
+<span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">-D</span> <span class="arg">branch_name</span>      <span class="comment"># FORCE DELETE REGARDLESS!!!</span>
 
-# Delete from remote (GitLab)
-git push origin --delete branch_name
+<span class="comment"># Delete from remote (GitLab)</span>
+<span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="flag">--delete</span> <span class="arg">branch_name</span></code></pre>
 
 
-<h3>Renaming old unused branches</h3>
+<h3 id="rename-branches">Renaming old unused branches <a href="#toc" class="top-link">[^]</a></h3>
 Sometimes there can be old branches that we do not want to delete, case in point
 we have an old branch called "main" from before we showed up, this guy is still
 cluttering both gitlab and git, We don't want to delete it exactly but we don't
 want it there because it is slightly confusing.
 
 We can rename the brach locally by doing:
-git branch -m main archive/main-old
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">-m</span> <span class="arg">main</span> <span class="arg">archive/main-old</span></code></pre>
 
 Then we can push the renamed branch by doing:
-git push origin archive/main-old
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="arg">archive/main-old</span></code></pre>
 
 Finally, we can delete the old branch meaning it no longer clogs shit up:
-git push origin --delete main
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="flag">--delete</span> <span class="arg">main</span></code></pre>
 
 
-<h2>Cherry pick merge request</h2>
+<h2 id="cherry-pick">Cherry pick merge request <a href="#toc" class="top-link">[^]</a></h2>
 
 Problem: we add something to merge staging but we don't want to merge in everything, only that specific change we've made.
 
 1. find the commit hash of the commit on staging
-> git log
-copy the hash, e.g: 832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0 
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span></code></pre>
+copy the hash, e.g: <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span> 
 
 2. change to the branch you want to create the merge request into and pull latest changes:
-> git checkout master
-> git pull origin master
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">master</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">pull</span> <span class="arg">origin</span> <span class="arg">master</span></code></pre>
 
 3. Create a new branch off the master branch for the merge request.
-> git checkout -b update-docker-compose
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="flag">-b</span> <span class="arg">update-docker-compose</span></code></pre>
 
 4. Cherry pick the commit we want
-> git cherry-pick 832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">cherry-pick</span> <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span></code></pre>
 
-x1@Normans-Mac-mini:~/projects/matoha-smartbench$ git cherry-pick 832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">cherry-pick</span> <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span>
 Auto-merging docker-compose.yml
-[update-docker-compose 89a2144] Removed deploy policy from docker compose to prevent container restarts on unclean shutdowns
+[<span class="branch">update-docker-compose</span> <span class="hash">89a2144</span>] Removed deploy policy from docker compose to prevent container restarts on unclean shutdowns
  Date: Mon Jun 1 09:39:57 2026 +0100
- 1 file changed, 13 insertions(+), 48 deletions(-)
+ 1 file changed, <span class="add">13 insertions(+)</span>, <span class="del">48 deletions(-)</span></code></pre>
 
 
 5. Push the new branch to the master.
-git push origin update-docker-compose
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="arg">update-docker-compose</span></code></pre>
 
 
 6. Create the merge request on github/gitlab
 
 
-<h2>Sync local commits with remote when remote has moved ahead (Conflict-Safe)</h2>
+
+<h2 id="temp-sync">Temporarily sync a branch with another <a href="#toc" class="top-link">[^]</a></h2>
+
+Problem: You've created a branch and have got everything right on it but in order to test / build on CI
+it needs to be on a specific named branch.
+
+e.g: I want merge_staging to match master_staging for a bit then i want to revert merge_staging back to how it was.
+
+
+1. Get the commit hash for merge_staging
+
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">rev-parse</span> <span class="arg">merge_staging</span>
+<span class="hash">43996b0e8a894dc2abec361d9bc4fb01058f4923</span></code></pre>
+
+or:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="arg">merge_staging</span></code></pre>
+
+and the commit hash will be there in the first line:
+
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="arg">merge_staging</span>
+commit <span class="hash">43996b0e8a894dc2abec361d9bc4fb01058f4923</span> (<span class="remote">origin/merge_staging</span>, <span class="branch">merge_staging</span>)</code></pre>
+
+
+
+2. Create an immutable local safety tag.
+
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span> <span class="arg">merge_staging_backup</span> <span class="arg">merge_staging</span></code></pre>
+
+Make sure the tag was created:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">rev-parse</span> <span class="arg">merge_staging_backup</span>
+<span class="hash">43996b0e8a894dc2abec361d9bc4fb01058f4923</span></code></pre>
+
+3. Switch to merge_staging branch
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">merge_staging</span></code></pre>
+
+4. make merge_staging match master_staging
+
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">reset</span> <span class="flag">--hard</span> <span class="arg">master_staging</span></code></pre>
+
+This moves the branch pointer for merge_staging to match master_staging 
+
+verify the match with
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="flag">--oneline</span></code></pre>
+
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="flag">--oneline</span>
+<span class="hash">9ad49eb</span> (<span class="head">HEAD -&gt; </span><span class="branch">merge_staging</span>, <span class="remote">origin/master_staging</span>, <span class="branch">master_staging</span>) chore: remove extraneous debug utilities and test media from master_staging</code></pre>
+
+
+5. Push the updated branch to gitlab
+
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">push</span> <span class="flag">--force-with-lease</span> <span class="arg">origin</span> <span class="arg">merge_staging</span></code></pre>
+
+Why --force-with-lease?
+
+• Because master_staging has a different history from merge_staging, Git requires a "force" push.
+• Plain --force blindly overwrites the server.
+• --force-with-lease is the safety-enhanced version: it will only overwrite the server if no one else has pushed unexpected commits to origin/merge_staging in the meantime.
+
+6. Make sure the builds complete on gitlab, perform the testing.
+
+7. revert merge_staging back once testing is complete.
+
+
+
+Before doing anything create a persistent tag that points to the current state of merge_staging.
+
+This ensure we can return to this exact commit.
+
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span> <span class="arg">merge_staging_backup</span></code></pre>
+
+
+<h2 id="conflict-safe-sync">Sync local commits with remote when remote has moved ahead (Conflict-Safe) <a href="#toc" class="top-link">[^]</a></h2>
 Problem: You have local commits on your branch. Meanwhile, commits have landed on the
 remote branch. You need to combine both without getting trapped in merge conflict hell.
 
 Rule 1: Never do a blind "git pull". Always fetch and inspect first.
 
 1. Stash any uncommitted dirty files:
-> git stash
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">stash</span></code></pre>
 
 2. Create a safety backup branch of your exact current state:
-> git branch backup-wip
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">branch</span> <span class="arg">backup-wip</span></code></pre>
 (Zero-cost safety net. If anything goes sideways, your work is 100% recoverable.)
 
 3. Fetch remote updates without touching your working tree:
-> git fetch origin <branch_name>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">fetch</span> <span class="arg">origin</span> <span class="arg">&lt;branch_name&gt;</span></code></pre>
 
 4. Inspect the divergence:
-# See what they added that you don't have:
-> git log --oneline HEAD..origin/<branch_name>
+<pre class="term"><code><span class="comment"># See what they added that you don't have:</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">--oneline</span> <span class="arg">HEAD..origin/&lt;branch_name&gt;</span>
 
-# See what you added that they don't have:
-> git log --oneline origin/<branch_name>..HEAD
+<span class="comment"># See what you added that they don't have:</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">--oneline</span> <span class="arg">origin/&lt;branch_name&gt;..HEAD</span>
 
-# Check which files both sides touched (potential conflict zones):
-> git diff --stat HEAD...origin/<branch_name>
+<span class="comment"># Check which files both sides touched (potential conflict zones):</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">diff</span> <span class="flag">--stat</span> <span class="arg">HEAD...origin/&lt;branch_name&gt;</span></code></pre>
 
 5. Combine the changes:
 
 Option A: Standard Merge (Recommended when you have multiple local commits)
 Resolves all conflicts in ONE single pass rather than repeating for each commit:
-> git merge origin/<branch_name>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">merge</span> <span class="arg">origin/&lt;branch_name&gt;</span></code></pre>
 
 If conflicts occur:
 - Run "git status" to see conflicted files ("both modified").
-- Open files, search for "<<<<<<<", resolve the logic.
+- Open files, search for "&lt;&lt;&lt;&lt;&lt;&lt;&lt;", resolve the logic.
 - If it's a huge mess and you want to bail out cleanly:
-  > git merge --abort
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">merge</span> <span class="flag">--abort</span></code></pre>
   (Instantly resets your branch to before the merge started).
 
 Option B: Rebase (Cleaner history, best for 1-2 small local commits)
-> git rebase origin/<branch_name>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">rebase</span> <span class="arg">origin/&lt;branch_name&gt;</span></code></pre>
 
 If conflicts occur during rebase:
 - Fix conflict in the file.
-- git add <file>
+- git add &lt;file&gt;
 - git rebase --continue
 - To bail out completely:
-  > git rebase --abort
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">rebase</span> <span class="flag">--abort</span></code></pre>
 
 6. Verify tests and build before pushing:
-> pytest
-> git status
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">pytest</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">status</span></code></pre>
 
 7. Push to remote:
-> git push origin <branch_name>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="arg">&lt;branch_name&gt;</span></code></pre>
 
 8. Clean up:
-> git stash pop             # restore uncommitted edits if stashed in step 1
-> git branch -D backup-wip   # delete temporary safety branch once verified
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">stash</span> <span class="sub">pop</span>             <span class="comment"># restore uncommitted edits if stashed in step 1</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">-D</span> <span class="arg">backup-wip</span>   <span class="comment"># delete temporary safety branch once verified</span></code></pre>
 
 
 <hr>
