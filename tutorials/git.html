@@ -410,7 +410,15 @@ Why --force-with-lease?
 
 6. Make sure the builds complete on gitlab, perform the testing.
 
-7. Revert merge_staging back once testing is complete:
+7. Revert merge_staging back using the tag once testing is complete:
+
+BE AWARE! tags are distinct from branches, if you forgot the name of the tag you made you can use:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span> <span class="flag">-n</span></code></pre>
+
+to see information on a specific tag use:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">show</span> <span class="arg">merge_staging_backup</span></code></pre>
+
 <pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">merge_staging</span>
 <span class="prompt">></span> <span class="cmd">git</span> <span class="sub">reset</span> <span class="flag">--hard</span> <span class="arg">merge_staging_backup</span></code></pre>
 
