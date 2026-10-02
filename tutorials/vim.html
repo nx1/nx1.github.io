@@ -2,110 +2,243 @@
 <head>
     <title>nx1.info | Vim Cheat Sheet</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png">
-	<link rel="stylesheet" type="text/css" href="../style.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        pre.term {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-left: 3px solid #58a6ff;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: inherit;
+        }
+        pre.term code {
+            font-family: inherit;
+            color: #c9d1d9;
+        }
+        .prompt { color: #58a6ff; }
+        .cmd { color: #79c0ff; font-weight: bold; }
+        .sub { color: #ffa657; }
+        .flag { color: #d2a8ff; }
+        .arg { color: #e6edf3; }
+        .key { color: #f2cc60; font-weight: bold; }
+        .action { color: #c9d1d9; }
+        .comment { color: #8b949e; }
+        .toc-box {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin: 14px 0 20px 0;
+            display: inline-block;
+        }
+        .toc-header {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        .toc-cat {
+            color: #7ee787;
+            font-weight: bold;
+        }
+        .top-link {
+            font-size: 0.75em;
+            color: #8b949e;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .top-link:hover {
+            color: #58a6ff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
-<pre>
+<div style="font-family: monospace; white-space: pre;">
 <h1>nx1.info | Vim Cheat Sheet</h1>
 
-Basics:                                     Navigation:
-i   - insert before cursor                  h    - left
-I   - insert at beginning of line           j    - down
-a   - append after cursor                   k    - up
-ea  - insert at end of current word         l    - right
-A   - append at end of line                 w    - next word
-O   - appaend above current line            b    - previous word
-o   - append below current line             0    - beginning of line
-                                            ^    - first non-blank of line
-ESC - return to normal mode                 $    - end of line
-:w  - write/save                            G    - go to end of file
-:q  - quit                                  gg   - go to beginning of file
-:wq - write and quit                        :NUM - go to line NUM
-:q! - quit without saving                   %    - jump between brackets
-.   - repeat last change                    
-                                           
+<div id="toc" class="toc-box">
+<span class="toc-header">Table of Contents:</span>
+------------------
+<span class="toc-cat">Core Editing:</span>
+    <a href="#basics">basics & mode switching</a>
+    <a href="#navigation">navigation</a>
+    <a href="#editing">editing & undo</a>
+    <a href="#visual">visual mode</a>
+    <a href="#search-replace">search & replace</a>
+    <a href="#cut-paste">cut & paste</a>
 
-Editing:                                    Visual Mode:
-x       - aelete character under cursor     v       - visual mode (character-wise)
-dd      - delete line                       V       - visual line mode
-dw      - delete word                       CTRL-v  - visual block mode
-D       - delete to end of line             y       - yank selection
-yy      - yank (copy) line                  d       - delete selection
-p       - paste after cursor                ~       - toggle case
-P       - paste before cursor
-u       - undo                                          
-CTRL-r  - redo                                          
-r       - replace character                Search & Replace:                                       
-                                           /word           - search forward for "word"             
-                                           ?word           - search backward                       
-Buffers, Windows, Tabs:                    n               - next match                            
-:ls or :buffers   - list buffers           N               - previous match                        
-:bn               - next buffer            :%s/foo/bar/g   - replace all foo with bar              
-:bp               - previous buffer        :%s/foo/bar/gc  - replace with confirmation             
-:bd               - delete buffer
-:split or :sp     - horizontal split       Formatting / Text Manipulation:
-:vsplit or :vsp   - vertical split         gqip - reformat paragraph (text object 'ip' = inner paragraph)
-CTRL-w w          - switch window          gqap - reformat paragraph (including surrounding blank lines)
-CTRL-w h/j/k/l    - move to window         gqq  - reformat current line
-:tabnew           - open new tab           gwip - reformat paragraph, preserving cursor
-gt                - next tab               gwap - same as above but with surrounding blank lines
-gT                - previous tab
+<span class="toc-cat">Advanced Editing:</span>
+    <a href="#motions-objects">motions & text objects</a>
+    <a href="#block-jumping">jumping to start/end of blocks</a>
+    <a href="#buffers-windows-tabs">buffers, windows & tabs</a>
+    <a href="#formatting">formatting & manipulation</a>
+    <a href="#macros">macros</a>
 
-Macros:                                    Cut & Paste:
-q[leter] - record macro to letter          yy     - copy line 
-qa       - record macro to letter 'a'      2yy    - copy 2 lines
-q        - stop recording macro            yw     - copy word under cursor
-@a       - run macro a                     y$ & Y - 
-@@       - re-run last macro
+<span class="toc-cat">CoC.nvim:</span>
+    <a href="#coc-navigation">coc code navigation</a>
+    <a href="#coc-actions">coc code actions</a>
+    <a href="#coc-completion">completion & snippets</a>
+    <a href="#coc-misc">coc list & commands</a>
+</div>
 
+<h2 id="basics">Basics: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">i</span>     - <span class="action">insert before cursor</span>
+<span class="key">I</span>     - <span class="action">insert at beginning of line</span>
+<span class="key">a</span>     - <span class="action">append after cursor</span>
+<span class="key">ea</span>    - <span class="action">insert at end of current word</span>
+<span class="key">A</span>     - <span class="action">append at end of line</span>
+<span class="key">O</span>     - <span class="action">open new line above cursor</span>
+<span class="key">o</span>     - <span class="action">open new line below cursor</span>
+<span class="key">ESC</span>   - <span class="action">return to normal mode</span>
+<span class="key">:w</span>    - <span class="action">write / save</span>
+<span class="key">:q</span>    - <span class="action">quit</span>
+<span class="key">:wq</span>   - <span class="action">write and quit</span>
+<span class="key">:q!</span>   - <span class="action">quit without saving</span>
+<span class="key">.</span>     - <span class="action">repeat last change</span></code></pre>
 
-Deleting with motions:                                Jumping to start/end of blocks:
-daw - delete a word (and surrounding whitespace)      [[ - jump to previous function start
-diw - delete inner word (no surrounding space)        ]] - jump to next function start
-dap - delete a paragraph                              [] - jump to previous block start (like { )
-dip - delete inner paragraph                          ][ - jump to next block end     (like } )
-das - delete a sentence (includes punctuation)
-dis - delete inner sentence
-d}  - delete until next paragraph
-di( - delete inside parentheses
-da( - delete around parentheses
-di{ - delete inside curly braces
-di[ - delete inside square brackets
-vi( - visually select inside parentheses
-va[ - visually select around square brackets
-ci( - change inside parentheses
-yi{ - yank inside curly braces
+<h2 id="navigation">Navigation: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">h</span>     - <span class="action">left</span>
+<span class="key">j</span>     - <span class="action">down</span>
+<span class="key">k</span>     - <span class="action">up</span>
+<span class="key">l</span>     - <span class="action">right</span>
+<span class="key">w</span>     - <span class="action">jump forward to next word</span>
+<span class="key">b</span>     - <span class="action">jump backward to previous word</span>
+<span class="key">0</span>     - <span class="action">beginning of line</span>
+<span class="key">^</span>     - <span class="action">first non-blank character of line</span>
+<span class="key">$</span>     - <span class="action">end of line</span>
+<span class="key">gg</span>    - <span class="action">go to beginning of file</span>
+<span class="key">G</span>     - <span class="action">go to end of file</span>
+<span class="key">:NUM</span>  - <span class="action">go to line NUM</span>
+<span class="key">%</span>     - <span class="action">jump between matching brackets / parentheses</span></code></pre>
 
+<h2 id="editing">Editing: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">x</span>       - <span class="action">delete character under cursor</span>
+<span class="key">dd</span>      - <span class="action">delete line</span>
+<span class="key">dw</span>      - <span class="action">delete word</span>
+<span class="key">D</span>       - <span class="action">delete to end of line</span>
+<span class="key">yy</span>      - <span class="action">yank (copy) line</span>
+<span class="key">p</span>       - <span class="action">paste after cursor</span>
+<span class="key">P</span>       - <span class="action">paste before cursor</span>
+<span class="key">u</span>       - <span class="action">undo</span>
+<span class="key">CTRL-r</span>  - <span class="action">redo</span>
+<span class="key">r</span>       - <span class="action">replace single character</span></code></pre>
 
-https://github.com/neoclide/coc.nvim
-CoC.nvim Commands:                    Code Action: (<leader> is \ by default)
-                                      <leader>rn - Rename symbol (e.g., <space>rn)
-Code Navigation:                      <leader>ac - Code action for cursor position
-gd      - Go to definition            <leader>a  - Code action for selected region (visual mode)
-gD      - Go to declaration           K          - Show hover documentation
-gi      - Go to implementation        <leader>f  - Format current buffer
-gr / gR - Show references (usages)    [ g        - Go to previous diagnostic
-gy      - Go to type definition       ] g        - Go to next diagnostic
+<h2 id="visual">Visual Mode: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">v</span>       - <span class="action">visual mode (character-wise)</span>
+<span class="key">V</span>       - <span class="action">visual line mode</span>
+<span class="key">CTRL-v</span>  - <span class="action">visual block mode</span>
+<span class="key">y</span>       - <span class="action">yank selection</span>
+<span class="key">d</span>       - <span class="action">delete selection</span>
+<span class="key">~</span>       - <span class="action">toggle case</span></code></pre>
 
+<h2 id="search-replace">Search & Replace: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">/word</span>           - <span class="action">search forward for "word"</span>
+<span class="key">?word</span>           - <span class="action">search backward for "word"</span>
+<span class="key">n</span>               - <span class="action">next match</span>
+<span class="key">N</span>               - <span class="action">previous match</span>
+<span class="key">:%s/foo/bar/g</span>   - <span class="action">replace all foo with bar</span>
+<span class="key">:%s/foo/bar/gc</span>  - <span class="action">replace with confirmation</span></code></pre>
 
-Completion & Snippets
-<C-Space>     - Trigger completion
-<CR>          - Confirm completion
-<C-j> / <C-k> - Navigate completion menu
-<C-n> / <C-p> - Next/Previous completion item
+<h2 id="cut-paste">Cut & Paste: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">yy</span>     - <span class="action">copy line</span>
+<span class="key">2yy</span>    - <span class="action">copy 2 lines</span>
+<span class="key">yw</span>     - <span class="action">copy word under cursor</span>
+<span class="key">y$</span>     - <span class="action">yank to end of line</span>
+<span class="key">Y</span>      - <span class="action">yank entire line</span></code></pre>
 
-Misc:
-:CocList extensions  - Show installed extensions
-:CocList marketplace - Browse available extensions
-:CocList diagnostics - Show diagnostics in a list
-:CocList symbols     - Show document symbols
-:CocList symbols -I  - Show workspace symbols
-:CocList outline     - Show document outline
-:CocList references  - Find references to symbol under cursor
-:CocCommand          - Run any CoC command
-:CocRestart          - Restart CoC
-:CocUpdate           - Update CoC extensions
+<h2 id="motions-objects">Deleting with motions & Text objects: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">daw</span> - <span class="action">delete a word (and surrounding whitespace)</span>
+<span class="key">diw</span> - <span class="action">delete inner word (no surrounding space)</span>
+<span class="key">dap</span> - <span class="action">delete a paragraph</span>
+<span class="key">dip</span> - <span class="action">delete inner paragraph</span>
+<span class="key">das</span> - <span class="action">delete a sentence (includes punctuation)</span>
+<span class="key">dis</span> - <span class="action">delete inner sentence</span>
+<span class="key">d}</span>  - <span class="action">delete until next paragraph</span>
+<span class="key">di(</span> - <span class="action">delete inside parentheses</span>
+<span class="key">da(</span> - <span class="action">delete around parentheses</span>
+<span class="key">di{</span> - <span class="action">delete inside curly braces</span>
+<span class="key">di[</span> - <span class="action">delete inside square brackets</span>
+<span class="key">vi(</span> - <span class="action">visually select inside parentheses</span>
+<span class="key">va[</span> - <span class="action">visually select around square brackets</span>
+<span class="key">ci(</span> - <span class="action">change inside parentheses</span>
+<span class="key">yi{</span> - <span class="action">yank inside curly braces</span></code></pre>
+
+<h2 id="block-jumping">Jumping to start/end of blocks: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">[[</span> - <span class="action">jump to previous function start</span>
+<span class="key">]]</span> - <span class="action">jump to next function start</span>
+<span class="key">[]</span> - <span class="action">jump to previous block start (like { )</span>
+<span class="key">][</span> - <span class="action">jump to next block end     (like } )</span></code></pre>
+
+<h2 id="buffers-windows-tabs">Buffers, Windows, Tabs: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">:ls</span> or <span class="key">:buffers</span>   - <span class="action">list buffers</span>
+<span class="key">:bn</span>               - <span class="action">next buffer</span>
+<span class="key">:bp</span>               - <span class="action">previous buffer</span>
+<span class="key">:bd</span>               - <span class="action">delete buffer</span>
+<span class="key">:split</span> or <span class="key">:sp</span>     - <span class="action">horizontal split</span>
+<span class="key">:vsplit</span> or <span class="key">:vsp</span>   - <span class="action">vertical split</span>
+<span class="key">CTRL-w w</span>          - <span class="action">switch window</span>
+<span class="key">CTRL-w h/j/k/l</span>    - <span class="action">move to window</span>
+<span class="key">:tabnew</span>           - <span class="action">open new tab</span>
+<span class="key">gt</span>                - <span class="action">next tab</span>
+<span class="key">gT</span>                - <span class="action">previous tab</span></code></pre>
+
+<h2 id="formatting">Formatting / Text Manipulation: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">gqip</span> - <span class="action">reformat paragraph (text object 'ip' = inner paragraph)</span>
+<span class="key">gqap</span> - <span class="action">reformat paragraph (including surrounding blank lines)</span>
+<span class="key">gqq</span>  - <span class="action">reformat current line</span>
+<span class="key">gwip</span> - <span class="action">reformat paragraph, preserving cursor</span>
+<span class="key">gwap</span> - <span class="action">same as above but with surrounding blank lines</span></code></pre>
+
+<h2 id="macros">Macros: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">q[letter]</span> - <span class="action">record macro to letter</span>
+<span class="key">qa</span>        - <span class="action">record macro to letter 'a'</span>
+<span class="key">q</span>         - <span class="action">stop recording macro</span>
+<span class="key">@a</span>        - <span class="action">run macro a</span>
+<span class="key">@@</span>        - <span class="action">re-run last macro</span></code></pre>
+
+<h2>CoC.nvim Commands</h2>
+<a href="https://github.com/neoclide/coc.nvim">https://github.com/neoclide/coc.nvim</a>
+<span class="comment">Note: &lt;leader&gt; is \ by default (or &lt;space&gt;)</span>
+
+<h3 id="coc-navigation">Code Navigation: <a href="#toc" class="top-link">[^]</a></h3>
+<pre class="term"><code><span class="key">gd</span>      - <span class="action">Go to definition</span>
+<span class="key">gD</span>      - <span class="action">Go to declaration</span>
+<span class="key">gi</span>      - <span class="action">Go to implementation</span>
+<span class="key">gr / gR</span> - <span class="action">Show references (usages)</span>
+<span class="key">gy</span>      - <span class="action">Go to type definition</span>
+<span class="key">K</span>       - <span class="action">Show hover documentation</span>
+<span class="key">[ g</span>     - <span class="action">Go to previous diagnostic</span>
+<span class="key">] g</span>     - <span class="action">Go to next diagnostic</span></code></pre>
+
+<h3 id="coc-actions">Code Actions: <a href="#toc" class="top-link">[^]</a></h3>
+<pre class="term"><code><span class="key">&lt;leader&gt;rn</span> - <span class="action">Rename symbol (e.g., &lt;space&gt;rn)</span>
+<span class="key">&lt;leader&gt;ac</span> - <span class="action">Code action for cursor position</span>
+<span class="key">&lt;leader&gt;a</span>  - <span class="action">Code action for selected region (visual mode)</span>
+<span class="key">&lt;leader&gt;f</span>  - <span class="action">Format current buffer</span></code></pre>
+
+<h3 id="coc-completion">Completion & Snippets: <a href="#toc" class="top-link">[^]</a></h3>
+<pre class="term"><code><span class="key">&lt;C-Space&gt;</span>     - <span class="action">Trigger completion</span>
+<span class="key">&lt;CR&gt;</span>          - <span class="action">Confirm completion</span>
+<span class="key">&lt;C-j&gt; / &lt;C-k&gt;</span> - <span class="action">Navigate completion menu</span>
+<span class="key">&lt;C-n&gt; / &lt;C-p&gt;</span> - <span class="action">Next/Previous completion item</span></code></pre>
+
+<h3 id="coc-misc">Misc & CocList: <a href="#toc" class="top-link">[^]</a></h3>
+<pre class="term"><code><span class="key">:CocList extensions</span>  - <span class="action">Show installed extensions</span>
+<span class="key">:CocList marketplace</span> - <span class="action">Browse available extensions</span>
+<span class="key">:CocList diagnostics</span> - <span class="action">Show diagnostics in a list</span>
+<span class="key">:CocList symbols</span>     - <span class="action">Show document symbols</span>
+<span class="key">:CocList symbols -I</span>  - <span class="action">Show workspace symbols</span>
+<span class="key">:CocList outline</span>     - <span class="action">Show document outline</span>
+<span class="key">:CocList references</span>  - <span class="action">Find references to symbol under cursor</span>
+<span class="key">:CocCommand</span>          - <span class="action">Run any CoC command</span>
+<span class="key">:CocRestart</span>          - <span class="action">Restart CoC</span>
+<span class="key">:CocUpdate</span>           - <span class="action">Update CoC extensions</span></code></pre>
 
 <hr>
 <div id="clock" onload="currentTime()"></div>
