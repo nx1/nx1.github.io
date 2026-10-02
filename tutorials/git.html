@@ -392,22 +392,16 @@ Make sure the tag was created:
 <pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">merge_staging</span></code></pre>
 
 4. make merge_staging match master_staging
-
 <pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">reset</span> <span class="flag">--hard</span> <span class="arg">master_staging</span></code></pre>
-
 This moves the branch pointer for merge_staging to match master_staging 
 
 verify the match with
-<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="flag">--oneline</span></code></pre>
-
 <pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="flag">--oneline</span>
 <span class="hash">9ad49eb</span> (<span class="head">HEAD -&gt; </span><span class="branch">merge_staging</span>, <span class="remote">origin/master_staging</span>, <span class="branch">master_staging</span>) chore: remove extraneous debug utilities and test media from master_staging</code></pre>
 
 
 5. Push the updated branch to gitlab
-
 <pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">push</span> <span class="flag">--force-with-lease</span> <span class="arg">origin</span> <span class="arg">merge_staging</span></code></pre>
-
 Why --force-with-lease?
 
 • Because master_staging has a different history from merge_staging, Git requires a "force" push.
@@ -416,16 +410,25 @@ Why --force-with-lease?
 
 6. Make sure the builds complete on gitlab, perform the testing.
 
-7. revert merge_staging back once testing is complete.
+7. Revert merge_staging back once testing is complete:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">merge_staging</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">reset</span> <span class="flag">--hard</span> <span class="arg">merge_staging_backup</span></code></pre>
 
+Verify the restoration:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span> <span class="flag">-1</span> <span class="flag">--oneline</span></code></pre>
 
+Expected output:
+<pre class="term"><code><span class="hash">43996b0</span> feat(decision_tree): enhance simulation CLI with interactive and batch modes</code></pre>
 
-Before doing anything create a persistent tag that points to the current state of merge_staging.
+8. Push the restored state back to GitLab:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">push</span> <span class="flag">--force-with-lease</span> <span class="arg">origin</span> <span class="arg">merge_staging</span></code></pre>
 
-This ensure we can return to this exact commit.
+9. Switch back to master_staging:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">master_staging</span></code></pre>
 
-<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span> <span class="arg">merge_staging_backup</span></code></pre>
-
+10. (Optional) Delete the temporary backup tag:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span> <span class="flag">-d</span> <span class="arg">merge_staging_backup</span>
+Deleted tag '<span class="arg">merge_staging_backup</span>'</code></pre>
 
 <h2 id="conflict-safe-sync">Sync local commits with remote when remote has moved ahead (Conflict-Safe) <a href="#toc" class="top-link">[^]</a></h2>
 Problem: You have local commits on your branch. Meanwhile, commits have landed on the
