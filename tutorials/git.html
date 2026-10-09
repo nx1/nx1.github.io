@@ -81,7 +81,6 @@ https://longair.net/blog/2009/04/16/git-fetch-and-merge/
     <a href="#push-branch">push new branch to remote</a>
     <a href="#remove-branches">remove old unused branches</a>
     <a href="#rename-branches">rename old unused branches</a>
-    <a href="#temp-sync">temporarily sync branch</a>
 
 <span class="toc-cat">Account / Credentials:</span>
     <a href="#git-credentials">change git credentials</a>
@@ -91,6 +90,7 @@ https://longair.net/blog/2009/04/16/git-fetch-and-merge/
     <a href="#incorporate-changes">incorporate changes from master</a>
     <a href="#combine-local-remote">combine local & remote branch</a>
     <a href="#selective-merging">selective merging</a>
+    <a href="#temp-sync">temporarily sync branch</a>
     <a href="#cherry-pick">cherry pick merge request</a>
     <a href="#conflict-safe-sync">sync local commits when remote moved ahead (conflict-safe)</a>
 
@@ -324,39 +324,6 @@ Finally, we can delete the old branch meaning it no longer clogs shit up:
 <pre class="term"><code><span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="flag">--delete</span> <span class="arg">main</span></code></pre>
 
 
-<h2 id="cherry-pick">Cherry pick merge request <a href="#toc" class="top-link">[^]</a></h2>
-
-Problem: we add something to merge staging but we don't want to merge in everything, only that specific change we've made.
-
-1. find the commit hash of the commit on staging
-<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span></code></pre>
-copy the hash, e.g: <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span> 
-
-2. change to the branch you want to create the merge request into and pull latest changes:
-<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">master</span>
-<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">pull</span> <span class="arg">origin</span> <span class="arg">master</span></code></pre>
-
-3. Create a new branch off the master branch for the merge request.
-<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="flag">-b</span> <span class="arg">update-docker-compose</span></code></pre>
-
-4. Cherry pick the commit we want
-<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">cherry-pick</span> <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span></code></pre>
-
-<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">cherry-pick</span> <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span>
-Auto-merging docker-compose.yml
-[<span class="branch">update-docker-compose</span> <span class="hash">89a2144</span>] Removed deploy policy from docker compose to prevent container restarts on unclean shutdowns
- Date: Mon Jun 1 09:39:57 2026 +0100
- 1 file changed, <span class="add">13 insertions(+)</span>, <span class="del">48 deletions(-)</span></code></pre>
-
-
-5. Push the new branch to the master.
-<pre class="term"><code><span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="arg">update-docker-compose</span></code></pre>
-
-
-6. Create the merge request on github/gitlab
-
-
-
 <h2 id="temp-sync">Temporarily sync a branch with another <a href="#toc" class="top-link">[^]</a></h2>
 
 Problem: You've created a branch and have got everything right on it but in order to test / build on CI
@@ -437,6 +404,39 @@ Expected output:
 10. (Optional) Delete the temporary backup tag:
 <pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">tag</span> <span class="flag">-d</span> <span class="arg">merge_staging_backup</span>
 Deleted tag '<span class="arg">merge_staging_backup</span>'</code></pre>
+
+<h2 id="cherry-pick">Cherry pick merge request <a href="#toc" class="top-link">[^]</a></h2>
+
+Problem: we add something to merge staging but we don't want to merge in everything, only that specific change we've made.
+
+1. find the commit hash of the commit on staging
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">log</span></code></pre>
+copy the hash, e.g: <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span> 
+
+2. change to the branch you want to create the merge request into and pull latest changes:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="arg">master</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">pull</span> <span class="arg">origin</span> <span class="arg">master</span></code></pre>
+
+3. Create a new branch off the master branch for the merge request.
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="flag">-b</span> <span class="arg">update-docker-compose</span></code></pre>
+
+4. Cherry pick the commit we want
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">cherry-pick</span> <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span></code></pre>
+
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-smartbench$</span> <span class="cmd">git</span> <span class="sub">cherry-pick</span> <span class="hash">832cdd9ce0f12ba57dae2eac74d7aad6c2d5bfb0</span>
+Auto-merging docker-compose.yml
+[<span class="branch">update-docker-compose</span> <span class="hash">89a2144</span>] Removed deploy policy from docker compose to prevent container restarts on unclean shutdowns
+ Date: Mon Jun 1 09:39:57 2026 +0100
+ 1 file changed, <span class="add">13 insertions(+)</span>, <span class="del">48 deletions(-)</span></code></pre>
+
+
+5. Push the new branch to the master.
+<pre class="term"><code><span class="cmd">git</span> <span class="sub">push</span> <span class="arg">origin</span> <span class="arg">update-docker-compose</span></code></pre>
+
+
+6. Create the merge request on github/gitlab
+
+
 
 <h2 id="conflict-safe-sync">Sync local commits with remote when remote has moved ahead (Conflict-Safe) <a href="#toc" class="top-link">[^]</a></h2>
 Problem: You have local commits on your branch. Meanwhile, commits have landed on the
