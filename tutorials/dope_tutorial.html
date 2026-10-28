@@ -1,0 +1,272 @@
+<html>
+<head>
+    <title>nx1.info | How to Make a Dope Tutorial Page</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        pre.term {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-left: 3px solid #58a6ff;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: inherit;
+        }
+        pre.term code {
+            font-family: inherit;
+            color: #c9d1d9;
+        }
+        .prompt { color: #58a6ff; }
+        .cmd { color: #79c0ff; font-weight: bold; }
+        .sub { color: #ffa657; }
+        .flag { color: #d2a8ff; }
+        .arg { color: #e6edf3; }
+        .str { color: #a5d6ff; }
+        .key { color: #f2cc60; font-weight: bold; }
+        .action { color: #c9d1d9; }
+        .comment { color: #8b949e; }
+        .hash { color: #f2cc60; font-weight: bold; }
+        .branch { color: #7ee787; font-weight: bold; }
+        .remote { color: #ff7b72; }
+        .tag { color: #7ee787; }
+        .attr { color: #d2a8ff; }
+        .val { color: #a5d6ff; }
+        .toc-box {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin: 14px 0 20px 0;
+            display: inline-block;
+        }
+        .toc-header {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        .toc-cat {
+            color: #7ee787;
+            font-weight: bold;
+        }
+        .top-link {
+            font-size: 0.75em;
+            color: #8b949e;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .top-link:hover {
+            color: #58a6ff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | How to Make a Dope Tutorial Page</h1>
+A specification for building lightweight, zero-dependency, terminal-aesthetic notes.
+
+<div id="toc" class="toc-box">
+<span class="toc-header">Table of Contents:</span>
+------------------
+<span class="toc-cat">Philosophy & Architecture:</span>
+    <a href="#philosophy">the zero-runtime philosophy</a>
+    <a href="#dom-layout">dom layout & monospace preservation</a>
+
+<span class="toc-cat">CSS & Token Blueprint:</span>
+    <a href="#css-boilerplate">complete embedded css boilerplate</a>
+    <a href="#token-palette">terminal color token palette</a>
+
+<span class="toc-cat">Navigation System:</span>
+    <a href="#toc-pattern">terminal table of contents frame</a>
+    <a href="#anchors">anchor links & header back-links ([^])</a>
+
+<span class="toc-cat">Authoring Workflow:</span>
+    <a href="#workflow">step-by-step document construction</a>
+    <a href="#token-rules">token tagging rules</a>
+
+<span class="toc-cat">Neovim Acceleration:</span>
+    <a href="#nvim-visual">visual selection wrapping in nvim</a>
+    <a href="#nvim-substitutions">regex substitutions for fast tagging</a>
+    <a href="#batch-script">batch automation python script</a>
+</div>
+
+<h2 id="philosophy">1. The Zero-Runtime Philosophy <a href="#toc" class="top-link">[^]</a></h2>
+Most syntax-highlighting solutions (e.g., highlight.js, prism.js) operate at runtime via
+JavaScript. While acceptable for standard blogs, this approach has several drawbacks:
+
+1. <b>Layout shifts & latency</b>: The client renders plain unstyled text, fetches remote JS/CSS
+   assets from CDNs, parses the DOM, and re-renders tokens, creating visual stutter.
+2. <b>Loss of terminal fidelity</b>: Generic bash parsers fail on real terminal output—they cannot
+   accurately distinguish between command inputs, git diff additions/deletions, and CLI status output.
+3. <b>Fragility & offline failure</b>: If a CDN is blocked or offline, styling degrades.
+
+By contrast, <b>pure semantic HTML + embedded CSS</b> renders instantly on the first frame,
+works 100% offline, introduces zero JavaScript dependencies, and gives absolute control over
+every token's color.
+
+<h2 id="dom-layout">2. DOM Layout & Monospace Preservation <a href="#toc" class="top-link">[^]</a></h2>
+Every tutorial on nx1.info wraps its content inside a preformatted monospace container:
+
+<pre class="term"><code>&lt;<span class="tag">body</span>&gt;
+&lt;<span class="tag">div</span> <span class="attr">style</span>=<span class="str">"font-family: monospace; white-space: pre;"</span>&gt;
+<span class="comment">&lt;!-- Page content, headers, TOC, and preformatted blocks --&gt;</span>
+&lt;/<span class="tag">div</span>&gt;
+&lt;/<span class="tag">body</span>&gt;</code></pre>
+
+Using <span class="cmd">white-space: pre;</span> ensures that newlines and whitespace behave exactly like a terminal
+output stream (e.g. `cat` or `less`). Code blocks are then wrapped inside:
+
+<pre class="term"><code>&lt;<span class="tag">pre</span> <span class="attr">class</span>=<span class="str">"term"</span>&gt;&lt;<span class="tag">code</span>&gt;...&lt;/<span class="tag">code</span>&gt;&lt;/<span class="tag">pre</span>&gt;</code></pre>
+
+<h2 id="css-boilerplate">3. Complete Embedded CSS Boilerplate <a href="#toc" class="top-link">[^]</a></h2>
+Include this `&lt;style&gt;` block in the `&lt;head&gt;` section of the page:
+
+<pre class="term"><code>&lt;<span class="tag">style</span>&gt;
+    <span class="comment">/* Terminal code block container */</span>
+    <span class="cmd">pre.term</span> {
+        <span class="attr">background-color</span>: <span class="str">#0d1117</span>;
+        <span class="attr">border</span>: <span class="str">1px solid #30363d</span>;
+        <span class="attr">border-left</span>: <span class="str">3px solid #58a6ff</span>;
+        <span class="attr">border-radius</span>: <span class="str">4px</span>;
+        <span class="attr">padding</span>: <span class="str">8px 12px</span>;
+        <span class="attr">margin</span>: <span class="str">6px 0</span>;
+        <span class="attr">overflow-x</span>: <span class="str">auto</span>;
+        <span class="attr">font-family</span>: <span class="str">inherit</span>;
+    }
+    <span class="cmd">pre.term code</span> {
+        <span class="attr">font-family</span>: <span class="str">inherit</span>;
+        <span class="attr">color</span>: <span class="str">#c9d1d9</span>;
+    }
+
+    <span class="comment">/* Syntax token colors */</span>
+    <span class="cmd">.prompt</span>  { <span class="attr">color</span>: <span class="str">#58a6ff</span>; }                             <span class="comment">/* >, $, # */</span>
+    <span class="cmd">.cmd</span>     { <span class="attr">color</span>: <span class="str">#79c0ff</span>; <span class="attr">font-weight</span>: <span class="str">bold</span>; }       <span class="comment">/* git, tmux, ip, vim */</span>
+    <span class="cmd">.sub</span>     { <span class="attr">color</span>: <span class="str">#ffa657</span>; }                             <span class="comment">/* checkout, commit, addr */</span>
+    <span class="cmd">.flag</span>    { <span class="attr">color</span>: <span class="str">#d2a8ff</span>; }                             <span class="comment">/* -b, --oneline, -f */</span>
+    <span class="cmd">.arg</span>     { <span class="attr">color</span>: <span class="str">#e6edf3</span>; }                             <span class="comment">/* branch names, file targets */</span>
+    <span class="cmd">.str</span>     { <span class="attr">color</span>: <span class="str">#a5d6ff</span>; }                             <span class="comment">/* "string values" */</span>
+    <span class="cmd">.key</span>     { <span class="attr">color</span>: <span class="str">#f2cc60</span>; <span class="attr">font-weight</span>: <span class="str">bold</span>; }       <span class="comment">/* keybindings, config keys */</span>
+    <span class="cmd">.action</span>  { <span class="attr">color</span>: <span class="str">#c9d1d9</span>; }                             <span class="comment">/* description / action text */</span>
+    <span class="cmd">.comment</span> { <span class="attr">color</span>: <span class="str">#8b949e</span>; }                             <span class="comment">/* # explanations */</span>
+    <span class="cmd">.hash</span>    { <span class="attr">color</span>: <span class="str">#f2cc60</span>; <span class="attr">font-weight</span>: <span class="str">bold</span>; }       <span class="comment">/* commit hashes */</span>
+    <span class="cmd">.branch</span>  { <span class="attr">color</span>: <span class="str">#7ee787</span>; <span class="attr">font-weight</span>: <span class="str">bold</span>; }       <span class="comment">/* local branches */</span>
+    <span class="cmd">.remote</span>  { <span class="attr">color</span>: <span class="str">#ff7b72</span>; }                             <span class="comment">/* remotes (origin/master) */</span>
+    <span class="cmd">.add</span>     { <span class="attr">color</span>: <span class="str">#7ee787</span>; }                             <span class="comment">/* additions, insertions */</span>
+    <span class="cmd">.del</span>     { <span class="attr">color</span>: <span class="str">#ff7b72</span>; }                             <span class="comment">/* deletions, modified */</span>
+
+    <span class="comment">/* Table of Contents */</span>
+    <span class="cmd">.toc-box</span> {
+        <span class="attr">background-color</span>: <span class="str">#0d1117</span>;
+        <span class="attr">border</span>: <span class="str">1px solid #30363d</span>;
+        <span class="attr">border-radius</span>: <span class="str">4px</span>;
+        <span class="attr">padding</span>: <span class="str">12px 16px</span>;
+        <span class="attr">margin</span>: <span class="str">14px 0 20px 0</span>;
+        <span class="attr">display</span>: <span class="str">inline-block</span>;
+    }
+    <span class="cmd">.toc-header</span> { <span class="attr">color</span>: <span class="str">#58a6ff</span>; <span class="attr">font-weight</span>: <span class="str">bold</span>; }
+    <span class="cmd">.toc-cat</span>    { <span class="attr">color</span>: <span class="str">#7ee787</span>; <span class="attr">font-weight</span>: <span class="str">bold</span>; }
+    <span class="cmd">.top-link</span>   { <span class="attr">font-size</span>: <span class="str">0.75em</span>; <span class="attr">color</span>: <span class="str">#8b949e</span>; <span class="attr">text-decoration</span>: <span class="str">none</span>; <span class="attr">margin-left</span>: <span class="str">8px</span>; }
+    <span class="cmd">.top-link:hover</span> { <span class="attr">color</span>: <span class="str">#58a6ff</span>; }
+    <span class="cmd">a:hover</span>     { <span class="attr">text-decoration</span>: <span class="str">underline</span>; }
+&lt;/<span class="tag">style</span>&gt;</code></pre>
+
+<h2 id="token-palette">4. Terminal Color Token Palette <a href="#toc" class="top-link">[^]</a></h2>
+Tokens map to logical elements of shell and editor sessions:
+
+<pre class="term"><code><span class="prompt">></span>           <span class="comment">&lt;-- .prompt  (Cyan #58a6ff)</span>
+<span class="cmd">git</span>         <span class="comment">&lt;-- .cmd     (Bold light blue #79c0ff)</span>
+<span class="sub">checkout</span>    <span class="comment">&lt;-- .sub     (Amber #ffa657)</span>
+<span class="flag">-b</span>          <span class="comment">&lt;-- .flag    (Purple #d2a8ff)</span>
+<span class="arg">newbranch</span>   <span class="comment">&lt;-- .arg     (Crisp white #e6edf3)</span>
+<span class="str">"message"</span>   <span class="comment">&lt;-- .str     (Soft blue #a5d6ff)</span>
+<span class="key">Ctrl+b</span>      <span class="comment">&lt;-- .key     (Gold #f2cc60)</span>
+<span class="hash">00fa98c</span>     <span class="comment">&lt;-- .hash    (Gold #f2cc60)</span>
+<span class="branch">master</span>      <span class="comment">&lt;-- .branch  (Terminal green #7ee787)</span>
+<span class="remote">origin/main</span> <span class="comment">&lt;-- .remote  (Coral red #ff7b72)</span>
+<span class="add">+ added</span>     <span class="comment">&lt;-- .add     (Green #7ee787)</span>
+<span class="del">- removed</span>   <span class="comment">&lt;-- .del     (Red #ff7b72)</span>
+<span class="comment"># comment</span>   <span class="comment">&lt;-- .comment (Muted grey #8b949e)</span></code></pre>
+
+<h2 id="toc-pattern">5. Terminal Table of Contents Frame <a href="#toc" class="top-link">[^]</a></h2>
+Place the TOC at the top of the body immediately below the title:
+
+<pre class="term"><code>&lt;<span class="tag">div</span> <span class="attr">id</span>=<span class="str">"toc"</span> <span class="attr">class</span>=<span class="str">"toc-box"</span>&gt;
+&lt;<span class="tag">span</span> <span class="attr">class</span>=<span class="str">"toc-header"</span>&gt;Table of Contents:&lt;/<span class="tag">span</span>&gt;
+------------------
+&lt;<span class="tag">span</span> <span class="attr">class</span>=<span class="str">"toc-cat"</span>&gt;Category One:&lt;/<span class="tag">span</span>&gt;
+    &lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="str">"#section-1"</span>&gt;first topic title&lt;/<span class="tag">a</span>&gt;
+    &lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="str">"#section-2"</span>&gt;second topic title&lt;/<span class="tag">a</span>&gt;
+
+&lt;<span class="tag">span</span> <span class="attr">class</span>=<span class="str">"toc-cat"</span>&gt;Category Two:&lt;/<span class="tag">span</span>&gt;
+    &lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="str">"#section-3"</span>&gt;third topic title&lt;/<span class="tag">a</span>&gt;
+&lt;/<span class="tag">div</span>&gt;</code></pre>
+
+<h2 id="anchors">6. Anchor Links & Header Back-Links ([^]) <a href="#toc" class="top-link">[^]</a></h2>
+Every section heading must specify the corresponding `id` and include a back-to-top jump link:
+
+<pre class="term"><code>&lt;<span class="tag">h2</span> <span class="attr">id</span>=<span class="str">"section-1"</span>&gt;First Topic Title &lt;<span class="tag">a</span> <span class="attr">href</span>=<span class="str">"#toc"</span> <span class="attr">class</span>=<span class="str">"top-link"</span>&gt;[^]&lt;/<span class="tag">a</span>&gt;&lt;/<span class="tag">h2</span>&gt;</code></pre>
+
+Clicking `[^]` instantly scrolls the viewport back to `#toc`.
+
+<h2 id="workflow">7. Step-by-Step Document Construction <a href="#toc" class="top-link">[^]</a></h2>
+When converting raw notes into a tutorial:
+1. <b>Add the header and CSS</b> boilerplate into `&lt;head&gt;`.
+2. <b>Identify the logical sections</b> and write headings (`&lt;h2&gt;` with `id="..."`).
+3. <b>Add the `&lt;div id="toc"&gt;`</b> with categorized anchor links.
+4. <b>Wrap command sequences</b> in `&lt;pre class="term"&gt;&lt;code&gt;...&lt;/code&gt;&lt;/pre&gt;`.
+5. <b>Apply token spans</b> to prompts, executables, subcommands, flags, and comments.
+
+<h2 id="nvim-visual">8. Visual Selection Wrapping in Neovim <a href="#toc" class="top-link">[^]</a></h2>
+In Neovim, you can map a keybinding to wrap visual line selections into terminal code blocks.
+Add to your `init.lua`:
+
+<pre class="term"><code><span class="comment">-- Wrap visual selection in terminal pre block</span>
+vim.keymap.set(<span class="str">"v"</span>, <span class="str">"&lt;leader&gt;tc"</span>, <span class="str">[[c&lt;pre class="term"&gt;&lt;code&gt;&lt;CR&gt;&lt;C-r&gt;"&lt;CR&gt;&lt;/code&gt;&lt;/pre&gt;&lt;Esc&gt;]]</span>, { remap = <span class="val">false</span> })</code></pre>
+
+Or in legacy `init.vim`:
+<pre class="term"><code><span class="cmd">vnoremap</span> <span class="key">&lt;leader&gt;tc</span> c&lt;pre class="term"&gt;&lt;code&gt;&lt;CR&gt;&lt;C-r&gt;"&lt;CR&gt;&lt;/code&gt;&lt;/pre&gt;&lt;Esc&gt;</code></pre>
+
+<h2 id="nvim-substitutions">9. Regex Substitutions for Fast Tagging <a href="#toc" class="top-link">[^]</a></h2>
+Execute these commands across a visual selection (`:'&lt;,'&gt;`) or buffer in Neovim:
+
+<pre class="term"><code><span class="comment">" Tag prompt symbols</span>
+<span class="cmd">:s</span>/^> /&lt;span class="prompt"&gt;&gt;&lt;\/span&gt; /g
+
+<span class="comment">" Tag git executable</span>
+<span class="cmd">:s</span>/\&lt;git\&gt;/&lt;span class="cmd"&gt;git&lt;\/span&gt;/g
+
+<span class="comment">" Tag flags (-b, --oneline, etc.)</span>
+<span class="cmd">:s</span>/\(--\?[a-zA-Z0-9_-]\+\)/&lt;span class="flag"&gt;\1&lt;\/span&gt;/g
+
+<span class="comment">" Tag inline comments</span>
+<span class="cmd">:s</span>/\(#.*\)$/&lt;span class="comment"&gt;\1&lt;\/span&gt;/g</code></pre>
+
+<h2 id="batch-script">10. Batch Automation Python Script <a href="#toc" class="top-link">[^]</a></h2>
+For converting plain `.txt` or untagged `.html` files, run this Python script:
+
+<pre class="term"><code><span class="cmd">import</span> <span class="arg">re</span>
+
+<span class="sub">def</span> <span class="cmd">tag_line</span>(line):
+    <span class="comment"># 1. Prompt</span>
+    line = re.sub(<span class="str">r'^(>\s*|\$\s*)'</span>, <span class="str">r'&lt;span class="prompt"&gt;\1&lt;/span&gt;'</span>, line)
+    <span class="comment"># 2. Primary command</span>
+    line = re.sub(<span class="str">r'\b(git|tmux|ip|nmcli|sudo|vim|ssh-add)\b'</span>, <span class="str">r'&lt;span class="cmd"&gt;\1&lt;/span&gt;'</span>, line)
+    <span class="comment"># 3. Subcommand</span>
+    line = re.sub(<span class="str">r'\b(checkout|branch|commit|push|pull|rebase|merge|stash|diff|log|add|show|status|addr|route|con)\b'</span>, <span class="str">r'&lt;span class="sub"&gt;\1&lt;/span&gt;'</span>, line)
+    <span class="comment"># 4. Flags</span>
+    line = re.sub(<span class="str">r'(\-{1,2}[a-zA-Z0-9_\-]+)'</span>, <span class="str">r'&lt;span class="flag"&gt;\1&lt;/span&gt;'</span>, line)
+    <span class="comment"># 5. Comments</span>
+    line = re.sub(<span class="str">r'(#.*)$'</span>, <span class="str">r'&lt;span class="comment"&gt;\1&lt;/span&gt;'</span>, line)
+    <span class="sub">return</span> line</code></pre>
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>

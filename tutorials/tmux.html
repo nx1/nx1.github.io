@@ -2,54 +2,138 @@
 <head>
     <title>nx1.info | tmux Cheat Sheet</title>
     <link rel="icon" type="image/x-icon" href="../favicon.png">
-	<link rel="stylesheet" type="text/css" href="../style.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        pre.term {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-left: 3px solid #58a6ff;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: inherit;
+        }
+        pre.term code {
+            font-family: inherit;
+            color: #c9d1d9;
+        }
+        .prompt { color: #58a6ff; }
+        .cmd { color: #79c0ff; font-weight: bold; }
+        .sub { color: #ffa657; }
+        .flag { color: #d2a8ff; }
+        .arg { color: #e6edf3; }
+        .key { color: #f2cc60; font-weight: bold; }
+        .action { color: #c9d1d9; }
+        .comment { color: #8b949e; }
+        .prefix { color: #ff7b72; font-weight: bold; }
+        .toc-box {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin: 14px 0 20px 0;
+            display: inline-block;
+        }
+        .toc-header {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        .toc-cat {
+            color: #7ee787;
+            font-weight: bold;
+        }
+        .top-link {
+            font-size: 0.75em;
+            color: #8b949e;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .top-link:hover {
+            color: #58a6ff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
+
 <body>
-<pre>
+<div style="font-family: monospace; white-space: pre;">
 <h1>nx1.info | tmux Cheat Sheet</h1>
 See also: <a href="https://www.pluralsight.com/resources/blog/cloud/tmux-cheat-sheet">pluralsight</a>
 
-Session commands:
-:new -s session-name
+<div id="toc" class="toc-box">
+<span class="toc-header">Table of Contents:</span>
+------------------
+<span class="toc-cat">Prefix & Basics:</span>
+    <a href="#prefix">command prefix (ctrl+b)</a>
+    <a href="#general">general commands</a>
 
-Ctrl+b : Command Prefix
+<span class="toc-cat">Windows & Panes:</span>
+    <a href="#sessions">sessions management</a>
+    <a href="#windows">windows management</a>
+    <a href="#panes">panes & splits</a>
 
-All the following require the command prefix first:
+<span class="toc-cat">Copy & Navigation:</span>
+    <a href="#movement">copy mode & movement</a>
 
-General:
-? : See all commands
-w : See all panes and windows
+<span class="toc-cat">CLI Commands:</span>
+    <a href="#cli-commands">tmux cli commands</a>
+</div>
 
-Sessions:      Windows:           Panes:
-$ : Rename     C : Create         % : vsplit
-D : Detach     N : Next           " : hsplit
-) : Next       P : Previous       ! : Pane to window
-( : Previous   L : Last           
-               , : Rename
-               . : Change Number
-               F : Search
+<h2 id="prefix">Command Prefix: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prefix">Ctrl+b</span>  <span class="comment"># Press before any of the keybindings below</span></code></pre>
 
-Movement:
-[ : Enter copy mode
-] : Paste
+<h2 id="general">General Commands: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">?</span>  : <span class="action">See all keybindings</span>
+<span class="key">w</span>  : <span class="action">Interactive list of all windows & panes across sessions</span></code></pre>
 
-Copy Mode:
-space : start selection
-enter : copy selection
-esc   : clear selection
-G     : Go to bottom
-g     : Go to top
-/     : search
+<h2 id="sessions">Sessions: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prompt">:</span><span class="sub">new</span> <span class="flag">-s</span> <span class="arg">session-name</span>   <span class="comment"># Create session from command prompt</span>
+<span class="key">$</span>                     : <span class="action">Rename current session</span>
+<span class="key">d</span>                     : <span class="action">Detach from session</span>
+<span class="key">(</span>                     : <span class="action">Switch to previous session</span>
+<span class="key">)</span>                     : <span class="action">Switch to next session</span></code></pre>
 
+<h2 id="windows">Windows: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">c</span>  : <span class="action">Create new window</span>
+<span class="key">n</span>  : <span class="action">Next window</span>
+<span class="key">p</span>  : <span class="action">Previous window</span>
+<span class="key">l</span>  : <span class="action">Last active window</span>
+<span class="key">,</span>  : <span class="action">Rename current window</span>
+<span class="key">.</span>  : <span class="action">Change window index number</span>
+<span class="key">f</span>  : <span class="action">Find / search window by name</span></code></pre>
 
-cli commands:
-> tmux ls    : list sessions.
+<h2 id="panes">Panes: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">%</span>  : <span class="action">Vertical split (side-by-side)</span>
+<span class="key">"</span>  : <span class="action">Horizontal split (top-and-bottom)</span>
+<span class="key">!</span>  : <span class="action">Break current pane out into its own window</span>
+<span class="key">x</span>  : <span class="action">Kill current pane</span>
+<span class="key">z</span>  : <span class="action">Toggle pane zoom (fullscreen)</span>
+<span class="key">q</span>  : <span class="action">Briefly display pane index numbers</span></code></pre>
 
-Move window between sessions:
-tmux move-window -s session2:0 -t session1:
+<h2 id="movement">Copy Mode & Movement: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="key">[</span>      : <span class="action">Enter copy mode (scrollback)</span>
+<span class="key">]</span>      : <span class="action">Paste most recently copied buffer</span>
 
-               
+<span class="comment"># Inside Copy Mode:</span>
+<span class="key">Space</span>  : <span class="action">Start selection</span>
+<span class="key">Enter</span>  : <span class="action">Copy selection and exit</span>
+<span class="key">Esc</span>    : <span class="action">Clear selection</span>
+<span class="key">g</span>      : <span class="action">Jump to top of history</span>
+<span class="key">G</span>      : <span class="action">Jump to bottom of history</span>
+<span class="key">/</span>      : <span class="action">Search forward</span>
+<span class="key">?</span>      : <span class="action">Search backward</span></code></pre>
+
+<h2 id="cli-commands">CLI Commands: <a href="#toc" class="top-link">[^]</a></h2>
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">tmux</span> <span class="sub">ls</span>                                          <span class="comment"># List running sessions</span>
+<span class="prompt">></span> <span class="cmd">tmux</span> <span class="sub">attach</span> <span class="flag">-t</span> <span class="arg">session-name</span>                      <span class="comment"># Attach to target session</span>
+<span class="prompt">></span> <span class="cmd">tmux</span> <span class="sub">new</span> <span class="flag">-s</span> <span class="arg">session-name</span>                         <span class="comment"># Create new named session</span>
+<span class="prompt">></span> <span class="cmd">tmux</span> <span class="sub">move-window</span> <span class="flag">-s</span> <span class="arg">session2:0</span> <span class="flag">-t</span> <span class="arg">session1:</span>       <span class="comment"># Move window between sessions</span>
+<span class="prompt">></span> <span class="cmd">tmux</span> <span class="sub">kill-session</span> <span class="flag">-t</span> <span class="arg">session-name</span>                <span class="comment"># Terminate session</span></code></pre>
+
 <hr>
 <div id="clock" onload="currentTime()"></div>
 <script type="text/javascript" src="../clock.js"></script>
