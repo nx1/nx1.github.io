@@ -11,20 +11,24 @@ const CATEGORICAL_COLUMNS = [
     { displayName: 'Album', dataKey: 'album' },
     { displayName: 'Label', dataKey: 'label' },
     { displayName: 'Catalog', dataKey: 'catalog' },
-    { displayName: 'Year', dataKey: 'date' }
+    { displayName: 'Year', dataKey: 'date' },
+    { displayName: 'BPM', dataKey: 'bpm' },
+    { displayName: 'Key', dataKey: 'key' }
 ];
 
 function calculateAggregations(group) {
     const bangers = group.filter(track => track.rating === 5).length;
     const ratings = group.map(track => track.rating).filter(r => typeof r === 'number');
+    const bpms = group.map(track => track.bpm).filter(b => typeof b === 'number' && !isNaN(b));
+    const meanBpm = bpms.length > 0 ? Math.round(bpms.reduce((a, b) => a + b, 0) / bpms.length) : 'N/A';
     if (ratings.length === 0) {
-        return { min: 'N/A', max: 'N/A', mean: 'N/A', bangers, count: group.length };
+        return { min: 'N/A', max: 'N/A', mean: 'N/A', meanBpm, bangers, count: group.length };
     }
     const min = Math.min(...ratings);
     const max = Math.max(...ratings);
     const sum = ratings.reduce((a, b) => a + b, 0);
     const mean = (sum / ratings.length).toFixed(2);
-    return { min, max, mean, bangers, count: group.length };
+    return { min, max, mean, meanBpm, bangers, count: group.length };
 }
 
 function groupBy(data, keys) {
@@ -60,6 +64,7 @@ function renderAggregationTable() {
         { displayName: 'Min Rating', key: 'min' },
         { displayName: 'Max Rating', key: 'max' },
         { displayName: 'Mean Rating', key: 'mean' },
+        { displayName: 'Mean BPM', key: 'meanBpm' },
         { displayName: 'Bangers', key: 'bangers' },
         { displayName: 'Tracks', key: 'count' },
     ];
@@ -82,6 +87,7 @@ function renderAggregationTable() {
             <td>${row.aggregations.min}</td>
             <td>${row.aggregations.max}</td>
             <td>${row.aggregations.mean}</td>
+            <td>${row.aggregations.meanBpm}</td>
             <td>${row.aggregations.bangers}</td>
             <td>${row.aggregations.count}</td>
         </tr>`;
@@ -124,7 +130,9 @@ function processAndRenderAggregations() {
                 return asc ? aVal - bVal : bVal - aVal;
             }
             if (typeof aVal === 'string' && typeof bVal === 'string') {
-                return asc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                return asc
+                    ? aVal.localeCompare(bVal, undefined, { numeric: true, sensitivity: 'base' })
+                    : bVal.localeCompare(aVal, undefined, { numeric: true, sensitivity: 'base' });
             }
             return 0;
         });

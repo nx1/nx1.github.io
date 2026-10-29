@@ -167,6 +167,8 @@ html {
         2fr       /* LABEL */
         1fr       /* CATALOG */
         0.3fr     /* YEAR */
+        0.3fr     /* BPM */
+        0.3fr     /* KEY */
         0.3fr     /* DURATION */
         0.3fr     /* BITRATE */
         0.8fr;    /* RATING */
@@ -879,8 +881,246 @@ html {
     color: #ffffff;
 }
 
+/* BPM Distribution and 2D Key x BPM Heatmap Matrix Styling */
+.stats-header-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    max-width: 780px;
+}
 
+.terminal-toggle-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
 
+.terminal-toggle-btn {
+    background: #111;
+    border: 1px solid #333;
+    color: #888;
+    font-family: 'Fira Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
 
+.terminal-toggle-btn:hover {
+    color: #fff;
+    border-color: #4a8;
+    background: #181818;
+}
 
+.terminal-toggle-btn.active {
+    color: #00ff66;
+    border-color: #4a8;
+    background: #162820;
+    font-weight: 700;
+}
 
+.toggle-divider {
+    color: #444;
+    font-size: 11px;
+    padding: 0 2px;
+}
+
+.bpm-stats-table {
+    max-width: 780px;
+}
+
+.bpm-label-cell {
+    white-space: nowrap;
+}
+
+.bpm-range-text {
+    color: #fff;
+    font-weight: 700;
+    display: inline-block;
+    min-width: 68px;
+}
+
+.bpm-desc-text {
+    color: #777;
+    font-size: 10px;
+    margin-left: 6px;
+}
+
+.year-stats-table tr:hover .bpm-desc-text {
+    color: #bbb;
+}
+
+.bar-fill.banger-fill {
+    background: #00cc55;
+}
+
+.year-stats-table tr:hover .banger-fill {
+    background: #00ff66;
+    box-shadow: 0 0 5px rgba(0, 255, 102, 0.7);
+}
+
+.matrix-subtitle {
+    color: #888;
+    font-size: 10px;
+    margin-bottom: 8px;
+    font-family: 'Fira Mono', monospace;
+}
+
+.key-bpm-matrix-table {
+    width: 100%;
+    max-width: 780px;
+    border-collapse: collapse;
+    background: #111;
+    color: #bbb;
+    font-size: 11px;
+    font-family: 'Fira Mono', monospace;
+    border: 1px solid #333;
+}
+
+.key-bpm-matrix-table th {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 5px 6px;
+    text-align: center;
+    color: #fff;
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.key-bpm-matrix-table th.matrix-key-header {
+    text-align: left;
+    padding-left: 8px;
+    width: 85px;
+}
+
+.key-bpm-matrix-table th.matrix-total-header {
+    color: #4a8;
+    font-weight: 700;
+    width: 60px;
+}
+
+.key-bpm-matrix-table td {
+    border: 1px solid #222;
+    padding: 4px 6px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.matrix-key-cell {
+    text-align: left !important;
+    padding-left: 8px !important;
+    background: #151515;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.matrix-key-cell:hover {
+    background: #222;
+    color: #00ff66;
+}
+
+.open-key-code {
+    color: #fff;
+    font-weight: 700;
+    display: inline-block;
+    width: 30px;
+}
+
+.musical-key-code {
+    color: #777;
+    font-size: 10px;
+}
+
+.matrix-cell-empty {
+    color: #333;
+}
+
+.matrix-cell-filled {
+    color: #e0e0e0;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.matrix-cell-peak {
+    color: #00ff66;
+    font-weight: 700;
+}
+
+.matrix-cell-filled:hover {
+    border: 1px solid #00ff66 !important;
+    color: #ffffff;
+    box-shadow: inset 0 0 6px rgba(0, 255, 102, 0.5);
+}
+
+.matrix-cell-selected {
+    border: 1px solid #00ff66 !important;
+    box-shadow: inset 0 0 8px rgba(0, 255, 102, 0.85);
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.matrix-row-total {
+    background: #151515;
+    color: #4a8;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.matrix-row-total:hover {
+    color: #00ff66;
+    background: #222;
+}
+
+.matrix-total-label {
+    text-align: left !important;
+    padding-left: 8px !important;
+    background: #1a1a1a;
+    color: #fff;
+    font-weight: 700;
+}
+
+.matrix-col-total {
+    background: #1a1a1a;
+    color: #4a8;
+    font-weight: 700;
+}
+
+.matrix-grand-total {
+    background: #1a1a1a;
+    color: #00ff66;
+    font-weight: 700;
+}
+
+.matrix-drilldown {
+    margin-top: 12px;
+    max-width: 780px;
+    border: 1px solid #4a8;
+    background: #0d1310;
+    padding: 8px;
+}
+
+.matrix-drilldown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: 'Fira Mono', monospace;
+    font-size: 11px;
+    color: #00ff66;
+}
+
+.matrix-drilldown-list {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.matrix-drilldown-more {
+    margin-top: 6px;
+    font-size: 10px;
+    color: #888;
+    font-family: 'Fira Mono', monospace;
+}
