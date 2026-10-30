@@ -1,0 +1,452 @@
+<html>
+<head>
+    <title>nx1.info | Fixing Threading Bugs</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.png">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        pre.term {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-left: 3px solid #58a6ff;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 6px 0;
+            overflow-x: auto;
+            font-family: inherit;
+        }
+        pre.term code {
+            font-family: inherit;
+            color: #c9d1d9;
+        }
+        .prompt { color: #58a6ff; }
+        .cmd { color: #79c0ff; font-weight: bold; }
+        .sub { color: #ffa657; }
+        .flag { color: #d2a8ff; }
+        .arg { color: #e6edf3; }
+        .key { color: #f2cc60; font-weight: bold; }
+        .val { color: #7ee787; }
+        .str { color: #a5d6ff; }
+        .comment { color: #8b949e; }
+        .hash { color: #f2cc60; font-weight: bold; }
+        .branch { color: #7ee787; font-weight: bold; }
+        .remote { color: #ff7b72; }
+        .head { color: #79c0ff; }
+        .add { color: #7ee787; }
+        .del { color: #ff7b72; }
+        .path { color: #a5d6ff; text-decoration: underline; }
+        .toc-box {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin: 14px 0 20px 0;
+            display: inline-block;
+        }
+        .toc-header {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        .toc-cat {
+            color: #7ee787;
+            font-weight: bold;
+        }
+        .top-link {
+            font-size: 0.75em;
+            color: #8b949e;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .top-link:hover {
+            color: #58a6ff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div style="font-family: monospace; white-space: pre;">
+<h1>nx1.info | Fixing Threading Bugs (Kafka, Qt, and Concurrency)</h1>
+
+<div id="toc" class="toc-box">
+<span class="toc-header">Table of Contents:</span>
+------------------
+<span class="toc-cat">Decision Tree Architecture:</span>
+    <a href="#action-prompts">action prompts & requires logic</a>
+    <a href="#deferred-fields">deferred sensor field mapping</a>
+
+<span class="toc-cat">The Incident:</span>
+    <a href="#observed-bug">the observed bug (intermittent blinking)</a>
+    <a href="#reproduction-logs">reproduction log analysis</a>
+
+<span class="toc-cat">Root Cause Analysis:</span>
+    <a href="#why-this-happened">the three interacting components</a>
+    <a href="#race-sequence">the event-loop race condition sequence</a>
+    <a href="#why-one-disruptor">why only one disruptor leaked</a>
+
+<span class="toc-cat">The Fix:</span>
+    <a href="#in-tray-analogy">the in-tray analogy & the epoch guard</a>
+    <a href="#code-changes">code implementation (deepstream & main gui)</a>
+    <a href="#sticky-disruptors">sticky live disruptors & ui synchronization</a>
+    <a href="#defect-priority">prioritizing critical defects on screen</a>
+</div>
+
+
+<h2 id="action-prompts">Action Prompts <a href="#toc" class="top-link">[^]</a></h2>
+On the smartbench we have the ability to indicate to the user that a specific action
+should occur.
+
+We call this an "action_prompt" and currently it supports two actions:
+    1. Take a photo
+    2. Take a spectrometer scan
+
+The way that this information is transmitted to the user is that the relevant section
+on the GUI will blink.
+
+The action prompts are triggered by logic in the decision tree.
+
+The decision tree works by iterating over a list of "rules" sorted by priority known as a "rule set".
+Each rule defines a final outcome (such as a recycling grade) and one or more conditions.
+If all conditions for a rule evaluate to true, that rule is selected.
+
+A rule may also have an optional "requires" field that specifies which data must be captured for
+the rule to be finalised and evaluate as true.
+The requires field can be one of four possible states:
+
+<pre class="term"><code><span class="key">requires</span>: []                     <span class="comment"># No requirements are specified for the rule</span>
+<span class="key">requires</span>: [<span class="str">'photos'</span>]             <span class="comment"># A deliberate (macro) photo taken by the user is required</span>
+<span class="key">requires</span>: [<span class="str">'material'</span>]           <span class="comment"># A deliberate spectrometer scan is required</span>
+<span class="key">requires</span>: [<span class="str">'photos'</span>, <span class="str">'material'</span>] <span class="comment"># Both a photo and a spectrometer scan are required</span></code></pre>
+
+When the decision tree encounters a rule that has a non-empty "requires" field,
+it checks the incoming data for the boolean flags "has_photo" and "has_material".
+If any are missing, they are stored as "missing_requires".
+
+
+<h2 id="deferred-fields">Deferred Sensor Field Mapping <a href="#toc" class="top-link">[^]</a></h2>
+The data fields that are dependent on either photos or spectrometer scan (material)
+are mapped in the following way:
+
+<pre class="term"><code><span class="key">REQUIREMENT_FIELDS</span> = {
+    <span class="str">'material'</span>: {<span class="str">'material'</span>, <span class="str">'material_percent'</span>, <span class="str">'structure'</span>},
+    <span class="str">'photo'</span>   : {<span class="str">'colour'</span>},
+}</code></pre>
+
+Any conditions that check these fields are deferred (skipped) while the sensor measurement is missing.
+
+When a rule is evaluated, if all the non-deferred conditions are true but the rule has missing requirements,
+it will treat that rule as being "deferred" or "pending" and store the appropriate action prompt.
+
+NOTE: When both a photo and a spectrometer scan are required, the tree prompts for
+them sequentially in list order: it first requests the photo, and once that is
+captured, it advances to prompt for the spectrometer scan. Only after both
+requirements are satisfied are all deferred conditions evaluated to finalize
+the rule.
+
+The decision tree will then continue iterating through the rule set and attach
+the action prompt to whichever rule is eventually returned.
+
+
+<h2 id="observed-bug">The Observed Bug <a href="#toc" class="top-link">[^]</a></h2>
+During the operation of the smartbench we observed the following issue:
+
+A pair of jeans with holes and metal hardware was put through the smartbench.
+Both of these disruptors were identified by live detection and correctly stored:
+
+<pre class="term"><code><span class="key">ml_live_detection</span>: [<span class="str">"metal"</span>, <span class="str">"damage"</span>]</code></pre>
+
+These disruptors correctly appeared on the GUI.
+
+The decision tree evaluated the presence of these disruptors and hit the following rule:
+
+<pre class="term"><code>{<span class="key">"name"</span>       : <span class="str">"Cotton Recycle"</span>,
+ <span class="key">"conditions"</span> : [{<span class="key">"field"</span>: <span class="str">"material"</span>,         <span class="key">"oper"</span>: <span class="str">"in"</span>, <span class="key">"value"</span>: [<span class="str">"1"</span>]},
+                 {<span class="key">"field"</span>: <span class="str">"material_percent"</span>, <span class="key">"oper"</span>: <span class="str">"=="</span>, <span class="key">"value"</span>: <span class="val">100</span>},
+                 {<span class="key">"field"</span>: <span class="str">"disruptors"</span>,       <span class="key">"oper"</span>: <span class="str">"in"</span>, <span class="key">"value"</span>: [<span class="str">"damage"</span>, <span class="str">"stain"</span>]}],
+ <span class="key">"requires"</span>   : [<span class="str">"material"</span>]}</code></pre>
+
+Because the disruptors condition was true but a spectrometer scan had not yet
+been taken, the tree returned the action prompt "material", causing the
+spectrometer section of the GUI to blink.
+
+Next, the garment was removed from the scale. This auto-submitted the report, created
+a fresh SampleReport for the next garment, and reset the GUI blocks.
+
+However, intermittently, the spectrometer section on the GUI would immediately start
+blinking again. The disruptors section on the GUI showed no disruptors ("Disruptors (0):"),
+yet looking under the hood at the logs during the transition between the two sample IDs
+(<span class="str">6caHeCQoZX</span> -> <span class="str">TKUEtYsWhE</span>), we can see the exact moment the disruptor leaked:
+
+
+<h3 id="reproduction-logs">Reproduction Log Analysis <a href="#toc" class="top-link">[^]</a></h3>
+<pre class="term"><code><span class="comment"># 1. Old sample (6caHeCQoZX) completes with live disruptors:</span>
+<span class="arg">2026-10-29 16:32:46 [INFO] [KafkaMessageHandler]</span> {<span class="key">'sample_id'</span>: <span class="str">'6caHeCQoZX'</span>, ..., <span class="key">'ml_live_detection'</span>: [<span class="str">'metal'</span>, <span class="str">'damage'</span>]}
+
+<span class="comment"># 2. Garment removed -&gt; New sample created clean:</span>
+<span class="arg">2026-10-29 16:32:51 [INFO] [KafkaMessageHandler]</span> {<span class="key">'sample_id'</span>: <span class="str">'TKUEtYsWhE'</span>, ..., <span class="key">'ml_live_detection'</span>: []}
+<span class="arg">2026-10-29 16:32:51 [INFO] [KafkaMessageHandler]</span> Received outcome message: {<span class="key">'name'</span>: <span class="str">'Waste'</span>, ..., <span class="key">'action_prompt'</span>: <span class="val">None</span>}
+
+<span class="comment"># 3. Same second (16:32:51), 'damage' suddenly leaks into the new sample:</span>
+<span class="arg">2026-10-29 16:32:51 [INFO] [KafkaMessageHandler]</span> {<span class="key">'sample_id'</span>: <span class="str">'TKUEtYsWhE'</span>, ..., <span class="key">'ml_live_detection'</span>: [<span class="str">'damage'</span>]}
+
+<span class="comment"># 4. Decision tree re-evaluates and immediately fires the action prompt:</span>
+<span class="arg">2026-10-29 16:32:51 [INFO] [KafkaMessageHandler]</span> Received outcome message: {<span class="key">'name'</span>: <span class="str">'Waste'</span>, ..., <span class="key">'action_prompt'</span>: <span class="str">'material'</span>}</code></pre>
+
+Because the leaked disruptor satisfied the condition on the "Cotton Recycle" rule, the
+rule was once again treated as deferred, causing the spectrometer action prompt to fire
+on a clean, empty bench while the GUI showed "Disruptors (0):".
+
+
+<h2 id="why-this-happened">Why This Happened <a href="#toc" class="top-link">[^]</a></h2>
+This bug was caused by a race condition between two separate threads communicating
+across the Qt event loop, combined with an asymmetrical state-clearing mechanism.
+
+To understand it, we need to look at three moving parts:
+
+    1. DeepStream Video Thread:
+       A native background GStreamer pipeline thread that runs object detection (YOLO)
+       at 20–30 FPS and maintains a 30-frame rolling window of detected disruptors.
+       When a disruptor appears in 7 or more frames, it emits a Qt signal:
+       `disruptor_keys_signal`.
+
+    2. Qt Main GUI Thread:
+       Runs the user interface and event loop. It receives `disruptor_keys_signal` via
+       a `Qt.QueuedConnection`, renders disruptor widgets on the screen, and broadcasts
+       newly seen disruptor keys to Kafka on the `ml_live_detection` topic.
+
+    3. DataManager (Kafka Service):
+       An external process that tracks the current SampleReport. Whenever it receives
+       a message on `ml_live_detection`, it updates the sample's disruptor list and
+       re-evaluates the decision tree.
+
+
+<h3 id="race-sequence">The Event-Loop Race Condition Sequence <a href="#toc" class="top-link">[^]</a></h3>
+Here is the exact chain of events that produced the bug:
+
+Step 1: The old garment triggers a detection
+While the operator is lifting the damaged jeans off the scale, DeepStream processes
+the final frames where the garment is still in camera view and emits:
+
+<pre class="term"><code><span class="arg">self</span>.<span class="sub">disruptor_keys_signal</span>.<span class="cmd">emit</span>({<span class="str">'damage'</span>})</code></pre>
+
+Because this is a cross-thread signal (`Qt.QueuedConnection`), Qt places this event
+at the back of the Main GUI thread's FIFO event queue.
+
+
+Step 2: The weight removal triggers a reset
+At the exact same moment, the weighing scale detects weight removal and broadcasts
+to Kafka. DataManager auto-submits the old garment and sends a new `sample_id`.
+
+The GUI thread handles the new `sample_id` immediately and calls `reset_blocks()`:
+
+<pre class="term"><code><span class="arg">self</span>.<span class="arg">results_block</span>.<span class="sub">reset_block</span>()         <span class="comment"># Clears GUI rows & resets last_sent_disruptor_types = set()</span>
+<span class="arg">self</span>.<span class="arg">deepstream</span>.<span class="sub">reset_garment_lifetime</span>() <span class="comment"># Clears DeepStream's rolling window deque</span></code></pre>
+
+
+Step 3: The stale queued signal fires on the new sample
+Crucially, `reset_blocks()` runs synchronously on the GUI thread. When it finishes,
+the GUI thread returns to its event queue and finally pops the pending signal from
+Step 1:
+
+<pre class="term"><code><span class="sub">on_disruptor_keys</span>({<span class="str">'damage'</span>})</code></pre>
+
+Because `reset_block()` had just wiped `last_sent_disruptor_types` back to an empty set,
+the GUI thought this was a brand-new detection for the *new* garment! It immediately
+published to Kafka:
+
+<pre class="term"><code><span class="arg">producer</span>.<span class="cmd">send</span>(<span class="str">'ml_live_detection'</span>, {<span class="key">'live_detection'</span>: [<span class="str">'damage'</span>]})</code></pre>
+
+DataManager received this and permanently attached `'damage'` to the new sample.
+
+
+Step 4: The GUI wipes the disruptor from sight
+A fraction of a second later, the camera is pointing at an empty pan. DeepStream's
+sliding window now has zero detections and emits:
+
+<pre class="term"><code><span class="arg">self</span>.<span class="sub">disruptor_keys_signal</span>.<span class="cmd">emit</span>(<span class="cmd">set</span>())</code></pre>
+
+When the GUI received this empty set, its handler previously executed:
+
+<pre class="term"><code><span class="cmd">if not</span> <span class="arg">disruptor_types_set</span>:
+    <span class="arg">self</span>.<span class="sub">clear_disruptors</span>()
+    <span class="cmd">return</span></code></pre>
+
+This wiped all disruptor rows from the screen and updated the title to `Disruptors (0):`.
+However, it did NOT unsend or clear the disruptor that was already published to Kafka!
+
+
+<h3 id="asymmetric-exit">Why Only One Disruptor Leaked <a href="#toc" class="top-link">[^]</a></h3>
+You might wonder why only 'damage' leaked into the new sample report when the original
+sample (6caHeCQoZX) had both 'metal' and 'damage'.
+
+First, hardware metal detection is a discrete sensor event that resets cleanly on sample
+rollover. But live video disruptors rely on DeepStream's continuous 30-frame rolling window.
+
+Second, a physical garment does not vanish instantaneously in a single frame. When the
+operator drags or lifts the jeans away, different parts of the garment leave the camera's
+field of view at different times:
+
+    1. One section clears the camera frame first.
+    2. Over the next few frames, its detections are pushed out of DeepStream's 30-item
+       rolling deque until its count drops below the 7-detection threshold.
+    3. Meanwhile, the trailing portion of the fabric lingers in view, maintaining a count
+       >= 7 in the deque.
+
+As a result, right at the moment of weight removal and sample reset, DeepStream's
+emitted set had already narrowed from multiple disruptors down to just {'damage'}.
+This lingering trailing disruptor was the sole event in-flight in the event queue
+when the reset occurred.
+
+
+The Result:
+The GUI showed zero disruptors, but DataManager still held `damage` in the sample report.
+The decision tree evaluated the sample, matched the deferred "Cotton Recycle" rule,
+and sent back `action_prompt: "material"`.
+
+The operator was left looking at an empty bench with no disruptors displayed, wondering
+why on earth the spectrometer prompt was blinking.
+
+
+<h2 id="in-tray-analogy">The Fix <a href="#toc" class="top-link">[^]</a></h2>
+To fix this bug properly, we had to address two distinct problems:
+1. Prevent stale in-flight messages from leaking across the thread boundary on a reset.
+2. Synchronize the GUI display lifecycle with the Kafka / SampleReport lifecycle.
+
+
+<h3>Part 1: The In-Tray Analogy and the "Epoch" Guard</h3>
+To understand why the message leaked, think of the two threads as two people working
+in an office:
+
+    - Worker A (DeepStream Thread): Sits at a window monitoring the camera feed.
+    - Worker B (Main GUI Thread): Sits at a desk managing the customer file and whiteboard.
+
+Because Worker B is often busy drawing buttons or handling network packets, Worker A cannot
+interrupt them directly. Instead, Worker A writes notes and drops them into an in-tray
+on Worker B's desk:
+
+<pre class="term"><code><span class="cmd">Worker A</span> (<span class="str">DeepStream</span>) drops note: [<span class="str">"Damage detected!"</span>] <span class="flag">--&gt;</span> <span class="key">IN-TRAY</span> (<span class="comment">Qt FIFO Queue</span>) <span class="flag">--&gt;</span> <span class="cmd">Worker B</span> (<span class="str">Main GUI</span>)</code></pre>
+
+This in-tray is a FIFO queue (First In, First Out)—exactly how Qt's `QueuedConnection`
+works.
+
+Here is where the concurrency bug occurred:
+
+    1. Worker A notices damage on Garment #1 and drops a note into the in-tray:
+       [ "Damage detected!" ]
+
+    2. At that exact millisecond, the weighing scale bell rings: Garment #1 is removed!
+
+    3. Worker B immediately jumps up, wipes the whiteboard clean, and opens a blank file
+       for Garment #2 (`reset_blocks()`).
+
+    4. Worker B sits back down, looks at their in-tray, and picks up the note:
+       [ "Damage detected!" ]
+
+    5. Worker B has no way of knowing *when* that note was written! They assume it belongs
+       to the current garment, write "Damage" onto Garment #2's file, and send it to Kafka.
+
+This is a classic concurrency problem: a message was completely valid when it was created,
+but by the time the receiving thread got around to reading it, the state of the world
+had changed.
+
+
+<h4>The Solution: Generation / Epoch Versioning</h4>
+To fix this, we introduce an "Epoch" counter (like a batch number or timestamp).
+
+Every time a garment arrives, we increment the epoch:
+    - Garment #1 is Epoch 0
+    - Garment #2 is Epoch 1
+
+Worker A now stamps every note with the current epoch number before dropping it in the tray:
+    [ "Damage detected!", epoch=0 ]
+
+When Worker B picks up the note, they compare the note's epoch with the current garment's epoch:
+    - Is note.epoch (0) == current_epoch (1)?
+    - No! This note belongs to the past. Worker B throws it straight into the wastebasket.
+
+
+<h3 id="code-changes">Code Implementation (DeepStream & Main GUI) <a href="#toc" class="top-link">[^]</a></h3>
+Here are the actual code changes:
+
+In <span class="path">smartbench/app_gui/deepstream_processor.py</span>:
+
+<pre class="term"><code><span class="comment"># 1. Initialize the epoch counter in __init__:</span>
+<span class="arg">self</span>.<span class="key">_reset_epoch</span> = <span class="val">0</span>
+
+<span class="comment"># 2. Advance the epoch inside the thread lock whenever a sample resets:</span>
+<span class="cmd">def</span> <span class="sub">reset_garment_lifetime</span>(<span class="arg">self</span>):
+    <span class="cmd">with</span> <span class="arg">self</span>.<span class="arg">detections_lock</span>:
+        <span class="arg">self</span>.<span class="key">_reset_epoch</span> += <span class="val">1</span>
+        <span class="arg">self</span>.<span class="arg">detections</span>.<span class="sub">clear</span>()
+
+<span class="comment"># 3. Stamp every emitted signal with the current epoch:</span>
+<span class="cmd">def</span> <span class="sub">count_dets_class</span>(<span class="arg">self</span>, <span class="arg">dets_data</span>):
+    <span class="cmd">with</span> <span class="arg">self</span>.<span class="arg">detections_lock</span>:
+        <span class="comment"># ... count detections over rolling window ...</span>
+        <span class="arg">self</span>.<span class="sub">disruptor_keys_signal</span>.<span class="cmd">emit</span>(<span class="arg">new_keys</span>, <span class="arg">self</span>.<span class="key">_reset_epoch</span>)</code></pre>
+
+In <span class="path">smartbench/app_gui/main_gui.py</span>:
+
+<pre class="term"><code><span class="comment"># 4. In the GUI slot, discard any signal whose epoch doesn't match:</span>
+<span class="sub">@QtCore.Slot</span>(<span class="cmd">object</span>, <span class="cmd">int</span>)
+<span class="cmd">def</span> <span class="sub">on_disruptor_keys</span>(<span class="arg">self</span>, <span class="arg">new_keys</span>, <span class="arg">epoch</span>=<span class="val">None</span>):
+    <span class="cmd">if</span> <span class="arg">epoch</span> <span class="cmd">is not</span> <span class="val">None</span> <span class="cmd">and</span> <span class="arg">self</span>.<span class="arg">deepstream</span> <span class="cmd">and</span> <span class="arg">epoch</span> != <span class="arg">self</span>.<span class="arg">deepstream</span>.<span class="key">_reset_epoch</span>:
+        <span class="cmd">return</span>  <span class="comment"># Stale signal from an older garment! Discard immediately!</span>
+
+    <span class="comment"># Process valid signal...</span></code></pre>
+
+
+<h3 id="sticky-disruptors">Part 2: Making Live Disruptors "Sticky" <a href="#toc" class="top-link">[^]</a></h3>
+The second part of the bug was that the GUI erased disruptors from the screen while
+DataManager remembered them forever.
+
+Why did the GUI erase them?
+DeepStream's rolling window only stores the last 30 frames (about 1.5 seconds of video).
+If a garment had a tear detected at second 2, but at second 5 the operator flipped the
+garment so the tear was hidden, the rolling window would drop to 0 detections and emit `set()`.
+
+The old GUI code did this:
+
+<pre class="term"><code><span class="comment"># OLD CODE in smartbench/app_gui/blocks/results_block.py:</span>
+<span class="cmd">if not</span> <span class="arg">disruptor_types_set</span>:
+    <span class="arg">self</span>.<span class="sub">clear_disruptors</span>()  <span class="comment"># &lt;-- Wiped the GUI back to 0!</span>
+    <span class="cmd">return</span></code></pre>
+
+This was a fundamental design flaw: a tear does not magically vanish from a garment just
+because it rotated away from the camera lens! Kafka had already recorded the tear, but
+the GUI was now lying to the operator by displaying `Disruptors (0):`.
+
+The fix: Live disruptors must be "sticky" for the lifetime of that garment:
+
+<pre class="term"><code><span class="comment"># NEW CODE in smartbench/app_gui/blocks/results_block.py:</span>
+<span class="comment"># Keep existing disruptors sticky for the garment's lifetime when rolling window is empty</span>
+<span class="cmd">if not</span> <span class="arg">disruptor_types_set</span>:
+    <span class="cmd">return</span>  <span class="comment"># Do NOT clear the GUI!</span></code></pre>
+
+Now, once a disruptor is identified on a garment, it remains visible on screen until the
+entire garment is finished and `reset_blocks()` clears the sample.
+
+
+<h3 id="defect-priority">Part 3: Prioritizing Critical Disruptors on the GUI <a href="#toc" class="top-link">[^]</a></h3>
+Because of physical screen space, the GUI layout can only display a maximum of 3 disruptors.
+
+Previously, if 3 harmless/neutral disruptors were detected first (e.g. `label`, `logo`, `button`),
+and a critical defect like `damage` or `stain` was detected later, the layout was already full
+and ignored the critical defect.
+
+We updated the display logic to sort disruptors by severity:
+    - Tier 1 (Critical): `damage`, `stain`, `metal`
+    - Tier 2 (Neutral): `label`, `logo`, `button`, `zip`, etc.
+
+Even if 3 neutral disruptors are already showing, the moment `damage` is detected, it
+automatically displaces a neutral disruptor to ensure the operator can always see the
+exact defect driving the decision tree's action prompt.
+
+<hr>
+<div id="clock" onload="currentTime()"></div>
+<script type="text/javascript" src="../clock.js"></script>
+</div>
+</body>
+</html>
