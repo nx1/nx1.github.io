@@ -83,8 +83,8 @@
 
 <span class="toc-cat">Root Cause Analysis:</span>
     <a href="#why-this-happened">the three interacting components</a>
+    <a href="#rolling-buffer">how the 30-detection rolling buffer works</a>
     <a href="#race-sequence">the event-loop race condition sequence</a>
-    <a href="#why-one-disruptor">why only one disruptor leaked</a>
 
 <span class="toc-cat">The Fix:</span>
     <a href="#in-tray-analogy">the in-tray analogy & the epoch guard</a>
@@ -207,19 +207,60 @@ To understand it, we need to look at three moving parts:
 
     1. DeepStream Video Thread:
        A native background GStreamer pipeline thread that runs object detection (YOLO)
-       at 20–30 FPS and maintains a 30-frame rolling window of detected disruptors.
-       When a disruptor appears in 7 or more frames, it emits a Qt signal:
-       `disruptor_keys_signal`.
+       at 20–30 FPS and maintains a 30-detection rolling buffer of detected disruptors.
+       When a disruptor appears in 7 or more detections, it emits a Qt signal:
+       "disruptor_keys_signal".
 
     2. Qt Main GUI Thread:
-       Runs the user interface and event loop. It receives `disruptor_keys_signal` via
-       a `Qt.QueuedConnection`, renders disruptor widgets on the screen, and broadcasts
-       newly seen disruptor keys to Kafka on the `ml_live_detection` topic.
+       Runs the user interface and event loop. It receives "disruptor_keys_signal" via
+       a "Qt.QueuedConnection", renders disruptor widgets on the screen, and broadcasts
+       newly seen disruptor keys to Kafka on the "ml_live_detection" topic.
 
     3. DataManager (Kafka Service):
        An external process that tracks the current SampleReport. Whenever it receives
-       a message on `ml_live_detection`, it updates the sample's disruptor list and
+       a message on "ml_live_detection", it updates the sample's disruptor list and
        re-evaluates the decision tree.
+
+
+<h3 id="rolling-buffer">How the Rolling Buffer Actually Works (Detections vs Frames) <a href="#toc" class="top-link">[^]</a></h3>
+A critical detail about DeepStream's implementation:
+"self.detections = deque(maxlen=30)" is a rolling buffer of <b>individual detections</b>,
+not video frames!
+
+Let's look at the actual code in <span class="path">smartbench/app_gui/deepstream_processor.py</span>:
+
+<pre class="term"><code><span class="cmd">with</span> <span class="arg">self</span>.<span class="arg">detections_lock</span>:
+    <span class="cmd">for</span> <span class="arg">det_name</span>, <span class="arg">_</span> <span class="cmd">in</span> <span class="arg">dets_data</span>:
+        <span class="arg">self</span>.<span class="arg">detections</span>.<span class="sub">append</span>(<span class="arg">det_name</span>)
+    <span class="arg">type_counts</span> = <span class="sub">Counter</span>(<span class="arg">self</span>.<span class="arg">detections</span>)
+    <span class="arg">new_keys</span> = {<span class="arg">k</span> <span class="cmd">for</span> <span class="arg">k</span>, <span class="arg">v</span> <span class="cmd">in</span> <span class="arg">type_counts</span>.<span class="sub">items</span>() <span class="cmd">if</span> <span class="arg">v</span> &gt;= <span class="arg">self</span>.<span class="key">disruptor_threshold</span>}
+    <span class="arg">self</span>.<span class="sub">disruptor_keys_signal</span>.<span class="cmd">emit</span>(<span class="arg">new_keys</span>, <span class="arg">self</span>.<span class="key">_reset_epoch</span>)</code></pre>
+
+Notice what happens on each video frame:
+
+    1. Multi-detection frames:
+       If a single frame contains three detections (e.g. two stains and a hole), the loop
+       appends three items to the deque in that single frame.
+
+    2. Empty frames (Empty Bench):
+       If a frame contains zero detections ("dets_data = []"), the "for" loop does not execute.
+       Nothing is appended, and crucially, NOTHING is evicted!
+       Empty frames do NOT age out or dilute old detections.
+
+For example:
+
+<pre class="term"><code><span class="comment"># Frame 1: Three detections</span>
+<span class="arg">Frame 1</span>: [<span class="str">"stain"</span>, <span class="str">"stain"</span>, <span class="str">"damage"</span>] <span class="flag">--&gt;</span> <span class="key">buffer</span>: [<span class="str">"stain"</span>, <span class="str">"stain"</span>, <span class="str">"damage"</span>]          (<span class="val">len = 3</span>)
+
+<span class="comment"># Frame 2: Empty frame (no objects detected in view)</span>
+<span class="arg">Frame 2</span>: []                           <span class="flag">--&gt;</span> <span class="key">buffer</span>: [<span class="str">"stain"</span>, <span class="str">"stain"</span>, <span class="str">"damage"</span>]          (<span class="val">len = 3</span>, <span class="comment">untouched!</span>)
+
+<span class="comment"># Frame 3: One detection</span>
+<span class="arg">Frame 3</span>: [<span class="str">"damage"</span>]                   <span class="flag">--&gt;</span> <span class="key">buffer</span>: [<span class="str">"stain"</span>, <span class="str">"stain"</span>, <span class="str">"damage"</span>, <span class="str">"damage"</span>]  (<span class="val">len = 4</span>)</code></pre>
+
+This means a detection stays in the buffer indefinitely until one of two things happens:
+    - NEW detections arrive and push it out past the 30-item capacity.
+    - An explicit sample reset runs: "self.detections.clear()".
 
 
 <h3 id="race-sequence">The Event-Loop Race Condition Sequence <a href="#toc" class="top-link">[^]</a></h3>
@@ -231,34 +272,34 @@ the final frames where the garment is still in camera view and emits:
 
 <pre class="term"><code><span class="arg">self</span>.<span class="sub">disruptor_keys_signal</span>.<span class="cmd">emit</span>({<span class="str">'damage'</span>})</code></pre>
 
-Because this is a cross-thread signal (`Qt.QueuedConnection`), Qt places this event
+Because this is a cross-thread signal ("Qt.QueuedConnection"), Qt places this event
 at the back of the Main GUI thread's FIFO event queue.
 
 
 Step 2: The weight removal triggers a reset
 At the exact same moment, the weighing scale detects weight removal and broadcasts
-to Kafka. DataManager auto-submits the old garment and sends a new `sample_id`.
+to Kafka. DataManager auto-submits the old garment and sends a new "sample_id".
 
-The GUI thread handles the new `sample_id` immediately and calls `reset_blocks()`:
+The GUI thread handles the new "sample_id" immediately and calls "reset_blocks()":
 
 <pre class="term"><code><span class="arg">self</span>.<span class="arg">results_block</span>.<span class="sub">reset_block</span>()         <span class="comment"># Clears GUI rows & resets last_sent_disruptor_types = set()</span>
 <span class="arg">self</span>.<span class="arg">deepstream</span>.<span class="sub">reset_garment_lifetime</span>() <span class="comment"># Clears DeepStream's rolling window deque</span></code></pre>
 
 
 Step 3: The stale queued signal fires on the new sample
-Crucially, `reset_blocks()` runs synchronously on the GUI thread. When it finishes,
+Crucially, "reset_blocks()" runs synchronously on the GUI thread. When it finishes,
 the GUI thread returns to its event queue and finally pops the pending signal from
 Step 1:
 
 <pre class="term"><code><span class="sub">on_disruptor_keys</span>({<span class="str">'damage'</span>})</code></pre>
 
-Because `reset_block()` had just wiped `last_sent_disruptor_types` back to an empty set,
+Because "reset_block()" had just wiped "last_sent_disruptor_types" back to an empty set,
 the GUI thought this was a brand-new detection for the *new* garment! It immediately
 published to Kafka:
 
 <pre class="term"><code><span class="arg">producer</span>.<span class="cmd">send</span>(<span class="str">'ml_live_detection'</span>, {<span class="key">'live_detection'</span>: [<span class="str">'damage'</span>]})</code></pre>
 
-DataManager received this and permanently attached `'damage'` to the new sample.
+DataManager received this and permanently attached "damage" to the new sample.
 
 
 Step 4: The GUI wipes the disruptor from sight
@@ -273,37 +314,23 @@ When the GUI received this empty set, its handler previously executed:
     <span class="arg">self</span>.<span class="sub">clear_disruptors</span>()
     <span class="cmd">return</span></code></pre>
 
-This wiped all disruptor rows from the screen and updated the title to `Disruptors (0):`.
+This wiped all disruptor rows from the screen and updated the title to "Disruptors (0):".
 However, it did NOT unsend or clear the disruptor that was already published to Kafka!
 
 
-<h3 id="asymmetric-exit">Why Only One Disruptor Leaked <a href="#toc" class="top-link">[^]</a></h3>
-You might wonder why only 'damage' leaked into the new sample report when the original
-sample (6caHeCQoZX) had both 'metal' and 'damage'.
-
-First, hardware metal detection is a discrete sensor event that resets cleanly on sample
-rollover. But live video disruptors rely on DeepStream's continuous 30-frame rolling window.
-
-Second, a physical garment does not vanish instantaneously in a single frame. When the
-operator drags or lifts the jeans away, different parts of the garment leave the camera's
-field of view at different times:
-
-    1. One section clears the camera frame first.
-    2. Over the next few frames, its detections are pushed out of DeepStream's 30-item
-       rolling deque until its count drops below the 7-detection threshold.
-    3. Meanwhile, the trailing portion of the fabric lingers in view, maintaining a count
-       >= 7 in the deque.
-
-As a result, right at the moment of weight removal and sample reset, DeepStream's
-emitted set had already narrowed from multiple disruptors down to just {'damage'}.
-This lingering trailing disruptor was the sole event in-flight in the event queue
-when the reset occurred.
+Note on why only "damage" leaked (and not "metal"):
+Although the previous sample (6caHeCQoZX) had both "metal" and "damage" listed under "ml_live_detection",
+metal detection does not come from live video. It originates from a separate hardware metal detector
+sensor, but is published over the "ml_live_detection" Kafka topic and treated as a disruptor because it
+simplifies the decision tree logic. Because the hardware metal detector state resets synchronously on
+sample rollover, only the asynchronous DeepStream video detection ("damage") remained in-flight in the
+event queue when the reset occurred.
 
 
 The Result:
-The GUI showed zero disruptors, but DataManager still held `damage` in the sample report.
+The GUI showed zero disruptors, but DataManager still held "damage" in the sample report.
 The decision tree evaluated the sample, matched the deferred "Cotton Recycle" rule,
-and sent back `action_prompt: "material"`.
+and sent back "action_prompt: material".
 
 The operator was left looking at an empty bench with no disruptors displayed, wondering
 why on earth the spectrometer prompt was blinking.
@@ -328,7 +355,7 @@ on Worker B's desk:
 
 <pre class="term"><code><span class="cmd">Worker A</span> (<span class="str">DeepStream</span>) drops note: [<span class="str">"Damage detected!"</span>] <span class="flag">--&gt;</span> <span class="key">IN-TRAY</span> (<span class="comment">Qt FIFO Queue</span>) <span class="flag">--&gt;</span> <span class="cmd">Worker B</span> (<span class="str">Main GUI</span>)</code></pre>
 
-This in-tray is a FIFO queue (First In, First Out)—exactly how Qt's `QueuedConnection`
+This in-tray is a FIFO queue (First In, First Out)—exactly how Qt's "QueuedConnection"
 works.
 
 Here is where the concurrency bug occurred:
@@ -339,7 +366,7 @@ Here is where the concurrency bug occurred:
     2. At that exact millisecond, the weighing scale bell rings: Garment #1 is removed!
 
     3. Worker B immediately jumps up, wipes the whiteboard clean, and opens a blank file
-       for Garment #2 (`reset_blocks()`).
+       for Garment #2 ("reset_blocks()").
 
     4. Worker B sits back down, looks at their in-tray, and picks up the note:
        [ "Damage detected!" ]
@@ -403,9 +430,13 @@ The second part of the bug was that the GUI erased disruptors from the screen wh
 DataManager remembered them forever.
 
 Why did the GUI erase them?
-DeepStream's rolling window only stores the last 30 frames (about 1.5 seconds of video).
-If a garment had a tear detected at second 2, but at second 5 the operator flipped the
-garment so the tear was hidden, the rolling window would drop to 0 detections and emit `set()`.
+Whenever a sample was reset, "reset_garment_lifetime()" cleared the deque
+("self.detections.clear()").
+On the subsequent frames, the buffer had fewer than 7 detections of any class, so
+"new_keys" evaluated to "set()". DeepStream then emitted "disruptor_keys_signal.emit(set())".
+
+Furthermore, during the lifetime of a garment, if other detections later arrived and
+displaced a disruptor below the 7-count threshold, "new_keys" would no longer include it.
 
 The old GUI code did this:
 
@@ -416,7 +447,7 @@ The old GUI code did this:
 
 This was a fundamental design flaw: a tear does not magically vanish from a garment just
 because it rotated away from the camera lens! Kafka had already recorded the tear, but
-the GUI was now lying to the operator by displaying `Disruptors (0):`.
+the GUI was now lying to the operator by displaying "Disruptors (0):".
 
 The fix: Live disruptors must be "sticky" for the lifetime of that garment:
 
@@ -426,21 +457,21 @@ The fix: Live disruptors must be "sticky" for the lifetime of that garment:
     <span class="cmd">return</span>  <span class="comment"># Do NOT clear the GUI!</span></code></pre>
 
 Now, once a disruptor is identified on a garment, it remains visible on screen until the
-entire garment is finished and `reset_blocks()` clears the sample.
+entire garment is finished and "reset_blocks()" clears the sample.
 
 
 <h3 id="defect-priority">Part 3: Prioritizing Critical Disruptors on the GUI <a href="#toc" class="top-link">[^]</a></h3>
 Because of physical screen space, the GUI layout can only display a maximum of 3 disruptors.
 
-Previously, if 3 harmless/neutral disruptors were detected first (e.g. `label`, `logo`, `button`),
-and a critical defect like `damage` or `stain` was detected later, the layout was already full
+Previously, if 3 harmless/neutral disruptors were detected first (e.g. "label", "logo", "button"),
+and a critical defect like "damage" or "stain" was detected later, the layout was already full
 and ignored the critical defect.
 
 We updated the display logic to sort disruptors by severity:
-    - Tier 1 (Critical): `damage`, `stain`, `metal`
-    - Tier 2 (Neutral): `label`, `logo`, `button`, `zip`, etc.
+    - Tier 1 (Critical): "damage", "stain", "metal"
+    - Tier 2 (Neutral): "label", "logo", "button", "zip", etc.
 
-Even if 3 neutral disruptors are already showing, the moment `damage` is detected, it
+Even if 3 neutral disruptors are already showing, the moment "damage" is detected, it
 automatically displaces a neutral disruptor to ensure the operator can always see the
 exact defect driving the decision tree's action prompt.
 
