@@ -499,6 +499,114 @@ If conflicts occur during rebase:
 <span class="prompt">></span> <span class="cmd">git</span> <span class="sub">branch</span> <span class="flag">-D</span> <span class="arg">backup-wip</span>   <span class="comment"># delete temporary safety branch once verified</span></code></pre>
 
 
+
+
+
+Understanding git history
+=========================
+
+History in Git is structured as a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">Directed Acyclic Graph (DAG)</a>.
+
+In graph theory terms, this means that each commit is a vertex (or node) while
+the parent-child relations that connect them are edges. An interesting note is
+that the direction of the edges are <b>directed backwards in time</b> such that
+
+Child commit --> parent commit.
+
+In any directed graph $G = (V, E)$ an edge is an ordered pair $(u, v)$ that represents an arrow between two vertexs $(u \rightarrow v)$.
+
+Based upon the number of edges coming in to or out of a vertex $v$, we can define the in-degree $(deg^{-}(v)$ and out-degree $(deg^{+}(v)$.
+
+The DAG structure of git history means that commits may categorized into the following classes based on the number of children or parents.
+
+Commit type             out-degree (n_parents)       in-degree  Meaning
+
+Root commit:          0                              -          Initial commit
+Standard commit:      1                              -          Linear commit
+Merge commit:         2                              -          Merge 2 branches 
+Octopus Merge         ≥ 3                            -          merge 3 or more branches
+
+Leaf / Tip                                           0          tip of the branch (e.g. most recent commit)
+Linear Node                                          1          one commit exists on top of the current commit
+Fork point                                           ≥ 2        multiple branches or commits originate from current commit
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+To view commit information for a given commit one can run
+
+> git cat-file -p 454fc72
+
+tree 19fceb549c68864ecc73c563267302b7ebbb0cfb
+parent b2f0fe98d73f65ed45c720c17c014ac75fbda96d
+author Norman Khan <norman@matoha.com> 1792399970 +0100
+committer Norman Khan <norman@matoha.com> 1792399970 +0100
+
+The above shows a commit that has 1 parent and thus is a standard commit as per the table above.
+
+Looking at another commit with multiple parents (merge commit) shows that it can have two parents:
+
+> git cat-file -p 0edf946491f02ba41906b95c5ac005be45c71870
+tree 614a84d98375c3d38902e751fed9505d16477a9e
+parent 45fc4daa782409bc944bf625b35615ab8388b67e
+parent 707b1a817e89b7f893814bf44781e0a713a27d4b
+author Tanisha Hisariya <tanisha@matoha.com> 1791899185 +0100
+committer Tanisha Hisariya <tanisha@matoha.com> 1791899185 +0100
+
+live garmnet dteection added
+
+
+One parent is the branch into which the commit was merged INTO
+while the other commit is the commit from which the branch was merged <-- I think this is wrong!
+
+
+
+Another useful command is git show --stat
+
+which shows for a specific commit shows the number of lines that were changed per file for that commit.
+
+> git show --stat 0edf946491f02ba41906b95c5ac005be45c71870
+
+Merge: 45fc4da 707b1a8
+Author: Tanisha Hisariya <tanisha@matoha.com>
+Date:   Tue Oct 13 14:46:25 2026 +0100
+
+    live garmnet dteection added
+
+ dev.sh                                                    |  79 ++++++++++++
+ docker-compose-dev.yml                                    | 256 ++++++++++++++++++++++++++++++++++++++
+ docker-compose.dev.yml                                    | 101 +++++++++++++++
+ docker-compose.yml                                        |  39 +++---
+ smartbench/app_gui/Dockerfile                             |   9 +-
+ smartbench/app_gui/blocks/camera_block.py                 |   4 +
+ smartbench/app_gui/blocks/results_block.py                |  24 +++-
+ smartbench/app_gui/blocks/title_block.py                  |   1 -
+ smartbench/app_gui/camera_capture/basler_capture.py       |  55 +++++----
+ smartbench/app_gui/camera_capture/camera_manager.py       |  22 ++--
+ smartbench/app_gui/camera_capture/camera_worker_thread.py |  18 ++-
+ smartbench/app_gui/camera_capture/test_basler_capture.py  |  12 --
+ smartbench/app_gui/camera_capture/test_camera_capture.py  |   1 -
+ smartbench/app_gui/camera_capture/test_camera_manager.py  |  18 +--
+ smartbench/app_gui/deepstream_processor.py                | 220 ++++++++++++++++-----------------
+ smartbench/app_gui/example_ocr_outputs.txt                |  11 ++
+ smartbench/app_gui/garment_detection.py                   | 458 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ smartbench/app_gui/kafka_handler.py                       |  18 ++-
+ smartbench/app_gui/label_frame.py                         |  72 +++++++++++
+ smartbench/app_gui/main_gui.py                            | 127 ++++++++++---------
+ smartbench/app_gui/ocr_worker.py                          |  11 +-
+ smartbench/app_gui/test_main_gui.py                       |  23 ++--
+ smartbench/data_manager/data_manager.py                   |  75 ++++++++---
+ smartbench/data_manager/decision_tree/rules_test.json     | 279 +++++++++++++++++++++++++++++++++++++++++
+ smartbench/label_printer/test_data_payload.py             |  22 ++--
+ smartbench/matoha_kafka/test_matoha_kafka.py              |   5 +-
+ stop_all_containers.sh                                    |   1 +
+ 27 files changed, 1646 insertions(+), 315 deletions(-)
+
+
+The graph structure can be visualized in cli using:
+
+> git log --graph --oneline --decorate -n 25 0edf946491f02ba41906b95c5ac005be45c71870
+
+
 <hr>
 <div id="clock" onload="currentTime()"></div>
 <script type="text/javascript" src="../clock.js"></script>
