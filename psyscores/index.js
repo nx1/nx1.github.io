@@ -106,19 +106,8 @@ const OPEN_KEY_MUSICAL = {
 
 function normalizeOpenKey(rawKey) {
     if (!rawKey || typeof rawKey !== 'string') return null;
-    const trimmed = rawKey.trim();
-    const openMatch = /^([1-9]|1[0-2])([md])$/i.exec(trimmed);
-    if (openMatch) {
-        return `${openMatch[1]}${openMatch[2].toLowerCase()}`;
-    }
-    const camelotMatch = /^([1-9]|1[0-2])([AB])$/i.exec(trimmed);
-    if (camelotMatch) {
-        const num = parseInt(camelotMatch[1], 10);
-        const mode = camelotMatch[2].toUpperCase() === 'A' ? 'm' : 'd';
-        const openNum = ((num + 4) % 12) + 1;
-        return `${openNum}${mode}`;
-    }
-    return null;
+    const match = /^([1-9]|1[0-2])([md])$/i.exec(rawKey.trim());
+    return match ? `${match[1]}${match[2].toLowerCase()}` : null;
 }
 
 function populateStats(tracks) {
