@@ -1015,7 +1015,7 @@
     "catalog": "SUN CD 006",
     "bitrate": 777,
     "length": 443,
-    "key": "11B",
+    "key": "12m",
     "bpm": 136,
     "image_path": "cover_art/7.jpg"
   },
@@ -3430,7 +3430,7 @@
     "catalog": "MD 013",
     "bitrate": 741,
     "length": 458,
-    "key": "12B",
+    "key": "5d",
     "bpm": 140,
     "image_path": "cover_art/24.jpg"
   },
@@ -4495,7 +4495,7 @@
     "catalog": "usta 3009-2",
     "bitrate": 809,
     "length": 456,
-    "key": "4A",
+    "key": "12d",
     "bpm": 135,
     "image_path": "cover_art/32.jpg"
   },
@@ -6625,7 +6625,7 @@
     "catalog": "GTN 1055.20",
     "bitrate": 776,
     "length": 531,
-    "key": "4A",
+    "key": "9m",
     "bpm": 110,
     "image_path": "cover_art/50.jpg"
   },
@@ -6970,7 +6970,7 @@
     "catalog": "N/A",
     "bitrate": 828,
     "length": 439,
-    "key": "8A",
+    "key": "1m",
     "bpm": 114,
     "image_path": "cover_art/52.jpg"
   },
@@ -12835,7 +12835,7 @@
     "catalog": "FFR 038",
     "bitrate": 728,
     "length": 469,
-    "key": "9A",
+    "key": "5d",
     "bpm": 138,
     "image_path": "cover_art/96.jpg"
   },
@@ -16945,7 +16945,7 @@
     "catalog": "tatsu025cd",
     "bitrate": 861,
     "length": 529,
-    "key": "5A",
+    "key": "10m",
     "bpm": 140,
     "image_path": "cover_art/128.jpg"
   },
@@ -17110,7 +17110,7 @@
     "catalog": "tatsu 013",
     "bitrate": 817,
     "length": 498,
-    "key": "12B",
+    "key": "2m",
     "bpm": 142,
     "image_path": "cover_art/129.jpg"
   },
@@ -19465,7 +19465,7 @@
     "catalog": "MD 012",
     "bitrate": 939,
     "length": 541,
-    "key": "6B",
+    "key": "8m",
     "bpm": 137,
     "image_path": "cover_art/148.jpg"
   },
@@ -26845,7 +26845,7 @@
     "catalog": "7610096093553",
     "bitrate": 1510,
     "length": 393,
-    "key": "11A",
+    "key": "3m",
     "bpm": 135,
     "image_path": "cover_art/211.jpg"
   },
@@ -29395,7 +29395,7 @@
     "catalog": "PQ 035",
     "bitrate": 775,
     "length": 523,
-    "key": "11A",
+    "key": "4m",
     "bpm": 138,
     "image_path": "cover_art/233.jpg"
   },
@@ -29425,7 +29425,7 @@
     "catalog": "PQ 035",
     "bitrate": 844,
     "length": 466,
-    "key": "9A",
+    "key": "2m",
     "bpm": 140,
     "image_path": "cover_art/233.jpg"
   },
@@ -29455,7 +29455,7 @@
     "catalog": "PQ 035",
     "bitrate": 813,
     "length": 435,
-    "key": "9A",
+    "key": "2m",
     "bpm": 134,
     "image_path": "cover_art/233.jpg"
   },
@@ -36295,7 +36295,7 @@
     "catalog": "GZCD-002",
     "bitrate": 890,
     "length": 505,
-    "key": "4A",
+    "key": "9m",
     "bpm": 136,
     "image_path": "cover_art/282.jpg"
   },
@@ -36805,7 +36805,7 @@
     "catalog": "FLR0205CD",
     "bitrate": 757,
     "length": 403,
-    "key": "3A",
+    "key": "8m",
     "bpm": 134,
     "image_path": "cover_art/286.jpg"
   },
@@ -37465,7 +37465,7 @@
     "catalog": "CFR CD04",
     "bitrate": 936,
     "length": 357,
-    "key": "11A",
+    "key": "4m",
     "bpm": 138,
     "image_path": "cover_art/291.jpg"
   },
@@ -40990,7 +40990,7 @@
     "catalog": "SUBCD007",
     "bitrate": 807,
     "length": 437,
-    "key": "10A",
+    "key": "6d",
     "bpm": 136,
     "image_path": "cover_art/314.jpg"
   },
@@ -42670,7 +42670,7 @@
     "catalog": "tatsu022cd",
     "bitrate": 816,
     "length": 496,
-    "key": "9A",
+    "key": "2m",
     "bpm": 139,
     "image_path": "cover_art/326.jpg"
   },
@@ -45520,7 +45520,7 @@
     "catalog": "DIGCD005",
     "bitrate": 819,
     "length": 453,
-    "key": "4A",
+    "key": "12d",
     "bpm": 131,
     "image_path": "cover_art/348.jpg"
   },
@@ -46585,7 +46585,7 @@
     "catalog": "SPIRIT ZONE 098",
     "bitrate": 732,
     "length": 452,
-    "key": "4A",
+    "key": "5d",
     "bpm": 137,
     "image_path": "cover_art/356.jpg"
   },
@@ -50980,7 +50980,7 @@
     "catalog": "Tatsu 032cd",
     "bitrate": 809,
     "length": 455,
-    "key": "4A",
+    "key": "9m",
     "bpm": 134,
     "image_path": "cover_art/377.jpg"
   },
@@ -51010,7 +51010,7 @@
     "catalog": "Tatsu 032cd",
     "bitrate": 799,
     "length": 410,
-    "key": "10B",
+    "key": "12m",
     "bpm": 135,
     "image_path": "cover_art/377.jpg"
   },
@@ -51040,7 +51040,7 @@
     "catalog": "Tatsu 032cd",
     "bitrate": 766,
     "length": 436,
-    "key": "2B",
+    "key": "7d",
     "bpm": 135,
     "image_path": "cover_art/377.jpg"
   },
@@ -54115,7 +54115,7 @@
     "catalog": "IZR 006CD",
     "bitrate": 845,
     "length": 400,
-    "key": "10B",
+    "key": "11m",
     "bpm": 138,
     "image_path": "cover_art/398.jpg"
   },
@@ -54580,7 +54580,7 @@
     "catalog": "SPIRIT ZONE 061",
     "bitrate": 919,
     "length": 572,
-    "key": "12A",
+    "key": "5m",
     "bpm": 145,
     "image_path": "cover_art/401.jpg"
   },
@@ -54625,7 +54625,7 @@
     "catalog": "PQ 103",
     "bitrate": 826,
     "length": 487,
-    "key": "11A",
+    "key": "4m",
     "bpm": 135,
     "image_path": "cover_art/402.jpg"
   },
@@ -56320,7 +56320,7 @@
     "catalog": "CFCD15",
     "bitrate": 949,
     "length": 546,
-    "key": "5A",
+    "key": "10m",
     "bpm": 130,
     "image_path": "cover_art/416.jpg"
   },
@@ -58750,7 +58750,7 @@
     "catalog": "GZCD-003",
     "bitrate": 863,
     "length": 462,
-    "key": "11A",
+    "key": "12d",
     "bpm": 135,
     "image_path": "cover_art/432.jpg"
   },
@@ -59890,7 +59890,7 @@
     "catalog": "FLR0206CD",
     "bitrate": 782,
     "length": 520,
-    "key": "6A",
+    "key": "11m",
     "bpm": 141,
     "image_path": "cover_art/440.jpg"
   },
@@ -70900,7 +70900,7 @@
     "catalog": "PTRCD004",
     "bitrate": 839,
     "length": 417,
-    "key": "5A",
+    "key": "10m",
     "bpm": 140,
     "image_path": "cover_art/505.jpg"
   },
@@ -72880,7 +72880,7 @@
     "catalog": "SHSPLCD001",
     "bitrate": 881,
     "length": 471,
-    "key": "7A",
+    "key": "12m",
     "bpm": 136,
     "image_path": "cover_art/514.jpg"
   },
@@ -78130,7 +78130,7 @@
     "catalog": "EQCD-05&06",
     "bitrate": 807,
     "length": 531,
-    "key": "5A",
+    "key": "3m",
     "bpm": 136,
     "image_path": "cover_art/551.jpg"
   },
@@ -78940,7 +78940,7 @@
     "catalog": "PSYSOL 005",
     "bitrate": 702,
     "length": 604,
-    "key": "7A",
+    "key": "12m",
     "bpm": 135,
     "image_path": "cover_art/555.jpg"
   },
@@ -87370,7 +87370,7 @@
     "catalog": "PQ108",
     "bitrate": 847,
     "length": 504,
-    "key": "4A",
+    "key": "9m",
     "bpm": 134,
     "image_path": "cover_art/609.jpg"
   },
