@@ -93,6 +93,7 @@ https://longair.net/blog/2009/04/16/git-fetch-and-merge/
     <a href="#temp-sync">temporarily sync branch</a>
     <a href="#cherry-pick">cherry pick merge request</a>
     <a href="#conflict-safe-sync">sync local commits when remote moved ahead (conflict-safe)</a>
+    <a href="#match-remote-wip">match uncommitted work on a remote</a>
 
 <span class="toc-cat">Repository Setup:</span>
     <a href="#init-repo">make existing folder into git repo & add remote</a>
@@ -605,6 +606,41 @@ Date:   Tue Oct 13 14:46:25 2026 +0100
 The graph structure can be visualized in cli using:
 
 > git log --graph --oneline --decorate -n 25 0edf946491f02ba41906b95c5ac005be45c71870
+
+
+
+
+<h2 id="match-remote-wip">Match the state of uncommitted work on a remote <a href="#toc" class="top-link">[^]</a></h2>
+Problem: Someone has uncommitted work on a remote, and you want to do development
+without disturbing the state they have left the repo in.
+
+Solution: Stream a diff over ssh into a new branch locally.
+
+1. Create and switch to a new work-in-progress branch on your local machine:
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-bench-lite$</span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="flag">-b</span> <span class="arg">wip/orin-nx-8</span> <span class="arg">merge_staging</span></code></pre>
+
+2. Pull all staged and unstaged changes from the remote device directly into your working tree:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">ssh</span> <span class="arg">matoha@orin-nx-8</span> <span class="str">"git -C ~/Documents/dev/matoha-bench-lite diff --binary HEAD"</span> | <span class="cmd">git</span> <span class="sub">apply</span></code></pre>
+
+3. (Optional) If there are untracked files, copy them over with scp (or a GUI tool like Cyberduck).
+
+Your local machine now matches the remote's state on the local branch <span class="branch">wip/orin-nx-8</span>.
+
+4. Commit the changes so you have a saved snapshot:
+<pre class="term"><code><span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-bench-lite$</span> <span class="cmd">git</span> <span class="sub">add</span> <span class="flag">-u</span>
+<span class="prompt">x1@Normans-Mac-mini:~/projects/matoha-bench-lite$</span> <span class="cmd">git</span> <span class="sub">commit</span> <span class="flag">-m</span> <span class="str">"snapshot of orin-nx-8 wip 25_nov_26"</span></code></pre>
+
+5. Create a new branch off the snapshot to do your own work, then make and commit your changes:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">checkout</span> <span class="flag">-b</span> <span class="arg">add_new_feature</span></code></pre>
+
+6. Once the remote changes have been pushed into <span class="branch">merge_staging</span>, replay your commits onto the updated branch while skipping the temporary <span class="branch">wip/orin-nx-8</span> snapshot:
+<pre class="term"><code><span class="prompt">></span> <span class="cmd">git</span> <span class="sub">fetch</span> <span class="arg">origin</span>
+<span class="prompt">></span> <span class="cmd">git</span> <span class="sub">rebase</span> <span class="flag">--onto</span> <span class="arg">origin/merge_staging</span> <span class="arg">wip/orin-nx-8</span> <span class="arg">add_new_feature</span></code></pre>
+
+
+
+
+
 
 
 <hr>
